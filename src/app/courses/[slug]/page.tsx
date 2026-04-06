@@ -1,12 +1,15 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Script from "next/script"
 import { courses, getCourseBySlug } from "@/data/courses"
 import { colleges } from "@/data/colleges"
-import { generateMetadata as genMeta } from "@/lib/seo"
+import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
 import { formatFeesRange, formatCurrency } from "@/lib/utils"
 import { Clock, TrendingUp, BookOpen, ChevronRight, GraduationCap, Briefcase } from "lucide-react"
 import CollegeCard from "@/components/colleges/CollegeCard"
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.in"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -37,8 +40,37 @@ export default async function CoursePage({ params }: Props) {
     course.topColleges.some((tc) => c.shortName.toLowerCase().includes(tc.toLowerCase()) || tc.toLowerCase().includes(c.shortName.toLowerCase()))
   ).slice(0, 3)
 
+  const courseSchema = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: course.fullName,
+    description: course.description,
+    provider: {
+      "@type": "Organization",
+      name: "CollegePune",
+      url: BASE_URL,
+    },
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "Blended",
+      duration: course.duration,
+      inLanguage: "en",
+    },
+    educationalLevel: course.level,
+    occupationalCategory: course.stream,
+    url: `${BASE_URL}/courses/${slug}`,
+  }
+
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Courses", url: "/courses" },
+    { name: course.name, url: `/courses/${slug}` },
+  ])
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <Script id="course-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(courseSchema) }} />
+      <Script id="course-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-100 py-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

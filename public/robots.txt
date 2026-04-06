@@ -1,8 +1,83 @@
+# ═══════════════════════════════════════════════════════════════
+#  CollegePune — robots.txt
+#  AIO / GEO optimised: all major AI crawlers explicitly allowed.
+#  Per spec, named User-agent blocks override the wildcard, so
+#  each block carries its own Disallow rules.
+# ═══════════════════════════════════════════════════════════════
+
+# ── Wildcard (all bots not named below) ──────────────────────
 User-agent: *
 Allow: /
-
-Sitemap: https://collegepune.in/sitemap.xml
-
-# Disallow admin and API routes from crawling
 Disallow: /api/
 Disallow: /_next/
+Disallow: /admin/
+
+# ── Google ────────────────────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Google AI (Gemini training / SGE / AI Overviews)
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# ── Microsoft ─────────────────────────────────────────────────
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# ── OpenAI / ChatGPT ──────────────────────────────────────────
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# ── Anthropic / Claude ────────────────────────────────────────
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# ── Perplexity ────────────────────────────────────────────────
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# ── Apple ─────────────────────────────────────────────────────
+User-agent: Applebot
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# ── Sitemap ───────────────────────────────────────────────────
+Sitemap: https://collegepune.in/sitemap.xml

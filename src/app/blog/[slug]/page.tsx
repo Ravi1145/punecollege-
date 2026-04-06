@@ -1,9 +1,12 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Script from "next/script"
 import { blogs, getBlogBySlug } from "@/data/blogs"
 import { generateMetadata as genMeta } from "@/lib/seo"
 import { Clock, Calendar, ChevronRight, Tag } from "lucide-react"
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.in"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -32,8 +35,28 @@ export default async function BlogPostPage({ params }: Props) {
 
   const related = blogs.filter((b) => b.id !== post.id && b.category === post.category).slice(0, 3)
 
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    author: { "@type": "Person", name: post.author },
+    datePublished: post.date,
+    dateModified: post.date,
+    publisher: {
+      "@type": "Organization",
+      name: "CollegePune",
+      url: BASE_URL,
+    },
+    url: `${BASE_URL}/blog/${slug}`,
+    keywords: post.tags.join(", "),
+    articleSection: post.category,
+    inLanguage: "en-IN",
+  }
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <Script id="blog-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }} />
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-100 py-3">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -32,8 +32,13 @@ export function generateMetadata({
     creator: SITE_NAME,
     publisher: SITE_NAME,
     robots: {
+      // Base <meta name="robots"> — read by ALL crawlers including AI bots
       index: true,
       follow: true,
+      "max-snippet": -1,          // unlimited snippet extraction (key for AI answers)
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      // Googlebot-specific <meta name="googlebot"> — belt-and-suspenders
       googleBot: {
         index: true,
         follow: true,
@@ -144,6 +149,7 @@ export function generateCollegeSchema(college: {
   email: string
   website: string
   established: number
+  postalCode?: string
 }) {
   return {
     "@context": "https://schema.org",
@@ -155,7 +161,7 @@ export function generateCollegeSchema(college: {
       streetAddress: college.address,
       addressLocality: "Pune",
       addressRegion: "Maharashtra",
-      postalCode: "411001",
+      postalCode: college.postalCode ?? "411001",
       addressCountry: "IN",
     },
     telephone: college.phone,

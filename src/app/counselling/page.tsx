@@ -1,12 +1,21 @@
 import { Metadata } from "next"
 import { CheckCircle, Clock, Phone, Users, Star, Award } from "lucide-react"
 import CounsellingBooking from "@/components/leads/CounsellingBooking"
+import { generateMetadata as genMeta } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Free Counselling — Expert Guidance for Pune College Admissions 2025",
+export const metadata: Metadata = genMeta({
+  title: "Free College Counselling in Pune 2025 — Expert Admission Guidance",
   description:
-    "Book a FREE 15-minute expert counselling session. Get personalized guidance on Pune college admissions, fees, scholarships, and entrance exams. 100% free, no spam.",
-}
+    "Book a FREE 15-minute expert counselling session for Pune college admissions. Get personalized guidance on fees, scholarships, entrance exams & college shortlisting. 100% free, no spam.",
+  path: "/counselling",
+  keywords: [
+    "free college counselling pune",
+    "college admission guidance pune",
+    "pune college counsellor",
+    "free admission counselling",
+    "college shortlisting pune",
+  ],
+})
 
 const faqs = [
   {

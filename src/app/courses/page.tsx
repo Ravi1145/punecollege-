@@ -1,18 +1,24 @@
-"use client"
-import { useState } from "react"
-import { courses } from "@/data/courses"
-import CourseCard from "@/components/courses/CourseCard"
-import CourseFilters from "@/components/courses/CourseFilters"
+import { Metadata } from "next"
+import { generateMetadata as genMeta } from "@/lib/seo"
+import CoursesClient from "@/components/courses/CoursesClient"
+
+export const metadata: Metadata = genMeta({
+  title: "Courses in Pune 2025 — Engineering, MBA, MBBS, BCA & More",
+  description:
+    "Browse 500+ undergraduate and postgraduate courses offered by top Pune colleges. Compare fees, duration, average salary, and eligible colleges for B.Tech, MBA, MBBS, BCA, BBA and more.",
+  path: "/courses",
+  keywords: [
+    "courses in pune",
+    "engineering courses pune",
+    "mba courses pune",
+    "btech colleges pune",
+    "bca colleges pune",
+    "undergraduate courses pune",
+    "postgraduate courses pune",
+  ],
+})
 
 export default function CoursesPage() {
-  const [filters, setFilters] = useState({ streams: [] as string[], levels: [] as string[] })
-
-  const filtered = courses.filter((c) => {
-    if (filters.streams.length && !filters.streams.some((s) => c.stream.includes(s))) return false
-    if (filters.levels.length && !filters.levels.includes(c.level)) return false
-    return true
-  })
-
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
       <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] py-12">
@@ -25,15 +31,7 @@ export default function CoursesPage() {
           </p>
         </div>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <CourseFilters onFiltersChange={setFilters} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filtered.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
-      </div>
+      <CoursesClient />
     </div>
   )
 }
