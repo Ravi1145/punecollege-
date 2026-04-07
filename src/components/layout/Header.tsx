@@ -1,209 +1,533 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, GraduationCap, ChevronDown, Sparkles, PhoneCall } from "lucide-react"
+import {
+  Menu, X, GraduationCap, ChevronDown, Sparkles, PhoneCall,
+  Search, Calculator, BarChart3, BookOpen, Award, Compass,
+  Building2, Microscope, Scale, Palette, TrendingUp, Star
+} from "lucide-react"
 import { cn } from "@/lib/utils"
-import SearchBar from "@/components/ui/SearchBar"
 
-interface NavLink {
-  label: string
-  href: string
-  highlight?: boolean
-  children?: { label: string; href: string }[]
-}
-
-const navLinks: NavLink[] = [
+// ── Mega-menu data ────────────────────────────────────────────
+const streams = [
   {
-    label: "Colleges",
+    label: "Engineering",
+    href: "/colleges?stream=Engineering",
+    icon: "⚙️",
+    colleges: [
+      { name: "COEP — Govt. Engineering", href: "/colleges/coep-college-of-engineering-pune" },
+      { name: "VIT Pune", href: "/colleges/vit-pune-vishwakarma-institute-of-technology" },
+      { name: "PICT", href: "/colleges/pict-pune-institute-of-computer-technology" },
+      { name: "All Engineering Colleges →", href: "/colleges?stream=Engineering" },
+    ],
+    courses: [
+      { name: "B.Tech Computer Engineering", href: "/courses/btech-computer-engineering-pune" },
+      { name: "B.Tech Mechanical", href: "/courses/btech-mechanical-engineering-pune" },
+      { name: "All Engineering Courses →", href: "/courses" },
+    ],
+    exams: ["MHT-CET", "JEE Main", "JEE Advanced"],
+  },
+  {
+    label: "MBA",
+    href: "/colleges?stream=MBA",
+    icon: "💼",
+    colleges: [
+      { name: "SIBM Pune", href: "/colleges/sibm-pune-symbiosis-institute-business-management" },
+      { name: "MIT-SOM Pune", href: "/colleges/mit-som-pune-school-of-management" },
+      { name: "All MBA Colleges →", href: "/colleges?stream=MBA" },
+    ],
+    courses: [
+      { name: "MBA — Master of Business Administration", href: "/courses/mba-pune-master-business-administration" },
+      { name: "BBA — Bachelor of Business Administration", href: "/courses" },
+      { name: "All Management Courses →", href: "/courses" },
+    ],
+    exams: ["CAT", "SNAP", "MAT", "CMAT", "XAT"],
+  },
+  {
+    label: "Medical",
+    href: "/colleges?stream=Medical",
+    icon: "🏥",
+    colleges: [
+      { name: "BJ Medical College", href: "/colleges/bj-medical-college-pune" },
+      { name: "All Medical Colleges →", href: "/colleges?stream=Medical" },
+    ],
+    courses: [
+      { name: "MBBS", href: "/courses/mbbs-pune-bachelor-medicine-surgery" },
+      { name: "All Medical Courses →", href: "/courses" },
+    ],
+    exams: ["NEET-UG", "NEET-PG"],
+  },
+  {
+    label: "Arts & Science",
+    href: "/colleges?stream=Arts+%26+Science",
+    icon: "🎓",
+    colleges: [
+      { name: "All Arts & Science Colleges →", href: "/colleges?stream=Arts+%26+Science" },
+    ],
+    courses: [
+      { name: "BCA", href: "/courses/bca-bachelor-computer-applications-pune" },
+      { name: "B.Sc IT", href: "/courses" },
+      { name: "All Science Courses →", href: "/courses" },
+    ],
+    exams: ["MHT-CET", "CUET"],
+  },
+  {
+    label: "Law",
+    href: "/colleges?stream=Law",
+    icon: "⚖️",
+    colleges: [
+      { name: "All Law Colleges →", href: "/colleges?stream=Law" },
+    ],
+    courses: [
+      { name: "LLB — Bachelor of Laws", href: "/courses" },
+      { name: "BA LLB (5-year)", href: "/courses" },
+    ],
+    exams: ["CLAT", "LSAT", "MH-CET Law"],
+  },
+  {
+    label: "Design",
     href: "/colleges",
-    children: [
-      { label: "All Colleges in Pune", href: "/colleges" },
-      { label: "Engineering Colleges", href: "/colleges?stream=Engineering" },
-      { label: "MBA Colleges", href: "/colleges?stream=MBA" },
-      { label: "Medical Colleges", href: "/colleges?stream=Medical" },
-      { label: "Arts & Science Colleges", href: "/colleges?stream=Arts+%26+Science" },
+    icon: "🎨",
+    colleges: [
+      { name: "All Design Colleges →", href: "/colleges" },
     ],
-  },
-  {
-    label: "Courses",
-    href: "/courses",
-    children: [
-      { label: "B.Tech / BE", href: "/courses/btech-computer-engineering-pune" },
-      { label: "MBA", href: "/courses/mba-pune-master-business-administration" },
-      { label: "MBBS", href: "/courses/mbbs-pune-bachelor-medicine-surgery" },
-      { label: "BCA", href: "/courses/bca-bachelor-computer-applications-pune" },
-      { label: "All Courses", href: "/courses" },
+    courses: [
+      { name: "B.Des — Bachelor of Design", href: "/courses" },
+      { name: "B.Arch", href: "/courses" },
     ],
+    exams: ["NATA", "NID DAT", "UCEED"],
   },
-  { label: "Exams", href: "/exams" },
-  { label: "Compare", href: "/compare" },
-  { label: "Blog", href: "/blog" },
-  { label: "Free Counselling", href: "/counselling", highlight: true },
 ]
 
+const tools = [
+  { label: "College Predictor", href: "/predictor", icon: GraduationCap, desc: "Find colleges by your score", color: "text-orange-600 bg-orange-50" },
+  { label: "Compare Colleges", href: "/compare", icon: BarChart3, desc: "Side-by-side comparison", color: "text-blue-600 bg-blue-50" },
+  { label: "ROI Calculator", href: "/roi-calculator", icon: Calculator, desc: "Calculate education returns", color: "text-green-600 bg-green-50" },
+  { label: "NIRF Insights", href: "/nirf-insights", icon: Award, desc: "Official rankings & data", color: "text-purple-600 bg-purple-50" },
+  { label: "AI College Finder", href: "/ai-finder", icon: Sparkles, desc: "AI-powered matching", color: "text-pink-600 bg-pink-50" },
+  { label: "Free Counselling", href: "/counselling", icon: PhoneCall, desc: "Talk to an expert", color: "text-teal-600 bg-teal-50" },
+]
+
+const explore = [
+  { label: "Blog & Guides", href: "/blog", icon: BookOpen },
+  { label: "Entrance Exams", href: "/exams", icon: Compass },
+  { label: "All Courses", href: "/courses", icon: Star },
+  { label: "All Colleges", href: "/colleges", icon: Building2 },
+]
+
+// ── Component ─────────────────────────────────────────────────
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener("scroll", onScroll)
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
   useEffect(() => {
     setMobileOpen(false)
-    setOpenDropdown(null)
+    setActiveDropdown(null)
   }, [pathname])
 
+  useEffect(() => {
+    if (mobileOpen) document.body.style.overflow = "hidden"
+    else document.body.style.overflow = ""
+    return () => { document.body.style.overflow = "" }
+  }, [mobileOpen])
+
+  const openDropdown = (id: string) => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    setActiveDropdown(id)
+  }
+  const closeDropdown = () => {
+    timerRef.current = setTimeout(() => setActiveDropdown(null), 120)
+  }
+  const keepDropdown = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+  }
+
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-white/95 backdrop-blur-sm shadow-md border-b border-gray-100"
-          : "bg-[#0A1628]"
-      )}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className={cn("text-lg font-bold", isScrolled ? "text-[#0A1628]" : "text-white")}>
-                College<span className="text-orange-500">Pune</span>
-              </span>
-              <span className={cn("text-[10px]", isScrolled ? "text-gray-500" : "text-gray-400")}>
-                AI-Powered Discovery
-              </span>
-            </div>
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <div
-                key={link.href}
-                className="relative"
-                onMouseEnter={() => link.children && setOpenDropdown(link.label)}
-                onMouseLeave={() => setOpenDropdown(null)}
-              >
-                <Link
-                  href={link.href}
-                  className={cn(
-                    "flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                    link.highlight
-                      ? "bg-green-500 hover:bg-green-600 text-white font-semibold"
-                      : isScrolled
-                        ? "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
-                        : "text-gray-300 hover:text-white hover:bg-white/10",
-                    !link.highlight && pathname === link.href && (isScrolled ? "text-orange-600 bg-orange-50" : "text-white bg-white/10")
-                  )}
-                >
-                  {link.highlight && <PhoneCall className="w-3.5 h-3.5" />}
-                  {link.label}
-                  {link.children && <ChevronDown className="w-3 h-3" />}
-                </Link>
-                {link.children && openDropdown === link.label && (
-                  <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50">
-                    {link.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+    <>
+      <header className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-200",
+        scrolled ? "shadow-md" : ""
+      )}>
+        {/* ── Top bar ── */}
+        <div className="bg-[#0A1628]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+              <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-white" />
               </div>
-            ))}
-          </nav>
-
-          {/* Right side */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/ai-finder"
-              className="hidden md:flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-            >
-              <Sparkles className="w-4 h-4" />
-              AI Finder
+              <div className="leading-none hidden sm:block">
+                <span className="text-lg font-extrabold text-white">College<span className="text-orange-400">Pune</span></span>
+                <p className="text-[10px] text-gray-400 -mt-0.5">AI-Powered Discovery</p>
+              </div>
             </Link>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className={cn(
-                "lg:hidden p-2 rounded-lg",
-                isScrolled ? "text-gray-700 hover:bg-gray-100" : "text-white hover:bg-white/10"
-              )}
-            >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+
+            {/* Search bar — desktop */}
+            <div className="hidden md:flex flex-1 max-w-xl mx-4">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <form action="/colleges" method="get">
+                  <input
+                    name="search"
+                    type="text"
+                    placeholder="Search colleges, courses, exams..."
+                    className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 text-sm rounded-xl pl-9 pr-4 py-2 outline-none focus:bg-white/20 focus:border-white/40 transition-all"
+                  />
+                </form>
+              </div>
+            </div>
+
+            {/* Right CTAs */}
+            <div className="flex items-center gap-2">
+              <button
+                className="md:hidden text-white/70 hover:text-white p-1"
+                onClick={() => setSearchOpen(!searchOpen)}
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              <Link
+                href="/ai-finder"
+                className="hidden sm:flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="hidden lg:inline">AI Finder</span>
+              </Link>
+              <Link
+                href="/counselling"
+                className="hidden md:flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <PhoneCall className="w-4 h-4" />
+                <span className="hidden lg:inline">Free Counselling</span>
+              </Link>
+              <button
+                className="lg:hidden text-white p-1.5 rounded-lg hover:bg-white/10"
+                onClick={() => setMobileOpen(true)}
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Search bar (visible on scroll) */}
-        {isScrolled && (
-          <div className="hidden lg:block pb-3">
-            <SearchBar size="sm" className="max-w-md" />
+        {/* Mobile search bar */}
+        {searchOpen && (
+          <div className="md:hidden bg-[#0A1628] border-t border-white/10 px-4 pb-3">
+            <form action="/colleges" method="get">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  name="search"
+                  type="text"
+                  autoFocus
+                  placeholder="Search colleges, courses..."
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 text-sm rounded-xl pl-9 pr-4 py-2 outline-none"
+                />
+              </div>
+            </form>
           </div>
         )}
-      </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl">
-          <div className="px-4 py-3">
-            <SearchBar size="sm" />
-          </div>
-          <nav className="px-4 pb-4 space-y-1">
-            {navLinks.map((link) => (
-              <div key={link.href}>
-                <Link
-                  href={link.href}
-                  className={cn(
-                    "flex items-center gap-2 justify-between px-3 py-2.5 font-medium rounded-lg transition-colors",
-                    link.highlight
-                      ? "bg-green-500 text-white hover:bg-green-600"
-                      : "text-gray-800 hover:bg-orange-50 hover:text-orange-600"
-                  )}
+        {/* ── Nav bar (desktop) ── */}
+        <nav className="hidden lg:block bg-white border-b border-gray-200" ref={dropdownRef}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-0.5 h-10">
+
+              {/* Stream tabs */}
+              {streams.map((stream) => (
+                <div
+                  key={stream.label}
+                  onMouseEnter={() => openDropdown(stream.label)}
+                  onMouseLeave={closeDropdown}
+                  className="relative h-full flex items-center"
                 >
-                  <span className="flex items-center gap-2">
-                    {link.highlight && <PhoneCall className="w-4 h-4" />}
-                    {link.label}
-                  </span>
-                </Link>
-                {link.children && (
-                  <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-100 pl-3">
-                    {link.children.map((child) => (
+                  <button className={cn(
+                    "h-full px-3.5 text-sm font-medium flex items-center gap-1 transition-colors border-b-2",
+                    activeDropdown === stream.label
+                      ? "text-orange-600 border-orange-500"
+                      : "text-gray-700 hover:text-orange-600 border-transparent"
+                  )}>
+                    <span>{stream.icon}</span>
+                    {stream.label}
+                    <ChevronDown className={cn("w-3 h-3 transition-transform", activeDropdown === stream.label && "rotate-180")} />
+                  </button>
+
+                  {/* Stream mega panel */}
+                  {activeDropdown === stream.label && (
+                    <div
+                      onMouseEnter={keepDropdown}
+                      onMouseLeave={closeDropdown}
+                      className="absolute top-full left-0 mt-0 w-[560px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-5"
+                    >
+                      <div className="grid grid-cols-3 gap-6">
+                        {/* Colleges */}
+                        <div>
+                          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                            <Building2 className="w-3 h-3" /> Top Colleges
+                          </p>
+                          <ul className="space-y-1.5">
+                            {stream.colleges.map((c) => (
+                              <li key={c.href}>
+                                <Link href={c.href} className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
+                                  {c.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        {/* Courses */}
+                        <div>
+                          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                            <BookOpen className="w-3 h-3" /> Courses
+                          </p>
+                          <ul className="space-y-1.5">
+                            {stream.courses.map((c) => (
+                              <li key={c.href}>
+                                <Link href={c.href} className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
+                                  {c.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        {/* Exams */}
+                        <div>
+                          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                            <Compass className="w-3 h-3" /> Entrance Exams
+                          </p>
+                          <ul className="space-y-1.5">
+                            {stream.exams.map((e) => (
+                              <li key={e}>
+                                <Link href="/exams" className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
+                                  {e}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                          <Link href="/predictor" className="mt-3 block text-xs bg-orange-50 text-orange-700 font-semibold px-3 py-2 rounded-lg hover:bg-orange-100 transition-colors">
+                            🎯 Predict your college →
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Separator */}
+              <div className="w-px h-5 bg-gray-200 mx-1" />
+
+              {/* Tools dropdown */}
+              <div
+                onMouseEnter={() => openDropdown("tools")}
+                onMouseLeave={closeDropdown}
+                className="relative h-full flex items-center"
+              >
+                <button className={cn(
+                  "h-full px-3.5 text-sm font-medium flex items-center gap-1 transition-colors border-b-2",
+                  activeDropdown === "tools"
+                    ? "text-orange-600 border-orange-500"
+                    : "text-gray-700 hover:text-orange-600 border-transparent"
+                )}>
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  Tools
+                  <ChevronDown className={cn("w-3 h-3 transition-transform", activeDropdown === "tools" && "rotate-180")} />
+                </button>
+                {activeDropdown === "tools" && (
+                  <div
+                    onMouseEnter={keepDropdown}
+                    onMouseLeave={closeDropdown}
+                    className="absolute top-full left-0 mt-0 w-[440px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-4"
+                  >
+                    <div className="grid grid-cols-2 gap-2">
+                      {tools.map((t) => (
+                        <Link
+                          key={t.href}
+                          href={t.href}
+                          className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group"
+                        >
+                          <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0", t.color)}>
+                            <t.icon className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">{t.label}</p>
+                            <p className="text-xs text-gray-400">{t.desc}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Explore dropdown */}
+              <div
+                onMouseEnter={() => openDropdown("explore")}
+                onMouseLeave={closeDropdown}
+                className="relative h-full flex items-center"
+              >
+                <button className={cn(
+                  "h-full px-3.5 text-sm font-medium flex items-center gap-1 transition-colors border-b-2",
+                  activeDropdown === "explore"
+                    ? "text-orange-600 border-orange-500"
+                    : "text-gray-700 hover:text-orange-600 border-transparent"
+                )}>
+                  <Compass className="w-3.5 h-3.5" />
+                  Explore
+                  <ChevronDown className={cn("w-3 h-3 transition-transform", activeDropdown === "explore" && "rotate-180")} />
+                </button>
+                {activeDropdown === "explore" && (
+                  <div
+                    onMouseEnter={keepDropdown}
+                    onMouseLeave={closeDropdown}
+                    className="absolute top-full left-0 mt-0 w-52 bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 py-2"
+                  >
+                    {explore.map((e) => (
                       <Link
-                        key={child.href}
-                        href={child.href}
-                        className="block py-2 text-sm text-gray-600 hover:text-orange-600 transition-colors"
+                        key={e.href}
+                        href={e.href}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                       >
-                        {child.label}
+                        <e.icon className="w-4 h-4 text-gray-400" />
+                        {e.label}
                       </Link>
                     ))}
                   </div>
                 )}
               </div>
-            ))}
-            <Link
-              href="/ai-finder"
-              className="flex items-center justify-center gap-2 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl mt-3 transition-colors"
-            >
-              <Sparkles className="w-4 h-4" />
-              Try AI College Finder
-            </Link>
-          </nav>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      {/* ── Mobile slide-over ───────────────────────────────────── */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-[200] lg:hidden">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
+          <div className="absolute top-0 left-0 h-full w-[320px] max-w-full bg-white flex flex-col shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 bg-[#0A1628]">
+              <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-extrabold text-white text-lg">College<span className="text-orange-400">Pune</span></span>
+              </Link>
+              <button onClick={() => setMobileOpen(false)} className="text-white/70 hover:text-white p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="p-3 bg-gray-50 border-b">
+              <form action="/colleges" method="get">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input name="search" type="text" placeholder="Search colleges, courses..." className="w-full bg-white border border-gray-200 text-sm rounded-lg pl-9 pr-3 py-2 outline-none" />
+                </div>
+              </form>
+            </div>
+
+            {/* Nav items — scrollable */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Stream accordion */}
+              {streams.map((stream) => (
+                <div key={stream.label} className="border-b border-gray-100">
+                  <button
+                    onClick={() => setMobileExpanded(mobileExpanded === stream.label ? null : stream.label)}
+                    className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+                  >
+                    <span className="flex items-center gap-2">{stream.icon} {stream.label}</span>
+                    <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", mobileExpanded === stream.label && "rotate-180")} />
+                  </button>
+                  {mobileExpanded === stream.label && (
+                    <div className="bg-gray-50 px-4 pb-3 space-y-3">
+                      <div>
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Colleges</p>
+                        {stream.colleges.map((c) => (
+                          <Link key={c.href} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
+                            {c.name}
+                          </Link>
+                        ))}
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Courses</p>
+                        {stream.courses.map((c) => (
+                          <Link key={c.name} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
+                            {c.name}
+                          </Link>
+                        ))}
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Exams</p>
+                        {stream.exams.map((e) => (
+                          <Link key={e} href="/exams" onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
+                            {e}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Tools section */}
+              <div className="border-b border-gray-100">
+                <button
+                  onClick={() => setMobileExpanded(mobileExpanded === "tools" ? null : "tools")}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50"
+                >
+                  <span className="flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Tools</span>
+                  <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", mobileExpanded === "tools" && "rotate-180")} />
+                </button>
+                {mobileExpanded === "tools" && (
+                  <div className="bg-gray-50 px-4 pb-3">
+                    {tools.map((t) => (
+                      <Link key={t.href} href={t.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 py-2 text-sm text-gray-700 hover:text-orange-600">
+                        <t.icon className="w-4 h-4 text-gray-400" />
+                        {t.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Explore */}
+              <div>
+                {explore.map((e) => (
+                  <Link key={e.href} href={e.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 border-b border-gray-100">
+                    <e.icon className="w-4 h-4 text-gray-400" />
+                    {e.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom CTAs */}
+            <div className="p-3 border-t bg-gray-50 grid grid-cols-2 gap-2">
+              <Link href="/ai-finder" onClick={() => setMobileOpen(false)} className="flex items-center justify-center gap-1.5 bg-orange-500 text-white text-sm font-bold py-2.5 rounded-xl">
+                <Sparkles className="w-4 h-4" /> AI Finder
+              </Link>
+              <Link href="/counselling" onClick={() => setMobileOpen(false)} className="flex items-center justify-center gap-1.5 bg-green-500 text-white text-sm font-bold py-2.5 rounded-xl">
+                <PhoneCall className="w-4 h-4" /> Counselling
+              </Link>
+            </div>
+          </div>
         </div>
       )}
-    </header>
+    </>
   )
 }

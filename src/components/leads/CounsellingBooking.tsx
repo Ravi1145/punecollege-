@@ -71,15 +71,15 @@ export default function CounsellingBooking() {
   }
 
   return (
-    <section className="bg-gradient-to-br from-[#0A1628] via-[#1a2d50] to-[#c2410c] py-16 px-4">
+    <section className="bg-gradient-to-br from-[#0A1628] via-[#1a2d50] to-[#c2410c] py-10 sm:py-16 px-4">
       <div className="max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-10 items-center">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
           {/* Left: Text */}
           <div className="text-white">
             <span className="inline-block bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wide">
               100% FREE
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold leading-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-tight mb-4">
               Book a Free 15-Min Expert Counselling Session
             </h2>
             <p className="text-blue-100 text-base mb-6">

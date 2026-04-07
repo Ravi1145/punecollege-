@@ -19,7 +19,7 @@ export default function ExamCalendar() {
               <Calendar className="w-4 h-4" />
               Upcoming Exams
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Entrance Exam Calendar 2025
             </h2>
             <p className="text-gray-500 mt-1">Key dates for engineering, MBA, and medical entrance exams</p>
@@ -33,40 +33,40 @@ export default function ExamCalendar() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Exam</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:table-cell">Level</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Application Date</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Exam Date</th>
-                <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">For</th>
-                <th className="px-5 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">Link</th>
+                <th className="px-3 sm:px-5 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Exam</th>
+                <th className="px-3 sm:px-5 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:table-cell">Level</th>
+                <th className="px-3 sm:px-5 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Application Date</th>
+                <th className="px-3 sm:px-5 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Exam Date</th>
+                <th className="px-3 sm:px-5 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">For</th>
+                <th className="px-3 sm:px-5 py-3 sm:py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">Link</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {exams.slice(0, 8).map((exam) => (
                 <tr key={exam.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-5 py-4">
+                  <td className="px-3 sm:px-5 py-3">
                     <p className="font-bold text-gray-900 text-sm">{exam.name}</p>
                     <p className="text-xs text-gray-500 hidden sm:block">{exam.conductedBy.split(" ").slice(0, 3).join(" ")}</p>
                   </td>
-                  <td className="px-5 py-4 hidden sm:table-cell">
+                  <td className="px-3 sm:px-5 py-3 hidden sm:table-cell">
                     <span className={cn("text-xs font-medium px-2.5 py-1 rounded-full", levelColors[exam.level])}>
                       {exam.level}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-sm text-gray-600 hidden md:table-cell">
+                  <td className="px-3 sm:px-5 py-3 text-sm text-gray-600 hidden md:table-cell">
                     {exam.applicationDate}
                   </td>
-                  <td className="px-5 py-4">
+                  <td className="px-3 sm:px-5 py-3">
                     <span className="text-sm font-semibold text-gray-900">{exam.examDate}</span>
                   </td>
-                  <td className="px-5 py-4 hidden lg:table-cell">
+                  <td className="px-3 sm:px-5 py-3 hidden lg:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {exam.streams.slice(0, 2).map((s) => (
                         <span key={s} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{s}</span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-center">
+                  <td className="px-3 sm:px-5 py-3 text-center">
                     <a
                       href={exam.website}
                       target="_blank"

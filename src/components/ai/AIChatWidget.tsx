@@ -123,8 +123,8 @@ export default function AIChatWidget() {
       {isOpen && (
         <div
           className={cn(
-            "fixed bottom-20 right-4 sm:right-6 z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col transition-all duration-200",
-            isMinimized ? "w-72 h-14" : "w-80 sm:w-96 h-[520px]"
+            "fixed bottom-20 right-2 sm:right-4 lg:right-6 z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col transition-all duration-200",
+            isMinimized ? "w-72 h-14" : "w-[calc(100vw-1rem)] sm:w-80 md:w-96 max-h-[70vh] sm:max-h-[520px] h-[70vh] sm:h-[520px]"
           )}
         >
           {/* Header */}

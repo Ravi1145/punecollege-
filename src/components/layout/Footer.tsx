@@ -53,10 +53,10 @@ export default function Footer() {
   return (
     <footer className="bg-[#0A1628] text-gray-300">
       {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-6 sm:gap-10">
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2 sm:col-span-2 lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-white" />
@@ -71,15 +71,15 @@ export default function Footer() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2 text-gray-400">
                 <MapPin className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                Pune, Maharashtra, India
+                Undri, Pune, Maharashtra 411060
               </div>
               <div className="flex items-center gap-2 text-gray-400">
                 <Mail className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                info@collegepune.in
+                <a href="mailto:Support@collegepune.com" className="hover:text-orange-400 transition-colors">Support@collegepune.com</a>
               </div>
               <div className="flex items-center gap-2 text-gray-400">
                 <Phone className="w-4 h-4 text-orange-400 flex-shrink-0" />
-                +91 (020) 1234-5678
+                <a href="tel:+917753831118" className="hover:text-orange-400 transition-colors">+91 77538 31118</a>
               </div>
             </div>
             <div className="flex items-center gap-3 mt-5">

@@ -41,14 +41,14 @@ export default function CollegeProfile({ college }: CollegeProfileProps) {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           {/* Hero Card */}
-          <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] rounded-2xl p-7 text-white">
+          <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] rounded-2xl p-4 sm:p-6 lg:p-7 text-white">
             <div className="flex items-start justify-between gap-4 mb-5">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-xl flex items-center justify-center text-white font-bold text-base sm:text-lg flex-shrink-0">
                   {college.shortName.slice(0, 3)}
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold mb-1">{college.name}</h1>
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-2xl font-bold mb-1 leading-tight">{college.name}</h1>
                   <div className="flex items-center gap-2 text-gray-300">
                     <MapPin className="w-4 h-4" />
                     <span className="text-sm">{college.address}</span>
@@ -76,7 +76,7 @@ export default function CollegeProfile({ college }: CollegeProfileProps) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
               {[
                 { label: "Established", value: college.established.toString(), icon: Calendar },
                 { label: "Annual Fees", value: formatFeesRange(college.feesRange.min, college.feesRange.max), icon: TrendingUp },
@@ -231,7 +231,7 @@ export default function CollegeProfile({ college }: CollegeProfileProps) {
         {/* Sidebar */}
         <div className="space-y-5 lg:col-span-1">
           {/* Quick Info */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-20">
+          <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 lg:sticky lg:top-28">
             <h3 className="font-bold text-gray-900 mb-4">Quick Info</h3>
             <div className="space-y-3">
               {[

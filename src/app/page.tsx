@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import Script from "next/script"
+import Link from "next/link"
 import HeroSection from "@/components/home/HeroSection"
 import StatsCounter from "@/components/home/StatsCounter"
 import FeaturedColleges from "@/components/home/FeaturedColleges"
@@ -65,6 +66,33 @@ export default function HomePage() {
           </div>
         </section>
         <ExamCalendar />
+
+        {/* Tools Hub */}
+        <section className="py-14 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Free Tools for Smarter College Decisions</h2>
+              <p className="text-gray-500 mt-2 text-sm">Everything you need to plan your college journey — all free, all in one place.</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {[
+                { href: "/predictor", icon: "🎯", label: "College Predictor", desc: "Find your best-fit colleges by exam score", bg: "bg-orange-50 hover:bg-orange-100 border-orange-100" },
+                { href: "/compare", icon: "⚖️", label: "Compare Colleges", desc: "Side-by-side fees & placement comparison", bg: "bg-blue-50 hover:bg-blue-100 border-blue-100" },
+                { href: "/roi-calculator", icon: "📈", label: "ROI Calculator", desc: "Is your degree worth the investment?", bg: "bg-green-50 hover:bg-green-100 border-green-100" },
+                { href: "/nirf-insights", icon: "🏆", label: "NIRF Insights", desc: "Rankings & NAAC grades for Pune colleges", bg: "bg-purple-50 hover:bg-purple-100 border-purple-100" },
+                { href: "/ai-finder", icon: "🤖", label: "AI College Finder", desc: "Chat with AI to find your ideal college", bg: "bg-pink-50 hover:bg-pink-100 border-pink-100" },
+                { href: "/counselling", icon: "📞", label: "Free Counselling", desc: "Talk to an expert — free 15-min session", bg: "bg-teal-50 hover:bg-teal-100 border-teal-100" },
+              ].map(({ href, icon, label, desc, bg }) => (
+                <Link key={href} href={href} className={`flex flex-col items-center text-center p-4 rounded-2xl border transition-colors ${bg}`}>
+                  <span className="text-3xl mb-2">{icon}</span>
+                  <p className="text-xs font-bold text-gray-900 mb-1">{label}</p>
+                  <p className="text-[11px] text-gray-500 hidden sm:block">{desc}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <FAQSection />
         <BlogPreview />
       </main>

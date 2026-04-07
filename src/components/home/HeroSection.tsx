@@ -40,7 +40,7 @@ export default function HeroSection() {
           </div>
 
           {/* H1 */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5">
             Find the Best Colleges in Pune
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
@@ -75,17 +75,17 @@ export default function HeroSection() {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-wrap justify-center gap-4 mb-14">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-14">
             <Link
               href="/ai-finder"
-              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-7 py-4 rounded-2xl text-base transition-all hover:scale-105 shadow-lg shadow-orange-500/30"
+              className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-7 py-4 rounded-2xl text-base transition-all hover:scale-105 shadow-lg shadow-orange-500/30 w-full sm:w-auto"
             >
               <Sparkles className="w-5 h-5" />
               Try AI College Finder
             </Link>
             <Link
               href="/colleges"
-              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-7 py-4 rounded-2xl text-base transition-all"
+              className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-7 py-4 rounded-2xl text-base transition-all w-full sm:w-auto"
             >
               <BookOpen className="w-5 h-5" />
               Browse 25+ Colleges
@@ -93,7 +93,7 @@ export default function HeroSection() {
           </div>
 
           {/* Animated Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto mb-10">
             {[
               { value: "25+", label: "Verified Colleges" },
               { value: "500+", label: "Courses Listed" },

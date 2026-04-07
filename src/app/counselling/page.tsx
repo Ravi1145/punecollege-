@@ -52,8 +52,8 @@ export default function CounsellingPage() {
           <span className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wide">
             100% Free — No Hidden Charges
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
-            Get Free Expert Counselling for<br />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+            Get Free Expert Counselling for{" "}
             <span className="text-orange-400">Pune College Admissions 2025</span>
           </h1>
           <p className="text-blue-200 text-base max-w-2xl mx-auto mb-6">
@@ -142,7 +142,7 @@ export default function CounsellingPage() {
           <p className="font-bold text-lg mb-2">Prefer WhatsApp?</p>
           <p className="text-blue-200 text-sm mb-4">Message us directly and our counsellor will reply within 30 minutes.</p>
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919876543210"}?text=${encodeURIComponent("Hi! I need free counselling for Pune college admissions.")}`}
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "917753831118"}?text=${encodeURIComponent("Hi! I need free counselling for Pune college admissions.")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"

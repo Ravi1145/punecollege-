@@ -62,13 +62,13 @@ export default function FAQSection() {
               value={`item-${i}`}
               className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
             >
-              <Accordion.Trigger className="flex items-center justify-between w-full px-6 py-5 text-left group">
-                <span className="text-base font-semibold text-gray-900 pr-4 group-data-[state=open]:text-orange-600 transition-colors">
+              <Accordion.Trigger className="flex items-center justify-between w-full px-4 sm:px-6 py-4 sm:py-5 text-left group">
+                <span className="text-sm sm:text-base font-semibold text-gray-900 pr-4 group-data-[state=open]:text-orange-600 transition-colors">
                   {faq.q}
                 </span>
                 <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform group-data-[state=open]:rotate-180 group-data-[state=open]:text-orange-500" />
               </Accordion.Trigger>
-              <Accordion.Content className="px-6 pb-5">
+              <Accordion.Content className="px-4 sm:px-6 pb-4 sm:pb-5">
                 <p className="text-gray-600 leading-relaxed text-sm">{faq.a}</p>
               </Accordion.Content>
             </Accordion.Item>

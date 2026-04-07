@@ -20,18 +20,18 @@ function RankTable({ colleges, title }: { colleges: ReturnType<typeof getTopEngi
         <table className="w-full">
           <thead className="bg-[#0A1628] text-white text-sm">
             <tr>
-              <th className="px-4 py-3 text-left w-12">Rank</th>
-              <th className="px-4 py-3 text-left">College</th>
-              <th className="px-4 py-3 text-center hidden sm:table-cell">NAAC</th>
-              <th className="px-4 py-3 text-right hidden md:table-cell">Annual Fees</th>
-              <th className="px-4 py-3 text-right hidden lg:table-cell">Avg Package</th>
-              <th className="px-4 py-3 text-center w-24">Action</th>
+              <th className="px-2 sm:px-4 py-3 text-left w-10 sm:w-12">Rank</th>
+              <th className="px-2 sm:px-4 py-3 text-left">College</th>
+              <th className="px-2 sm:px-4 py-3 text-center hidden sm:table-cell">NAAC</th>
+              <th className="px-2 sm:px-4 py-3 text-right hidden md:table-cell">Annual Fees</th>
+              <th className="px-2 sm:px-4 py-3 text-right hidden lg:table-cell">Avg Package</th>
+              <th className="px-2 sm:px-4 py-3 text-center w-20 sm:w-24">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {colleges.slice(0, 10).map((college, i) => (
               <tr key={college.id} className="bg-white hover:bg-orange-50/30 transition-colors group">
-                <td className="px-4 py-3.5">
+                <td className="px-2 sm:px-4 py-3">
                   <div className={cn(
                     "w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold",
                     i === 0 ? "bg-yellow-100 text-yellow-700" :
@@ -42,7 +42,7 @@ function RankTable({ colleges, title }: { colleges: ReturnType<typeof getTopEngi
                     {i + 1}
                   </div>
                 </td>
-                <td className="px-4 py-3.5">
+                <td className="px-2 sm:px-4 py-3">
                   <Link href={`/colleges/${college.slug}`} className="group-hover:text-orange-600 transition-colors">
                     <p className="font-semibold text-gray-900 text-sm">{college.name}</p>
                     <p className="text-xs text-gray-500 mt-0.5">{college.location}</p>
@@ -66,7 +66,7 @@ function RankTable({ colleges, title }: { colleges: ReturnType<typeof getTopEngi
                 <td className="px-4 py-3.5 text-center">
                   <Link
                     href={`/colleges/${college.slug}`}
-                    className="inline-flex items-center gap-1 text-xs bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1 text-xs bg-orange-500 hover:bg-orange-600 text-white px-2 sm:px-3 py-2 rounded-lg transition-colors min-h-[36px]"
                   >
                     View <ExternalLink className="w-3 h-3" />
                   </Link>
@@ -93,13 +93,13 @@ export default function RankingTables() {
             <Trophy className="w-5 h-5 text-orange-600" />
           </div>
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Pune College Rankings 2025</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Pune College Rankings 2025</h2>
             <p className="text-gray-500 text-sm mt-0.5">Based on NAAC grade, NIRF rank, placements & student reviews</p>
           </div>
         </div>
 
         <Tabs.Root defaultValue="engineering">
-          <Tabs.List className="flex gap-1 bg-gray-100 p-1 rounded-2xl mb-8 w-fit">
+          <Tabs.List className="flex gap-1 bg-gray-100 p-1 rounded-2xl mb-8 w-full sm:w-fit overflow-x-auto">
             {tabs.map((tab) => (
               <Tabs.Trigger
                 key={tab.id}

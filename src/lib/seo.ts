@@ -81,6 +81,16 @@ export function generateOrganizationSchema() {
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
     description: "India's leading AI-powered college discovery portal for Pune. Find the best engineering, MBA, and medical colleges in Pune with fees, placements, and rankings.",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Undri",
+      addressLocality: "Pune",
+      addressRegion: "Maharashtra",
+      postalCode: "411060",
+      addressCountry: "IN",
+    },
+    telephone: "+917753831118",
+    email: "Support@collegepune.com",
     sameAs: [
       "https://twitter.com/collegepune",
       "https://www.facebook.com/collegepune",
@@ -88,6 +98,8 @@ export function generateOrganizationSchema() {
     ],
     contactPoint: {
       "@type": "ContactPoint",
+      telephone: "+917753831118",
+      email: "Support@collegepune.com",
       contactType: "customer support",
       areaServed: "IN",
       availableLanguage: ["English", "Hindi", "Marathi"],
