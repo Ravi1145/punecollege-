@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     ]
 
     const stream = await anthropic.messages.stream({
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-haiku-4-5-20261001",
       max_tokens: 1024,
       system: COUNSELOR_SYSTEM_PROMPT,
       messages: apiMessages,

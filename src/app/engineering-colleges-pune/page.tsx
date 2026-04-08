@@ -5,13 +5,13 @@ import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchem
 import { CheckCircle, TrendingUp, Award, MapPin, ExternalLink, BookOpen, Users } from "lucide-react"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Engineering Colleges in Pune 2025 | Fees, Rankings & Placements",
-  description: "List of top 12 engineering colleges in Pune 2025 with NIRF ranks, NAAC grades, annual fees (₹80K–₹4.8L), and average placements (₹5–12 LPA). Compare COEP, PICT, VIT Pune, SIT Pune & more.",
+  title: "Best Engineering Colleges in Pune 2026 | Fees, Rankings & Placements",
+  description: "List of top 12 engineering colleges in Pune 2026 with NIRF ranks, NAAC grades, annual fees (₹80K–₹4.8L), and average placements (₹5–12 LPA). Compare COEP, PICT, VIT Pune, SIT Pune & more.",
   path: "/engineering-colleges-pune",
   keywords: [
     "engineering colleges in pune",
     "best engineering college in pune",
-    "top btech colleges pune 2025",
+    "top btech colleges pune 2026",
     "engineering college pune fees",
     "COEP pune admission",
     "PICT pune",
@@ -62,14 +62,14 @@ export default function EngineeringCollegesPunePage() {
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Best Engineering Colleges in Pune 2025",
+    name: "Best Engineering Colleges in Pune 2026",
     description: "List of top 12 engineering colleges in Pune ranked by NIRF, NAAC grade, fees, and placements",
     numberOfItems: colleges.length,
     itemListElement: colleges.map((c, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: c.name,
-      url: `https://collegepune.in/colleges/${c.slug}`,
+      url: `https://collegepune.com/colleges/${c.slug}`,
     })),
   }
 
@@ -92,7 +92,7 @@ export default function EngineeringCollegesPunePage() {
               <span className="text-white">Engineering Colleges in Pune</span>
             </nav>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
-              Best Engineering Colleges in Pune 2025
+              Best Engineering Colleges in Pune 2026
             </h1>
             <p className="text-blue-200 text-base max-w-3xl mb-6">
               Complete list of top 12 engineering colleges in Pune ranked by NIRF, NAAC grade, fees, and placements. Includes government, autonomous, and deemed university options for B.Tech, M.Tech admission.
@@ -127,8 +127,8 @@ export default function EngineeringCollegesPunePage() {
           {/* Comparison Table */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
             <div className="px-5 py-4 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">Engineering College Rankings & Comparison 2025</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Ranked by NIRF rank, NAAC grade, placements & fees. Data verified 2025.</p>
+              <h2 className="text-lg font-bold text-gray-900">Engineering College Rankings & Comparison 2026</h2>
+              <p className="text-xs text-gray-400 mt-0.5">Ranked by NIRF rank, NAAC grade, placements & fees. Data verified 2026.</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">

@@ -9,7 +9,7 @@ import { formatFeesRange, formatCurrency } from "@/lib/utils"
 import { Clock, TrendingUp, BookOpen, ChevronRight, GraduationCap, Briefcase } from "lucide-react"
 import CollegeCard from "@/components/colleges/CollegeCard"
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.in"
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
 interface Props {
   params: Promise<{ slug: string }>

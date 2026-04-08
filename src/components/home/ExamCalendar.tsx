@@ -20,7 +20,7 @@ export default function ExamCalendar() {
               Upcoming Exams
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Entrance Exam Calendar 2025
+              Entrance Exam Calendar 2026
             </h2>
             <p className="text-gray-500 mt-1">Key dates for engineering, MBA, and medical entrance exams</p>
           </div>

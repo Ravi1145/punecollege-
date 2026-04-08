@@ -36,20 +36,20 @@ export default function HeroSection() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 text-orange-300 text-sm font-medium px-4 py-2 rounded-full mb-6 animate-pulse-slow">
             <Sparkles className="w-4 h-4" />
-            India&apos;s First AI-Powered Pune College Portal
+            India&apos;s #1 AI-Powered Pune College Portal 2026
           </div>
 
           {/* H1 */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5">
-            Find the Best Colleges in Pune
+            Best Colleges in Pune 2026
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-              — AI-Powered Discovery
+              Rankings, Fees &amp; Placements
             </span>
           </h1>
 
           <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Compare 500+ courses, real fees, placement stats and student reviews for top engineering, MBA, medical and arts colleges in Pune. Let our AI find your perfect match.
+            Compare COEP (NIRF #49), SIBM (NIRF #13), AFMC (NIRF #4) and 25+ Pune colleges by fees (₹15K–25L/yr), placements (₹12–65 LPA) &amp; NAAC grade. Free AI counselor for 2026 admissions.
           </p>
 
           {/* Search Bar */}

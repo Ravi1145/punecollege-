@@ -7,9 +7,9 @@ import { formatCurrency, formatFeesRange, getNaacColor, cn } from "@/lib/utils"
 import * as Tabs from "@radix-ui/react-tabs"
 
 const tabs = [
-  { id: "engineering", label: "🏗️ Top BTech Colleges", title: "Top 10 BTech Colleges in Pune 2025" },
-  { id: "mba", label: "💼 Top MBA Colleges", title: "Top 10 MBA Colleges in Pune 2025" },
-  { id: "medical", label: "🏥 Top Medical Colleges", title: "Top Medical Colleges in Pune 2025" },
+  { id: "engineering", label: "🏗️ Top BTech Colleges", title: "Top 10 BTech Colleges in Pune 2026" },
+  { id: "mba", label: "💼 Top MBA Colleges", title: "Top 10 MBA Colleges in Pune 2026" },
+  { id: "medical", label: "🏥 Top Medical Colleges", title: "Top Medical Colleges in Pune 2026" },
 ]
 
 function RankTable({ colleges, title }: { colleges: ReturnType<typeof getTopEngineeringColleges>; title: string }) {
@@ -93,7 +93,7 @@ export default function RankingTables() {
             <Trophy className="w-5 h-5 text-orange-600" />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Pune College Rankings 2025</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Pune College Rankings 2026</h2>
             <p className="text-gray-500 text-sm mt-0.5">Based on NAAC grade, NIRF rank, placements & student reviews</p>
           </div>
         </div>
@@ -112,13 +112,13 @@ export default function RankingTables() {
           </Tabs.List>
 
           <Tabs.Content value="engineering">
-            <RankTable colleges={engineering} title="Top 10 B.Tech Engineering Colleges in Pune 2025" />
+            <RankTable colleges={engineering} title="Top 10 B.Tech Engineering Colleges in Pune 2026" />
           </Tabs.Content>
           <Tabs.Content value="mba">
-            <RankTable colleges={mba} title="Top 10 MBA Colleges in Pune 2025" />
+            <RankTable colleges={mba} title="Top 10 MBA Colleges in Pune 2026" />
           </Tabs.Content>
           <Tabs.Content value="medical">
-            <RankTable colleges={medical} title="Top Medical Colleges in Pune 2025 (NEET)" />
+            <RankTable colleges={medical} title="Top Medical Colleges in Pune 2026 (NEET)" />
           </Tabs.Content>
         </Tabs.Root>
       </div>

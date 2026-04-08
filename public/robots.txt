@@ -80,4 +80,4 @@ Disallow: /_next/
 Disallow: /admin/
 
 # ── Sitemap ───────────────────────────────────────────────────
-Sitemap: https://collegepune.in/sitemap.xml
+Sitemap: https://collegepune.com/sitemap.xml

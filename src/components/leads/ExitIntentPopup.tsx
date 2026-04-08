@@ -107,7 +107,7 @@ export default function ExitIntentPopup() {
             </div>
             <h3 className="text-xl font-bold text-gray-900 text-center mb-1">Wait! Before you go…</h3>
             <p className="text-sm text-gray-500 text-center mb-4">
-              Get our <strong className="text-orange-600">FREE Pune Colleges Guide 2025</strong> on WhatsApp — fees, cutoffs & placement data.
+              Get our <strong className="text-orange-600">FREE Pune Colleges Guide 2026</strong> on WhatsApp — fees, cutoffs & placement data.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-3">

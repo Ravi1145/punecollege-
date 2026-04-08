@@ -8,11 +8,11 @@ export const exams: Exam[] = [
     conductedBy: "State Common Entrance Test Cell, Maharashtra",
     level: "State",
     streams: ["Engineering", "Pharmacy"],
-    applicationDate: "Jan 15 – Feb 28, 2025",
-    examDate: "Apr 19 – May 13, 2025",
-    resultDate: "June 2025",
+    applicationDate: "Jan 15 – Feb 28, 2026",
+    examDate: "Apr 20 – May 15, 2026",
+    resultDate: "June 2026",
     website: "https://cetcell.mahacet.org",
-    description: "Maharashtra's state-level engineering entrance exam for admission to B.Tech/BE courses in Maharashtra colleges including Pune. Scores accepted by all SPPU-affiliated colleges.",
+    description: "Maharashtra's state-level engineering entrance exam for admission to B.Tech/BE courses in Pune colleges. MHT-CET 2026 tests PCM at Class 11–12 level. Scores accepted by all SPPU-affiliated colleges including COEP (95+ percentile), PICT (92+), and VIT Pune (88+). Over 4 lakh students appear each year.",
     eligibility: "Class 12 with PCM, min. 50% marks (45% for reserved categories)"
   },
   {
@@ -22,11 +22,11 @@ export const exams: Exam[] = [
     conductedBy: "National Testing Agency (NTA)",
     level: "National",
     streams: ["Engineering"],
-    applicationDate: "Nov 1 – Nov 30, 2024 (Session 1)",
-    examDate: "Jan 22 – Feb 1, 2025 (Session 1)",
-    resultDate: "Feb 2025",
+    applicationDate: "Nov 1 – Nov 30, 2025 (Session 1)",
+    examDate: "Jan 20 – Feb 5, 2026 (Session 1)",
+    resultDate: "Feb 2026",
     website: "https://jeemain.nta.nic.in",
-    description: "National level engineering entrance exam for admission to NITs, IIITs, CFTIs, and top private engineering colleges. Also accepted by COEP, SIT, and other top Pune engineering colleges.",
+    description: "National level engineering entrance exam for NITs, IIITs, and top private colleges. JEE Main 2026 scores are accepted by COEP, SIT Pune, MIT-WPU, and VIT Pune. Two sessions (Jan & April 2026) allow students to improve scores. COEP requires 97+ percentile for CSE branch.",
     eligibility: "Class 12 with PCM, min. 75% marks (65% for SC/ST)"
   },
   {
@@ -36,11 +36,11 @@ export const exams: Exam[] = [
     conductedBy: "IITs (rotating)",
     level: "National",
     streams: ["Engineering"],
-    applicationDate: "April 23 – May 2, 2025",
-    examDate: "May 18, 2025",
-    resultDate: "June 2025",
+    applicationDate: "April 25 – May 4, 2026",
+    examDate: "May 17, 2026",
+    resultDate: "June 2026",
     website: "https://jeeadv.ac.in",
-    description: "Qualifying exam for admission to IITs. Also used by COEP (Govt.) and top autonomous institutes in Pune for merit-based admissions and scholarships.",
+    description: "Qualifying exam for IIT admission. Also used by COEP Pune and top autonomous institutes in Pune for merit-based admissions and scholarships. Only top 2.5 lakh JEE Main qualifiers can appear.",
     eligibility: "JEE Main qualified (top 2.5 lakh ranks). Class 12 with 75% minimum."
   },
   {
@@ -50,11 +50,11 @@ export const exams: Exam[] = [
     conductedBy: "National Testing Agency (NTA)",
     level: "National",
     streams: ["Medical", "Dental"],
-    applicationDate: "Feb 7 – Mar 8, 2025",
-    examDate: "May 4, 2025",
-    resultDate: "June 2025",
+    applicationDate: "Feb 10 – Mar 10, 2026",
+    examDate: "May 3, 2026",
+    resultDate: "June 2026",
     website: "https://neet.nta.nic.in",
-    description: "Mandatory national entrance exam for MBBS and BDS admission to all medical and dental colleges including AFMC, BJMC, DY Patil Medical College, and Bharati Vidyapeeth Medical College in Pune.",
+    description: "Mandatory national entrance exam for MBBS and BDS admission. NEET 2026 is required for admission to AFMC (650+ score), BJ Medical College Pune (620+ for open category), D.Y. Patil Medical College, and Bharati Vidyapeeth Medical College in Pune. Over 20 lakh students appear nationwide.",
     eligibility: "Class 12 with PCB, min. 50% marks (40% for SC/ST/OBC)"
   },
   {
@@ -64,11 +64,11 @@ export const exams: Exam[] = [
     conductedBy: "IIMs (rotating)",
     level: "National",
     streams: ["MBA", "Management"],
-    applicationDate: "Aug 1 – Sep 15, 2025",
-    examDate: "Nov 24, 2025",
-    resultDate: "Jan 2026",
+    applicationDate: "Aug 1 – Sep 15, 2026",
+    examDate: "Nov 23, 2026",
+    resultDate: "Jan 2027",
     website: "https://iimcat.ac.in",
-    description: "India's premier MBA entrance exam. Accepted by SIBM Pune, and many top management institutes in Pune alongside their own entrance exams. High CAT percentile can unlock scholarship at top B-schools.",
+    description: "India's premier MBA entrance exam. CAT 2026 is accepted by SIBM Pune (60+ percentile required), and many top management institutes in Pune. High CAT percentile (85+) can unlock scholarships. Over 3 lakh students appear annually.",
     eligibility: "Bachelor's degree with min. 50% marks (45% for SC/ST)"
   },
   {
@@ -78,11 +78,11 @@ export const exams: Exam[] = [
     conductedBy: "Symbiosis International University",
     level: "University",
     streams: ["MBA"],
-    applicationDate: "Aug 1 – Nov 22, 2025",
-    examDate: "Dec 7, 14, 21, 2025",
-    resultDate: "Jan 2026",
+    applicationDate: "Aug 1 – Nov 22, 2026",
+    examDate: "Dec 6, 13, 20, 2026",
+    resultDate: "Jan 2027",
     website: "https://www.snaptest.org",
-    description: "Symbiosis University's MBA entrance test, mandatory for admission to SIBM Pune, SIT Pune (MBA), and all other Symbiosis B-schools. High SNAP score is key to securing admission at SIBM.",
+    description: "Symbiosis University's MBA entrance test — mandatory for SIBM Pune, SIT Pune (MBA), SCMHRD, and all Symbiosis B-schools. SNAP 2026 is conducted 3 times; best score counts. SIBM Pune requires 60+ percentile. Average SIBM package ₹28 LPA.",
     eligibility: "Bachelor's degree with min. 50% marks"
   },
   {
@@ -93,10 +93,10 @@ export const exams: Exam[] = [
     level: "National",
     streams: ["MBA"],
     applicationDate: "Ongoing (4 sessions per year)",
-    examDate: "Feb, May, Sep, Dec 2025",
+    examDate: "Feb, May, Sep, Dec 2026",
     resultDate: "15 days after exam",
     website: "https://www.aima.in/mat",
-    description: "Popular MBA entrance exam accepted by many Pune management colleges including MIT-SOM, BIMM, IIMM, and Suryadatta. Available in paper-based, computer-based, and internet-based modes.",
+    description: "Popular MBA entrance exam accepted by MIT-SOM, BIMM, IIMM, Indira Institute, and Suryadatta Institute in Pune. Available in paper-based, computer-based, and internet-based modes. Good alternative for students who missed CAT/SNAP deadlines.",
     eligibility: "Bachelor's degree with min. 50% marks"
   },
   {
@@ -106,11 +106,11 @@ export const exams: Exam[] = [
     conductedBy: "National Testing Agency (NTA)",
     level: "National",
     streams: ["MBA", "PGDM"],
-    applicationDate: "Dec 1 – Jan 15, 2025",
-    examDate: "Mar 22, 2025",
-    resultDate: "Apr 2025",
+    applicationDate: "Dec 1, 2025 – Jan 15, 2026",
+    examDate: "Mar 20, 2026",
+    resultDate: "Apr 2026",
     website: "https://cmat.nta.nic.in",
-    description: "NTA's common management admission test for MBA and PGDM programs. Accepted by MIT-SOM, BIMM, IIMM, and many other Pune B-schools. Good option for students who couldn't crack CAT or SNAP.",
+    description: "NTA's common management admission test for MBA and PGDM. Accepted by MIT-SOM, BIMM, IIMM, and many Pune B-schools. CMAT 2026 results are valid for one academic year. Good option for students who missed CAT or SNAP.",
     eligibility: "Bachelor's degree with min. 50% marks"
   },
   {
@@ -120,11 +120,11 @@ export const exams: Exam[] = [
     conductedBy: "Council of Architecture (COA)",
     level: "National",
     streams: ["Architecture"],
-    applicationDate: "Feb 1 – Mar 20, 2025",
-    examDate: "Apr 6 & May 10, 2025",
-    resultDate: "May 2025",
+    applicationDate: "Feb 1 – Mar 20, 2026",
+    examDate: "Apr 5 & May 9, 2026",
+    resultDate: "May 2026",
     website: "https://www.nata.in",
-    description: "Mandatory entrance test for admission to B.Arch programs in Pune colleges including MIT-WPU, COEP, and Symbiosis School of Architecture. Tests drawing ability and aesthetic sensitivity.",
+    description: "Mandatory entrance test for B.Arch programs in Pune. NATA 2026 is required for admission to MIT-WPU, COEP, and Symbiosis School of Architecture. Tests drawing ability, aesthetic sensitivity, and mathematical aptitude.",
     eligibility: "Class 12 with Mathematics, min. 50% marks"
   },
   {
@@ -134,11 +134,11 @@ export const exams: Exam[] = [
     conductedBy: "Symbiosis International University",
     level: "University",
     streams: ["Engineering", "Law", "Media"],
-    applicationDate: "Dec 15 – May 10, 2025",
-    examDate: "May 11, 2025",
-    resultDate: "May 2025",
+    applicationDate: "Dec 15, 2025 – May 10, 2026",
+    examDate: "May 10, 2026",
+    resultDate: "May 2026",
     website: "https://www.set-test.org",
-    description: "Symbiosis University's general entrance test for UG programs including SIT Pune B.Tech, Symbiosis Law School, and Symbiosis media programs. Popular among students targeting Symbiosis programs.",
+    description: "Symbiosis University's UG entrance test for SIT Pune B.Tech, Symbiosis Law School, and Symbiosis media programs. SET 2026 is mandatory for all Symbiosis undergraduate programs. One of the most popular private university entrance tests in Pune.",
     eligibility: "Class 12 pass in relevant stream with minimum marks as per program"
   }
 ]

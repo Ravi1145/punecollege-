@@ -20,9 +20,9 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.in"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"),
   title: {
-    default: "Best Colleges in Pune 2025 | CollegePune — AI-Powered Discovery",
+    default: "Best Colleges in Pune 2026 | CollegePune — AI-Powered Discovery",
     template: "%s | CollegePune",
   },
   description: "India's AI-powered college discovery portal for Pune. Find and compare engineering, MBA, medical, and arts colleges in Pune with real fees, placements, NAAC grades, and student reviews.",

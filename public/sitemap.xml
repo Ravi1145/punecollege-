@@ -1,171 +1,332 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core Pages -->
   <url>
-    <loc>https://collegepune.in/</loc>
+    <loc>https://collegepune.com/</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges</loc>
+    <loc>https://collegepune.com/colleges</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/courses</loc>
+    <loc>https://collegepune.com/courses</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/exams</loc>
+    <loc>https://collegepune.com/exams</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/compare</loc>
+    <loc>https://collegepune.com/compare</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/ai-finder</loc>
+    <loc>https://collegepune.com/ai-finder</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/blog</loc>
+    <loc>https://collegepune.com/blog</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/counselling</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/predictor</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/roi-calculator</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  <!-- College Pages -->
   <url>
-    <loc>https://collegepune.in/colleges/coep-college-of-engineering-pune</loc>
+    <loc>https://collegepune.com/nirf-insights</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- SEO / GEO Landing Pages -->
+  <url>
+    <loc>https://collegepune.com/engineering-colleges-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/mba-colleges-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/medical-colleges-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Engineering College Pages -->
+  <url>
+    <loc>https://collegepune.com/colleges/coep-college-of-engineering-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/vit-pune-vishwakarma-institute-of-technology</loc>
+    <loc>https://collegepune.com/colleges/vit-pune-vishwakarma-institute-of-technology</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/pict-pune-institute-of-computer-technology</loc>
+    <loc>https://collegepune.com/colleges/pict-pune-institute-of-computer-technology</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/mit-wpu-mit-world-peace-university</loc>
+    <loc>https://collegepune.com/colleges/mit-wpu-mit-world-peace-university</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/symbiosis-institute-of-technology-pune</loc>
+    <loc>https://collegepune.com/colleges/symbiosis-institute-of-technology-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/sibm-symbiosis-institute-business-management-pune</loc>
+    <loc>https://collegepune.com/colleges/cummins-college-of-engineering-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/colleges/jspm-rscoe-rajarshi-shahu-college-of-engineering</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/colleges/aissms-college-of-engineering-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/colleges/sinhgad-college-of-engineering-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- MBA College Pages -->
+  <url>
+    <loc>https://collegepune.com/colleges/sibm-pune-symbiosis-institute-of-business-management</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/afmc-armed-forces-medical-college-pune</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://collegepune.in/colleges/bj-medical-college-pune</loc>
+    <loc>https://collegepune.com/colleges/sibm-symbiosis-institute-business-management-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/fergusson-college-pune</loc>
+    <loc>https://collegepune.com/colleges/mit-som-school-of-management-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/jspm-rscoe-rajarshi-shahu-college-of-engineering</loc>
+    <loc>https://collegepune.com/colleges/mit-school-of-management-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/cummins-college-of-engineering-pune</loc>
+    <loc>https://collegepune.com/colleges/balaji-institute-of-modern-management-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/mit-school-of-management-pune</loc>
+    <loc>https://collegepune.com/colleges/indira-institute-of-management-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Medical College Pages -->
+  <url>
+    <loc>https://collegepune.com/colleges/afmc-armed-forces-medical-college-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/colleges/bj-medical-college-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/colleges/dy-patil-medical-college-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/balaji-institute-of-modern-management-pune</loc>
+    <loc>https://collegepune.com/colleges/dy-patil-medical-college-pimpri-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/dy-patil-medical-college-pimpri-pune</loc>
+    <loc>https://collegepune.com/colleges/bharati-vidyapeeth-medical-college-pune</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Arts & Science College Pages -->
+  <url>
+    <loc>https://collegepune.com/colleges/fergusson-college-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/sp-college-pune-sir-parashurambhau-college</loc>
+    <loc>https://collegepune.com/colleges/sp-college-pune-sir-parashurambhau-college</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/colleges/garware-college-of-commerce-pune</loc>
+    <loc>https://collegepune.com/colleges/garware-college-of-commerce-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
   <!-- Course Pages -->
   <url>
-    <loc>https://collegepune.in/courses/btech-computer-engineering-pune</loc>
+    <loc>https://collegepune.com/courses/btech-computer-engineering-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/courses/mba-pune-master-business-administration</loc>
+    <loc>https://collegepune.com/courses/mba-pune-master-business-administration</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/courses/mbbs-pune-bachelor-medicine-surgery</loc>
+    <loc>https://collegepune.com/courses/mbbs-pune-bachelor-medicine-surgery</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/courses/btech-mechanical-engineering-pune</loc>
+    <loc>https://collegepune.com/courses/btech-mechanical-engineering-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/courses/bca-bachelor-computer-applications-pune</loc>
+    <loc>https://collegepune.com/courses/bca-bachelor-computer-applications-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/courses/bba-bachelor-business-administration-pune</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <!-- Blog Pages -->
-  <url>
-    <loc>https://collegepune.in/blog/best-btech-colleges-pune-2025</loc>
+    <loc>https://collegepune.com/courses/bba-bachelor-business-administration-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/blog/mba-colleges-pune-fees-placements-2025</loc>
+    <loc>https://collegepune.com/courses/barch-bachelor-architecture-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/blog/mht-cet-2025-preparation-strategy</loc>
+    <loc>https://collegepune.com/courses/llb-law-pune-bachelor-legislative-law</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://collegepune.in/blog/neet-pune-medical-college-admission-2025</loc>
+    <loc>https://collegepune.com/courses/bsc-computer-science-pune</loc>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- Blog Pages — 2026 Updated Slugs -->
+  <url>
+    <loc>https://collegepune.com/blog/best-btech-colleges-pune-2026</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/blog/mba-colleges-pune-fees-placements-2026</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/blog/mht-cet-2026-preparation-strategy</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/blog/pune-colleges-hostel-facilities-2026</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/blog/neet-2026-pune-medical-college-cutoff</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://collegepune.com/blog/highest-paying-jobs-after-engineering-pune-2026</loc>
+    <lastmod>2026-04-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

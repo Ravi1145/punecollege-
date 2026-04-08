@@ -12,28 +12,36 @@ import BlogPreview from "@/components/home/BlogPreview"
 import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema } from "@/lib/seo"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Colleges in Pune 2025 | AI-Powered Discovery | CollegePune",
-  description: "Find the best engineering, MBA, medical and arts colleges in Pune. Compare COEP, SIBM, AFMC and 25+ colleges by fees (₹15K-25L/yr), placements (₹12-65 LPA), NAAC grade & reviews. Free AI counselor.",
+  title: "Best Colleges in Pune 2026 | Rankings, Fees & Placements | CollegePune",
+  description: "Find the best engineering, MBA, medical and arts colleges in Pune 2026. Compare COEP (NIRF #49), SIBM (NIRF #13), AFMC (NIRF #4) and 25+ colleges by fees (₹15K–25L/yr), placements (₹12–65 LPA), NAAC grade & reviews. Free AI counselor.",
   path: "/",
   keywords: [
     "best college in pune",
-    "best btech college in pune",
-    "best mba college in pune",
-    "top engineering colleges pune",
-    "colleges in pune with fees",
-    "pune university colleges list",
+    "best college in pune 2026",
+    "best engineering college in pune",
+    "best btech college in pune 2026",
+    "best mba college in pune 2026",
+    "top engineering colleges pune 2026",
+    "engineering colleges in pune",
+    "colleges in pune with fees 2026",
+    "pune university colleges list 2026",
     "best medical college pune",
-    "coep pune admission",
-    "sibm pune",
+    "coep pune admission 2026",
+    "sibm pune 2026",
+    "mht-cet colleges pune",
+    "government engineering college pune",
   ],
 })
 
 const faqData = [
-  { question: "Which is the best BTech college in Pune?", answer: "COEP (College of Engineering Pune) is the best B.Tech college in Pune with NIRF Rank 49, NAAC A+, fees Rs 80K-1.8L/yr, and average placement of Rs 12 LPA. It is followed by PICT, VIT Pune, and SIT Pune (Symbiosis)." },
-  { question: "What is the best MBA college in Pune?", answer: "SIBM Pune (Symbiosis Institute of Business Management) is the best MBA college in Pune with NIRF Rank 13. Average placement is Rs 28 LPA. Entrance via SNAP exam with 60+ percentile required." },
-  { question: "Which is the best medical college in Pune?", answer: "AFMC Pune is the best medical college in Pune with NIRF Rank 4 and NAAC A++. For government quota MBBS, BJ Medical College (NIRF Rank 18) is excellent with fees just Rs 60K-1.2L/yr." },
-  { question: "What are the fees for engineering colleges in Pune?", answer: "Engineering fees in Pune range from Rs 80,000/yr (COEP Government) to Rs 4.8L/yr (SIT Pune Symbiosis). Most autonomous private engineering colleges charge Rs 1.2L-2.2L per year." },
-  { question: "What entrance exam is required for Pune colleges?", answer: "MHT-CET is required for engineering, JEE Main for top colleges, NEET for medical, CAT/SNAP for MBA. MHT-CET exam is held April-May and results come in June." },
+  { question: "Which is the best BTech college in Pune in 2026?", answer: "COEP (College of Engineering Pune) is the best B.Tech college in Pune in 2026 — NIRF Rank 49, NAAC A+, fees ₹80K–1.8L/yr, average placement ₹12 LPA, highest ₹45 LPA. MHT-CET cutoff: 97+ percentile for CSE. Followed by PICT (best for CS/IT), VIT Pune (NIRF #101), and SIT Pune (₹9.8 LPA avg placement)." },
+  { question: "What is the best MBA college in Pune in 2026?", answer: "SIBM Pune (Symbiosis Institute of Business Management) is the best MBA college in Pune with NIRF Rank 13 and average placement of ₹28 LPA. Admission via SNAP 2026 (60+ percentile). Fees: ₹16–22L total. Recruiters include McKinsey, BCG, Deloitte, and P&G." },
+  { question: "Which is the best medical college in Pune?", answer: "AFMC Pune (NIRF Rank 4, NAAC A++) is the best medical college in Pune with near-zero fees (₹50,000 total). Requires 650+ NEET score + AFMC entrance test. BJ Medical College (NIRF #18) is the best government option for state quota at 625+ NEET score and fees ₹60K–1.2L/yr." },
+  { question: "What are the fees for engineering colleges in Pune 2026?", answer: "Engineering fees in Pune 2026: Government (COEP) ₹80K–1.8L/yr; Autonomous private (PICT, VIT Pune) ₹1.4L–2.2L/yr; Deemed universities (SIT Pune, MIT-WPU) ₹2L–4.8L/yr; Private colleges ₹95K–1.7L/yr. SC/ST/OBC categories get full fee waiver/concession at government colleges under EBC and government scholarship schemes." },
+  { question: "What entrance exam is required for Pune colleges in 2026?", answer: "MHT-CET 2026 (April–May) for engineering at SPPU-affiliated colleges; JEE Main 2026 for COEP, SIT, MIT-WPU; NEET 2026 (May 3) for AFMC and BJ Medical College; CAT 2026 (November) and SNAP 2026 (December) for MBA at SIBM Pune; SET 2026 (May) for Symbiosis programs." },
+  { question: "Which Pune college has the highest placement package in 2026?", answer: "SIBM Pune leads with ₹28 LPA average MBA placement and McKinsey/BCG offers. For engineering, COEP has the highest average (₹12 LPA) with individual offers reaching ₹45 LPA from Goldman Sachs and Google. PICT's CS branch sees highest median salary of ₹10 LPA with product company offers reaching ₹40+ LPA." },
+  { question: "How to get admission in COEP Pune 2026?", answer: "For COEP Pune 2026 admission: Score 97+ percentile in MHT-CET (April–May 2026) or qualify JEE Main Session 1/2. Register on MHT-CET CAP portal after results (June 2026). Fill document verification at facilitation centre. Choose COEP in preference list during CAP Round 1 (July 2026). COEP is a government college — fees are just ₹80,000–1.8L/year." },
+  { question: "What is the difference between COEP, PICT, and VIT Pune?", answer: "COEP: Government, NIRF #49, NAAC A+, fees ₹80K–1.8L/yr, avg placement ₹12 LPA — best overall value. PICT: Autonomous private, NAAC A, fees ₹1.4L–1.9L/yr, avg placement ₹7.5 LPA — best for CS/IT focus. VIT Pune: Autonomous, NIRF #101, NAAC A+, fees ₹1.6L–2.2L/yr, avg placement ₹8.5 LPA — best for Mechanical and Electronics. For CS/IT, COEP > PICT > VIT Pune. For Mechanical, COEP > VIT Pune > JSPM." },
 ]
 
 export default function HomePage() {

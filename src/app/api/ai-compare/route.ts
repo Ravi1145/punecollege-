@@ -102,7 +102,7 @@ Provide a comprehensive comparison in this exact JSON format:
 Respond with valid JSON only. No markdown.`
 
     const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-haiku-4-5-20261001",
       max_tokens: 2000,
       system: "You are a Pune college expert. Provide accurate, data-driven comparisons. Respond with valid JSON only.",
       messages: [{ role: "user", content: prompt }],

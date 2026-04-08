@@ -5,7 +5,7 @@ import { blogs } from "@/data/blogs"
 import { Clock, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = genMeta({
-  title: "Pune College Blog — Guides, Tips & Admission Advice 2025",
+  title: "Pune College Blog — Guides, Tips & Admission Advice 2026",
   description: "Expert guides on Pune college admissions, MHT-CET preparation, MBA fees, NEET cutoffs, and career planning. Read the latest articles from CollegePune.",
   path: "/blog",
   keywords: ["pune college guides", "mht-cet preparation", "mba admission pune", "best colleges pune blog"],

@@ -6,7 +6,7 @@ import { blogs, getBlogBySlug } from "@/data/blogs"
 import { generateMetadata as genMeta } from "@/lib/seo"
 import { Clock, Calendar, ChevronRight, Tag } from "lucide-react"
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.in"
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
 interface Props {
   params: Promise<{ slug: string }>

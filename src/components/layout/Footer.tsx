@@ -19,11 +19,11 @@ const footerLinks = {
     { label: "All Courses", href: "/courses" },
   ],
   "Entrance Exams": [
-    { label: "MHT-CET 2025", href: "/exams" },
-    { label: "JEE Main 2025", href: "/exams" },
-    { label: "NEET 2025", href: "/exams" },
-    { label: "CAT 2025", href: "/exams" },
-    { label: "SNAP 2025", href: "/exams" },
+    { label: "MHT-CET 2026", href: "/exams" },
+    { label: "JEE Main 2026", href: "/exams" },
+    { label: "NEET 2026", href: "/exams" },
+    { label: "CAT 2026", href: "/exams" },
+    { label: "SNAP 2026", href: "/exams" },
     { label: "All Exams", href: "/exams" },
   ],
   "Quick Links": [
@@ -142,7 +142,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-500">
-            © 2025 CollegePune.in. All rights reserved. AI-powered college discovery for Pune.
+            © 2026 CollegePune.in. All rights reserved. AI-powered college discovery for Pune.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-500">
             <Link href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>

@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 
 export const metadata: Metadata = genMeta({
-  title: "Entrance Exam Calendar 2025 — MHT-CET, JEE, NEET, CAT for Pune Colleges",
-  description: "Complete entrance exam schedule 2025 for Pune college admissions. Dates for MHT-CET, JEE Main, NEET, CAT, SNAP, MAT and more. Registration deadlines, eligibility, and official websites.",
+  title: "Entrance Exam Calendar 2026 — MHT-CET, JEE, NEET, CAT for Pune Colleges",
+  description: "Complete entrance exam schedule 2026 for Pune college admissions. Dates for MHT-CET, JEE Main, NEET, CAT, SNAP, MAT and more. Registration deadlines, eligibility, and official websites.",
   path: "/exams",
-  keywords: ["mht-cet 2025", "jee main 2025 pune", "neet 2025", "cat 2025", "snap 2025", "entrance exams pune"],
+  keywords: ["mht-cet 2026", "jee main 2026 pune", "neet 2026", "cat 2026", "snap 2026", "entrance exams pune"],
 })
 
 const levelColors: Record<string, string> = {
@@ -24,7 +24,7 @@ export default function ExamsPage() {
       <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-            Entrance Exam Calendar 2025
+            Entrance Exam Calendar 2026
           </h1>
           <p className="text-gray-300 max-w-2xl">
             All important entrance exam dates for engineering, MBA, medical, and other courses in Pune colleges.

@@ -19,6 +19,7 @@ const streams = [
       { name: "COEP — Govt. Engineering", href: "/colleges/coep-college-of-engineering-pune" },
       { name: "VIT Pune", href: "/colleges/vit-pune-vishwakarma-institute-of-technology" },
       { name: "PICT", href: "/colleges/pict-pune-institute-of-computer-technology" },
+      { name: "Engineering Colleges Guide 2026 →", href: "/engineering-colleges-pune" },
       { name: "All Engineering Colleges →", href: "/colleges?stream=Engineering" },
     ],
     courses: [
@@ -35,6 +36,7 @@ const streams = [
     colleges: [
       { name: "SIBM Pune", href: "/colleges/sibm-pune-symbiosis-institute-business-management" },
       { name: "MIT-SOM Pune", href: "/colleges/mit-som-pune-school-of-management" },
+      { name: "MBA Colleges Guide 2026 →", href: "/mba-colleges-pune" },
       { name: "All MBA Colleges →", href: "/colleges?stream=MBA" },
     ],
     courses: [
@@ -50,6 +52,7 @@ const streams = [
     icon: "🏥",
     colleges: [
       { name: "BJ Medical College", href: "/colleges/bj-medical-college-pune" },
+      { name: "Medical Colleges Guide 2026 →", href: "/medical-colleges-pune" },
       { name: "All Medical Colleges →", href: "/colleges?stream=Medical" },
     ],
     courses: [
