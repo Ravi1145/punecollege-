@@ -44,7 +44,7 @@ Based on this student profile, recommend the TOP 3 best matching colleges from t
 }`
 
     const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20261001",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 1500,
       system: "You are an expert Pune college admissions counselor. Respond only with valid JSON. No markdown, no extra text.",
       messages: [{ role: "user", content: userQuery }],

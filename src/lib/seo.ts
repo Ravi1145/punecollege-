@@ -162,12 +162,17 @@ export function generateCollegeSchema(college: {
   website: string
   established: number
   postalCode?: string
+  naac?: string
+  nirfRank?: number | null
+  courses?: string[]
+  image?: string
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     name: college.name,
     description: college.description,
+    image: college.image,
     address: {
       "@type": "PostalAddress",
       streetAddress: college.address,
@@ -181,5 +186,101 @@ export function generateCollegeSchema(college: {
     url: college.website,
     foundingDate: college.established.toString(),
     areaServed: "Pune",
+    hasOfferCatalog: college.courses?.length ? {
+      "@type": "OfferCatalog",
+      name: "Academic Programs",
+      itemListElement: college.courses.slice(0, 8).map((c, i) => ({
+        "@type": "Offer",
+        position: i + 1,
+        itemOffered: { "@type": "Course", name: c },
+      })),
+    } : undefined,
+  }
+}
+
+export function generateItemListSchema(items: { name: string; url: string; description?: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      url: `${BASE_URL}${item.url}`,
+      description: item.description,
+    })),
+  }
+}
+
+export function generateLocalBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "CollegePune",
+    description: "AI-powered college discovery portal for Pune. Compare engineering, MBA, medical and law colleges by fees, placements, and NAAC rankings.",
+    url: BASE_URL,
+    telephone: "+917753831118",
+    email: "support@collegepune.com",
+    image: `${BASE_URL}/logo.png`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Undri",
+      addressLocality: "Pune",
+      addressRegion: "Maharashtra",
+      postalCode: "411060",
+      addressCountry: "IN",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 18.5204,
+      longitude: 73.8567,
+    },
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      opens: "09:00",
+      closes: "18:00",
+    },
+    priceRange: "Free",
+    servesCuisine: undefined,
+    areaServed: {
+      "@type": "City",
+      name: "Pune",
+      sameAs: "https://en.wikipedia.org/wiki/Pune",
+    },
+  }
+}
+
+export function generateCourseSchema(course: {
+  name: string
+  description: string
+  provider: string
+  duration: string
+  url: string
+  fees?: { min: number; max: number }
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: course.name,
+    description: course.description,
+    provider: {
+      "@type": "CollegeOrUniversity",
+      name: course.provider,
+      sameAs: `${BASE_URL}`,
+    },
+    timeRequired: course.duration,
+    url: `${BASE_URL}${course.url}`,
+    offers: course.fees ? {
+      "@type": "Offer",
+      priceCurrency: "INR",
+      price: course.fees.min,
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        minPrice: course.fees.min,
+        maxPrice: course.fees.max,
+        priceCurrency: "INR",
+      },
+    } : undefined,
   }
 }

@@ -6,5 +6,5 @@ export async function GET(req: NextRequest) {
   if (adminKey !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  return NextResponse.json(getLeadsStats())
+  return NextResponse.json(await getLeadsStats())
 }

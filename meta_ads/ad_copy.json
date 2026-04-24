@@ -1,0 +1,55 @@
+{
+  "campaign": {
+    "name": "Pune New Construction – NRI Lead Gen 2025",
+    "objective": "LEAD_GENERATION",
+    "target": "NRI"
+  },
+  "ads": [
+    {
+      "id": "ad_1",
+      "name": "NRI Investment – Pune Premium Homes",
+      "format": "Single Image / Carousel",
+      "headline": "Your Dream Home in Pune Awaits – Invest from Anywhere",
+      "primary_text": "🏙️ Live where IT meets culture.\nPune's premium new-launch projects offer NRI-friendly documentation, RERA-certified properties, and up to 8% rental yields.\n\n✅ 0% brokerage\n✅ NRI home loan assistance\n✅ Virtual site tours available\n✅ Dedicated NRI relationship manager\n\nLimited units. Book your free consultation today.",
+      "description": "RERA-certified | NRI-friendly | Starting ₹65 Lakhs",
+      "cta": "Get Free Consultation",
+      "landing_page": "lead_gen_form"
+    },
+    {
+      "id": "ad_2",
+      "name": "NRI ROI – Pune Real Estate",
+      "format": "Video Ad",
+      "headline": "Pune Real Estate: The Smartest NRI Investment of 2025",
+      "primary_text": "📈 Pune property values grew 18% in 2024.\n\nAs an NRI, you deserve:\n→ Transparent RERA-registered projects\n→ Zero hidden charges\n→ Easy repatriation of rental income\n→ End-to-end remote buying support\n\nNew luxury and mid-segment launches in Hinjewadi, Wakad, Baner & Kothrud.\n\nBook a FREE virtual tour now 👇",
+      "description": "Trusted by 500+ NRI investors | RERA Certified",
+      "cta": "Book a Free Tour",
+      "landing_page": "lead_gen_form"
+    },
+    {
+      "id": "ad_3",
+      "name": "NRI Urgency – Limited Units",
+      "format": "Single Image",
+      "headline": "Only 12 Units Left – Pune's Fastest-Selling NRI Project",
+      "primary_text": "🔥 Don't miss out.\n\nPune's newest gated community is 88% sold – and NRI buyers are snapping up the last units.\n\n🏠 2 & 3 BHK Luxury Apartments\n📍 Prime locations: Baner | Wakad | Hinjewadi\n💰 Starting at ₹75 Lakhs\n🏦 NRI home loans from leading banks\n📋 RERA approved\n\nGet priority access – Fill in your details now.",
+      "description": "Pre-launch price ends soon | Act now",
+      "cta": "Claim Priority Access",
+      "landing_page": "lead_gen_form"
+    }
+  ],
+  "lead_gen_form": {
+    "name": "NRI Pune Property Enquiry",
+    "headline": "Get Exclusive NRI Property Details",
+    "description": "Our NRI specialists will reach out within 24 hours with handpicked Pune properties matching your budget.",
+    "questions": [
+      { "type": "FULL_NAME", "label": "Your Name" },
+      { "type": "EMAIL", "label": "Email Address" },
+      { "type": "PHONE", "label": "Phone / WhatsApp Number" },
+      { "type": "CUSTOM", "label": "Country of Residence", "options": ["USA", "UAE", "UK", "Canada", "Australia", "Singapore", "Other"] },
+      { "type": "CUSTOM", "label": "Budget Range", "options": ["₹50L – ₹75L", "₹75L – ₹1.5Cr", "₹1.5Cr – ₹3Cr", "₹3Cr+"] },
+      { "type": "CUSTOM", "label": "Preferred Location in Pune", "options": ["Baner", "Wakad", "Hinjewadi", "Kothrud", "Viman Nagar", "Any"] },
+      { "type": "CUSTOM", "label": "When are you looking to invest?", "options": ["Immediately", "Within 6 months", "Within 1 year", "Just exploring"] }
+    ],
+    "privacy_policy_url": "https://yourwebsite.com/privacy",
+    "thank_you_message": "Thank you! Our NRI specialist will contact you on WhatsApp/Email within 24 hours."
+  }
+}

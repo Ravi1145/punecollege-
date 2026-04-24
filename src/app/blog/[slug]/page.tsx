@@ -2,9 +2,12 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import Script from "next/script"
-import { blogs, getBlogBySlug } from "@/data/blogs"
+import { blogs as staticBlogs, getBlogBySlug as getStaticBlog } from "@/data/blogs"
+import { getBlogBySlug as getDBBlog, getAllBlogs } from "@/lib/db"
 import { generateMetadata as genMeta } from "@/lib/seo"
 import { Clock, Calendar, ChevronRight, Tag } from "lucide-react"
+
+export const revalidate = 300
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
@@ -13,27 +16,116 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return blogs.map((b) => ({ slug: b.slug }))
+  const slugs = new Set(staticBlogs.map((b) => b.slug))
+  try {
+    const { blogs: dbBlogs } = await getAllBlogs({ status: 'published', limit: 200 })
+    dbBlogs.forEach((b) => slugs.add(b.slug))
+  } catch { /* ignore */ }
+  return Array.from(slugs).map((slug) => ({ slug }))
+}
+
+// Unified post type
+interface Post {
+  id: number | string
+  slug: string
+  title: string
+  excerpt: string
+  body: string
+  author: string
+  date?: string
+  published_at?: string
+  readTime?: string
+  read_time?: string
+  category: string
+  tags: string[]
+  meta_title?: string
+  meta_desc?: string
+}
+
+async function resolvePost(slug: string): Promise<Post | null> {
+  // 1. Try DB
+  try {
+    const db = await getDBBlog(slug)
+    if (db && db.status === 'published') {
+      return {
+        id:           db.id ?? slug,
+        slug:         db.slug,
+        title:        db.title,
+        excerpt:      db.excerpt ?? '',
+        body:         db.body ?? '',
+        author:       db.author ?? 'CollegePune',
+        published_at: db.published_at,
+        read_time:    db.read_time,
+        category:     db.category ?? 'General',
+        tags:         db.tags ?? [],
+        meta_title:   db.meta_title,
+        meta_desc:    db.meta_desc,
+      }
+    }
+  } catch { /* fall through */ }
+
+  // 2. Static fallback
+  const s = getStaticBlog(slug)
+  if (s) {
+    return {
+      id:       s.id,
+      slug:     s.slug,
+      title:    s.title,
+      excerpt:  s.excerpt,
+      body:     s.body,
+      author:   s.author,
+      date:     s.date,
+      readTime: s.readTime,
+      category: s.category,
+      tags:     s.tags,
+    }
+  }
+  return null
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const post = getBlogBySlug(slug)
+  const post = await resolvePost(slug)
   if (!post) return {}
   return genMeta({
-    title: post.title,
-    description: post.excerpt,
-    path: `/blog/${slug}`,
-    keywords: post.tags,
+    title:       post.meta_title || post.title,
+    description: post.meta_desc  || post.excerpt,
+    path:        `/blog/${slug}`,
+    keywords:    post.tags,
   })
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  const post = getBlogBySlug(slug)
+  const post = await resolvePost(slug)
   if (!post) notFound()
 
-  const related = blogs.filter((b) => b.id !== post.id && b.category === post.category).slice(0, 3)
+  const dateStr = post.published_at
+    ? new Date(post.published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+    : (post.date ?? '')
+  const readTime = post.read_time ?? post.readTime ?? '5 min read'
+
+  // Related posts — from DB first, fall back to static
+  let related: Post[] = []
+  try {
+    const { blogs: dbBlogs } = await getAllBlogs({ status: 'published', category: post.category, limit: 4 })
+    related = dbBlogs
+      .filter((b) => b.slug !== slug)
+      .slice(0, 3)
+      .map((b) => ({
+        id: b.id ?? b.slug, slug: b.slug, title: b.title,
+        excerpt: b.excerpt ?? '', body: '', author: b.author ?? 'CollegePune',
+        published_at: b.published_at, read_time: b.read_time,
+        category: b.category ?? 'General', tags: b.tags ?? [],
+      }))
+  } catch { /* ignore */ }
+
+  if (related.length === 0) {
+    related = staticBlogs
+      .filter((b) => b.slug !== slug && b.category === post.category)
+      .slice(0, 3)
+      .map((b) => ({ ...b, body: b.body ?? '' }))
+  }
 
   const blogPostingSchema = {
     "@context": "https://schema.org",
@@ -41,22 +133,22 @@ export default async function BlogPostPage({ params }: Props) {
     headline: post.title,
     description: post.excerpt,
     author: { "@type": "Person", name: post.author },
-    datePublished: post.date,
-    dateModified: post.date,
-    publisher: {
-      "@type": "Organization",
-      name: "CollegePune",
-      url: BASE_URL,
-    },
+    datePublished: post.published_at ?? post.date,
+    dateModified: post.published_at ?? post.date,
+    publisher: { "@type": "Organization", name: "CollegePune", url: BASE_URL },
     url: `${BASE_URL}/blog/${slug}`,
     keywords: post.tags.join(", "),
     articleSection: post.category,
     inLanguage: "en-IN",
   }
 
+  // Detect if body is HTML or plain text
+  const isHTML = post.body.trimStart().startsWith('<')
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
       <Script id="blog-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }} />
+
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-100 py-3">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,13 +157,14 @@ export default async function BlogPostPage({ params }: Props) {
             <ChevronRight className="w-4 h-4" />
             <Link href="/blog" className="hover:text-orange-600">Blog</Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-gray-900 truncate max-w-xs">{post.title.slice(0, 40)}...</span>
+            <span className="text-gray-900 truncate max-w-xs">{post.title.slice(0, 50)}{post.title.length > 50 ? '…' : ''}</span>
           </nav>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <article className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          {/* Header */}
           <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] p-8">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
@@ -79,45 +172,54 @@ export default async function BlogPostPage({ params }: Props) {
               </span>
               <div className="flex items-center gap-1 text-gray-400 text-sm">
                 <Clock className="w-4 h-4" />
-                {post.readTime}
+                {readTime}
               </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">{post.title}</h1>
             <div className="flex items-center gap-4 mt-5">
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                  {post.author[0]}
+                  {(post.author ?? 'C')[0]}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-white">{post.author}</p>
-                  <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <Calendar className="w-3 h-3" />
-                    {post.date}
-                  </div>
+                  <p className="text-sm font-medium text-white">{post.author ?? 'CollegePune'}</p>
+                  {dateStr && (
+                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                      <Calendar className="w-3 h-3" />
+                      {dateStr}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Body */}
           <div className="p-8">
             <p className="text-gray-600 text-lg leading-relaxed mb-6 font-medium">{post.excerpt}</p>
-            <div className="prose prose-lg max-w-none">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-line">{post.body}</p>
+            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-a:text-orange-600 prose-strong:text-gray-900">
+              {isHTML ? (
+                <div dangerouslySetInnerHTML={{ __html: post.body }} />
+              ) : (
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line">{post.body}</p>
+              )}
             </div>
 
             {/* Tags */}
-            <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-100">
-              {post.tags.map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/colleges?search=${encodeURIComponent(tag)}`}
-                  className="flex items-center gap-1 text-xs bg-gray-100 hover:bg-orange-50 hover:text-orange-700 text-gray-600 px-3 py-1.5 rounded-full transition-colors"
-                >
-                  <Tag className="w-3 h-3" />
-                  {tag}
-                </Link>
-              ))}
-            </div>
+            {post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-100">
+                {post.tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/colleges?search=${encodeURIComponent(tag)}`}
+                    className="flex items-center gap-1 text-xs bg-gray-100 hover:bg-orange-50 hover:text-orange-700 text-gray-600 px-3 py-1.5 rounded-full transition-colors"
+                  >
+                    <Tag className="w-3 h-3" />
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </article>
 

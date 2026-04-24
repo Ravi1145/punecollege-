@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   if (adminKey !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  const csv = exportLeadsCSV()
+  const csv = await exportLeadsCSV()
   const date = new Date().toISOString().split('T')[0]
   return new NextResponse(csv, {
     headers: {

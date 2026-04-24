@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const validated = enquirySchema.parse(body)
 
-    const leadId = insertLead({
+    const leadId = await insertLead({
       name: validated.name,
       phone: validated.phone,
       email: validated.email,
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       page_url: req.headers.get('referer') ?? undefined,
     })
 
-    const enquiryId = insertEnquiry({ ...validated, lead_id: leadId })
+    const enquiryId = await insertEnquiry({ ...validated, lead_id: leadId })
 
     return NextResponse.json({
       success: true,
@@ -41,5 +41,5 @@ export async function GET(req: NextRequest) {
   if (adminKey !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  return NextResponse.json(getAllEnquiries())
+  return NextResponse.json(await getAllEnquiries())
 }

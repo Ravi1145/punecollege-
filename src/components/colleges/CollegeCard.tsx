@@ -1,10 +1,9 @@
 "use client"
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { MapPin, TrendingUp, Heart, BookOpen, IndianRupee, Award } from "lucide-react"
+import Image from "next/image"
+import { MapPin, TrendingUp, Heart, IndianRupee, Star, GitCompare } from "lucide-react"
 import { College } from "@/types"
-import Badge from "@/components/ui/Badge"
-import StarRating from "@/components/ui/StarRating"
 import CompareButton from "@/components/ui/CompareButton"
 import { formatFeesRange, formatCurrency, getNaacColor, getTypeColor, cn } from "@/lib/utils"
 
@@ -13,6 +12,49 @@ const SHORTLIST_KEY = "shortlisted_colleges"
 interface CollegeCardProps {
   college: College
   variant?: "default" | "compact" | "featured"
+}
+
+function CollegeLogo({ college, size = "md" }: { college: College; size?: "sm" | "md" | "lg" }) {
+  const [imgError, setImgError] = useState(false)
+  const sizeMap = { sm: 36, md: 52, lg: 64 }
+  const px = sizeMap[size]
+
+  if (college.image && !imgError) {
+    return (
+      <div
+        className={cn(
+          "rounded-xl bg-white flex items-center justify-center overflow-hidden border border-white/20 flex-shrink-0 shadow-sm",
+          size === "sm" && "w-9 h-9",
+          size === "md" && "w-[52px] h-[52px]",
+          size === "lg" && "w-16 h-16",
+        )}
+      >
+        <Image
+          src={college.image}
+          alt={`${college.name} logo`}
+          width={px}
+          height={px}
+          className="object-contain p-1"
+          onError={() => setImgError(true)}
+          unoptimized
+        />
+      </div>
+    )
+  }
+
+  // Fallback: initials badge
+  return (
+    <div
+      className={cn(
+        "rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 font-bold text-white",
+        size === "sm" && "w-9 h-9 text-xs",
+        size === "md" && "w-[52px] h-[52px] text-sm",
+        size === "lg" && "w-16 h-16 text-base",
+      )}
+    >
+      {college.shortName.slice(0, 3)}
+    </div>
+  )
 }
 
 export default function CollegeCard({ college, variant = "default" }: CollegeCardProps) {
@@ -40,12 +82,17 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
     setIsShortlisted(!isShortlisted)
   }
 
+  /* ── Compact variant ── */
   if (variant === "compact") {
     return (
       <Link href={`/colleges/${college.slug}`} className="block">
-        <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
-          <div className="w-10 h-10 bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] rounded-lg flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-            {college.shortName.slice(0, 2)}
+        <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
+          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center">
+            {college.image ? (
+              <Image src={college.image} alt={college.shortName} width={40} height={40} className="object-contain p-0.5" unoptimized onError={() => {}} />
+            ) : (
+              <span className="text-xs font-bold text-gray-600">{college.shortName.slice(0, 2)}</span>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-orange-600 transition-colors">
@@ -53,7 +100,7 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
             </p>
             <p className="text-xs text-gray-500">{college.location}</p>
           </div>
-          <span className={cn("text-xs px-1.5 py-0.5 rounded font-medium", getNaacColor(college.naac))}>
+          <span className={cn("text-xs px-1.5 py-0.5 rounded font-semibold flex-shrink-0", getNaacColor(college.naac))}>
             {college.naac}
           </span>
         </div>
@@ -61,101 +108,108 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
     )
   }
 
+  /* ── Default / Featured variant ── */
+  const feesText = college.feesRange.min > 0 || college.feesRange.max > 0
+    ? formatFeesRange(college.feesRange.min, college.feesRange.max)
+    : "Contact College"
+
+  const placementText = college.avgPlacement > 0
+    ? formatCurrency(college.avgPlacement)
+    : "—"
+
   return (
-    <Link href={`/colleges/${college.slug}`} className="block group">
-      <article className="bg-white rounded-2xl border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
-        {/* Card Header */}
-        <div className="relative bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] p-5 pb-8">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                {college.shortName.slice(0, 3)}
-              </div>
-              <div>
-                <h3 className="text-white font-bold text-sm leading-tight group-hover:text-orange-300 transition-colors line-clamp-2">
-                  {college.name}
-                </h3>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <MapPin className="w-3 h-3 text-gray-400" />
-                  <span className="text-xs text-gray-400">{college.location}</span>
-                </div>
+    <Link href={`/colleges/${college.slug}`} className="block group h-full">
+      <article className="bg-white rounded-2xl border border-gray-100 hover:border-orange-300 hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+
+        {/* ── Header ── */}
+        <div className="relative bg-gradient-to-br from-[#0A1628] via-[#0d1f3c] to-[#1E3A5F] p-5">
+
+          {/* Shortlist button */}
+          <button
+            onClick={toggleShortlist}
+            className={cn(
+              "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all z-10",
+              isShortlisted
+                ? "bg-red-500 text-white shadow-lg"
+                : "bg-white/10 text-white/70 hover:bg-red-500 hover:text-white"
+            )}
+            aria-label={isShortlisted ? "Remove from shortlist" : "Add to shortlist"}
+          >
+            <Heart className={cn("w-4 h-4", isShortlisted && "fill-current")} />
+          </button>
+
+          {/* Logo + Name */}
+          <div className="flex items-start gap-3 pr-8">
+            <CollegeLogo college={college} size="md" />
+            <div className="min-w-0 flex-1">
+              <h3 className="text-white font-bold text-sm leading-snug group-hover:text-orange-300 transition-colors line-clamp-2">
+                {college.name}
+              </h3>
+              <div className="flex items-center gap-1 mt-1.5">
+                <MapPin className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                <span className="text-xs text-gray-400 truncate">{college.location}</span>
               </div>
             </div>
-            <button
-              onClick={toggleShortlist}
-              className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center transition-all flex-shrink-0",
-                isShortlisted
-                  ? "bg-red-500 text-white"
-                  : "bg-white/10 text-white hover:bg-red-500"
-              )}
-              aria-label={isShortlisted ? "Remove from shortlist" : "Add to shortlist"}
-            >
-              <Heart className={cn("w-4 h-4", isShortlisted && "fill-current")} />
-            </button>
           </div>
 
-          {/* Badges */}
+          {/* Badge row */}
           <div className="flex flex-wrap gap-1.5 mt-3">
             <span className={cn("text-xs px-2 py-0.5 rounded-full font-semibold", getNaacColor(college.naac))}>
               NAAC {college.naac}
             </span>
-            <span className={cn("text-xs px-2 py-0.5 rounded-full", getTypeColor(college.type))}>
+            <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium", getTypeColor(college.type))}>
               {college.type}
             </span>
             {college.nirfRank && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 font-semibold">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/90 text-white font-semibold">
                 NIRF #{college.nirfRank}
               </span>
             )}
           </div>
         </div>
 
-        {/* Card Body */}
-        <div className="p-4 -mt-4">
-          {/* Stats row */}
-          <div className="bg-gray-50 rounded-xl p-3 grid grid-cols-2 gap-3 mb-4">
-            <div>
+        {/* ── Body ── */}
+        <div className="p-4 flex flex-col flex-1">
+
+          {/* Fees + Placement stats */}
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="bg-orange-50 border border-orange-100 rounded-xl px-3 py-2.5">
               <div className="flex items-center gap-1 mb-0.5">
-                <IndianRupee className="w-3 h-3 text-gray-400" />
-                <span className="text-xs text-gray-500">Annual Fees</span>
+                <IndianRupee className="w-3 h-3 text-orange-400" />
+                <span className="text-[10px] text-orange-500 font-medium uppercase tracking-wide">Annual Fees</span>
               </div>
-              <p className="text-sm font-semibold text-gray-800">
-                {formatFeesRange(college.feesRange.min, college.feesRange.max)}
-              </p>
+              <p className="text-sm font-bold text-gray-900 leading-tight">{feesText}</p>
             </div>
-            <div>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-3 py-2.5">
               <div className="flex items-center gap-1 mb-0.5">
-                <TrendingUp className="w-3 h-3 text-gray-400" />
-                <span className="text-xs text-gray-500">Avg Package</span>
+                <TrendingUp className="w-3 h-3 text-blue-400" />
+                <span className="text-[10px] text-blue-500 font-medium uppercase tracking-wide">Avg Package</span>
               </div>
-              <p className="text-sm font-semibold text-gray-800">
-                {formatCurrency(college.avgPlacement)}
-              </p>
+              <p className="text-sm font-bold text-gray-900 leading-tight">{placementText}</p>
             </div>
           </div>
 
-          {/* Courses */}
-          <div className="mb-3">
-            <div className="flex items-center gap-1 mb-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-gray-400" />
-              <span className="text-xs text-gray-500 font-medium">Top Courses</span>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {college.courses.slice(0, 3).map((course) => (
-                <span key={course} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
-                  {course}
-                </span>
-              ))}
-              {college.courses.length > 3 && (
-                <span className="text-xs text-gray-400">+{college.courses.length - 3} more</span>
+          {/* Stream + Exams */}
+          <div className="flex flex-wrap gap-1 mb-3">
+            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">
+              {college.stream}
+            </span>
+            {college.entranceExams.slice(0, 2).map((exam) => (
+              <span key={exam} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+                {exam}
+              </span>
+            ))}
+          </div>
+
+          {/* Rating + Compare — pushed to bottom */}
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+            <div className="flex items-center gap-1">
+              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              <span className="text-sm font-bold text-gray-800">{college.rating.toFixed(1)}</span>
+              {college.reviewCount > 0 && (
+                <span className="text-xs text-gray-400">({college.reviewCount.toLocaleString()})</span>
               )}
             </div>
-          </div>
-
-          {/* Rating */}
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-            <StarRating rating={college.rating} reviewCount={college.reviewCount} size="sm" />
             <CompareButton collegeSlug={college.slug} collegeName={college.shortName} />
           </div>
         </div>

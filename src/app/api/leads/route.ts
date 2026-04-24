@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const validated = leadSchema.parse(body)
     const referer = req.headers.get('referer') ?? ''
-    const leadId = insertLead({ ...validated, page_url: referer })
+    const leadId = await insertLead({ ...validated, page_url: referer })
     return NextResponse.json({
       success: true,
       leadId,
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const { searchParams } = new URL(req.url)
-  const result = getAllLeads({
+  const result = await getAllLeads({
     status: searchParams.get('status') ?? undefined,
     source: searchParams.get('source') ?? undefined,
     stream: searchParams.get('stream') ?? undefined,

@@ -9,7 +9,7 @@ import AIRecommender from "@/components/ai/AIRecommender"
 import ExamCalendar from "@/components/home/ExamCalendar"
 import FAQSection from "@/components/home/FAQSection"
 import BlogPreview from "@/components/home/BlogPreview"
-import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema, generateLocalBusinessSchema } from "@/lib/seo"
 
 export const metadata: Metadata = genMeta({
   title: "Best Colleges in Pune 2026 | Rankings, Fees & Placements | CollegePune",
@@ -61,6 +61,11 @@ export default function HomePage() {
         id="faq-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFAQSchema(faqData)) }}
+      />
+      <Script
+        id="local-business"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateLocalBusinessSchema()) }}
       />
 
       <main>

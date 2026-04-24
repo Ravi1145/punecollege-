@@ -11,6 +11,6 @@ export async function PATCH(
   }
   const { id } = await params
   const { status, notes } = await req.json()
-  updateLeadStatus(parseInt(id), status, notes)
+  await updateLeadStatus(parseInt(id), status, notes)
   return NextResponse.json({ success: true })
 }

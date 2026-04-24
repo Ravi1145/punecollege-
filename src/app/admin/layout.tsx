@@ -2,13 +2,16 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, Users, MessageSquare, LogOut, Menu, X } from "lucide-react"
+import { LayoutDashboard, Users, MessageSquare, Building2, FileText, Sparkles, LogOut, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/leads", label: "Leads", icon: Users },
-  { href: "/admin/enquiries", label: "Enquiries", icon: MessageSquare },
+  { href: "/admin",           label: "Dashboard",  icon: LayoutDashboard },
+  { href: "/admin/colleges",  label: "Colleges",   icon: Building2 },
+  { href: "/admin/blogs",     label: "Blogs",      icon: FileText },
+  { href: "/admin/ai-studio", label: "AI Studio",  icon: Sparkles },
+  { href: "/admin/leads",     label: "Leads",      icon: Users },
+  { href: "/admin/enquiries", label: "Enquiries",  icon: MessageSquare },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -66,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={() => setSidebarOpen(false)}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
-                pathname === href
+                (href === "/admin" ? pathname === href : pathname.startsWith(href))
                   ? "bg-orange-500 text-white"
                   : "text-blue-200 hover:bg-white/10 hover:text-white"
               )}
@@ -98,7 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Menu className="w-5 h-5" />
           </button>
           <h1 className="text-base font-bold text-gray-900 capitalize">
-            {navItems.find((n) => n.href === pathname)?.label ?? "Admin"}
+            {navItems.find((n) => n.href === "/admin" ? pathname === n.href : pathname.startsWith(n.href))?.label ?? "Admin"}
           </h1>
         </header>
         <main className="flex-1 p-4 md:p-6 overflow-auto">

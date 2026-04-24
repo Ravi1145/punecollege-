@@ -1,11 +1,12 @@
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
-import { colleges } from "@/data/colleges"
+import { colleges as localColleges } from "@/data/colleges"
+import { fetchCollegesFromAPI, mapAPICollege } from "@/lib/api"
 import { College } from "@/types"
 import CollegeCard from "./CollegeCard"
 import CollegeFilters from "./CollegeFilters"
-import { SlidersHorizontal, Grid3X3, List, ArrowUpDown } from "lucide-react"
+import { SlidersHorizontal, Grid3X3, List, ArrowUpDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import InlineLeadForm from "@/components/leads/InlineLeadForm"
 
@@ -13,6 +14,8 @@ type SortOption = "rating" | "fees_low" | "fees_high" | "placement" | "nirf"
 
 export default function CollegeGrid() {
   const searchParams = useSearchParams()
+  const [allColleges, setAllColleges] = useState<College[]>([])
+  const [loading, setLoading] = useState(true)
   const [sortBy, setSortBy] = useState<SortOption>("rating")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [filters, setFilters] = useState({
@@ -29,8 +32,51 @@ export default function CollegeGrid() {
 
   const searchQuery = searchParams.get("search") || ""
 
+  // ── Fetch from Supabase + external API, supplement with local ──
+  useEffect(() => {
+    let cancelled = false
+    async function load() {
+      setLoading(true)
+      try {
+        // Fetch Supabase published colleges + external API in parallel
+        const [supabaseRes, apiRaw] = await Promise.all([
+          fetch('/api/colleges').then(r => r.ok ? r.json() : { colleges: [] }).catch(() => ({ colleges: [] })),
+          fetchCollegesFromAPI().catch(() => []),
+        ])
+
+        const supabaseColleges: College[] = supabaseRes.colleges ?? []
+        const apiMapped = apiRaw.map((c: Parameters<typeof mapAPICollege>[0], i: number) => mapAPICollege(c, i))
+
+        // Build a name set from Supabase + API (Supabase takes priority)
+        const supabaseNameSet = new Set(supabaseColleges.map((c) => c.name.toLowerCase().trim()))
+        const supabaseSlugSet = new Set(supabaseColleges.map((c) => c.slug))
+
+        // Add API colleges not already in Supabase
+        const apiOnly = apiMapped.filter(
+          (c: College) => !supabaseNameSet.has(c.name.toLowerCase().trim()) && !supabaseSlugSet.has(c.slug)
+        )
+
+        // Add local colleges not in Supabase or API
+        const combinedNameSet = new Set([...supabaseNameSet, ...apiOnly.map((c: College) => c.name.toLowerCase().trim())])
+        const localOnly = localColleges.filter(
+          (c) => !combinedNameSet.has(c.name.toLowerCase().trim())
+        )
+
+        if (!cancelled) {
+          setAllColleges([...supabaseColleges, ...apiOnly, ...localOnly])
+        }
+      } catch {
+        if (!cancelled) setAllColleges(localColleges)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [])
+
   const filteredColleges = useMemo(() => {
-    let result = [...colleges]
+    let result = [...allColleges]
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
@@ -93,7 +139,26 @@ export default function CollegeGrid() {
     }
 
     return result
-  }, [filters, sortBy, searchQuery])
+  }, [allColleges, filters, sortBy, searchQuery])
+
+  // ── Loading skeleton ──────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="lg:w-72 flex-shrink-0">
+            <div className="bg-white rounded-2xl border border-gray-100 h-64 animate-pulse" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center justify-center h-64 gap-3 text-gray-400">
+              <Loader2 className="w-6 h-6 animate-spin" />
+              <span className="text-sm">Loading colleges from database…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -169,7 +234,7 @@ export default function CollegeGrid() {
                   : "grid-cols-1"
               )}>
                 {filteredColleges.slice(0, 5).map((college) => (
-                  <CollegeCard key={college.id} college={college} />
+                  <CollegeCard key={college.slug} college={college} />
                 ))}
               </div>
               {filteredColleges.length > 5 && (
@@ -183,7 +248,7 @@ export default function CollegeGrid() {
                     : "grid-cols-1"
                 )}>
                   {filteredColleges.slice(5, 10).map((college) => (
-                    <CollegeCard key={college.id} college={college} />
+                    <CollegeCard key={college.slug} college={college} />
                   ))}
                 </div>
               )}
@@ -198,7 +263,7 @@ export default function CollegeGrid() {
                     : "grid-cols-1"
                 )}>
                   {filteredColleges.slice(10).map((college) => (
-                    <CollegeCard key={college.id} college={college} />
+                    <CollegeCard key={college.slug} college={college} />
                   ))}
                 </div>
               )}

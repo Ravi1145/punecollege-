@@ -27,24 +27,33 @@ const streams = [
       { name: "B.Tech Mechanical", href: "/courses/btech-mechanical-engineering-pune" },
       { name: "All Engineering Courses →", href: "/courses" },
     ],
-    exams: ["MHT-CET", "JEE Main", "JEE Advanced"],
+    exams: [
+      { name: "MHT-CET", href: "/exams/mht-cet" },
+      { name: "JEE Main", href: "/exams/jee-main" },
+      { name: "JEE Advanced", href: "/exams/jee-advanced" },
+    ],
   },
   {
     label: "MBA",
     href: "/colleges?stream=MBA",
     icon: "💼",
     colleges: [
-      { name: "SIBM Pune", href: "/colleges/sibm-pune-symbiosis-institute-business-management" },
-      { name: "MIT-SOM Pune", href: "/colleges/mit-som-pune-school-of-management" },
+      { name: "SIBM Pune", href: "/colleges/sibm-symbiosis-institute-business-management-pune" },
+      { name: "MIT-SOM Pune", href: "/colleges/mit-school-of-management-pune" },
       { name: "MBA Colleges Guide 2026 →", href: "/mba-colleges-pune" },
       { name: "All MBA Colleges →", href: "/colleges?stream=MBA" },
     ],
     courses: [
       { name: "MBA — Master of Business Administration", href: "/courses/mba-pune-master-business-administration" },
-      { name: "BBA — Bachelor of Business Administration", href: "/courses" },
       { name: "All Management Courses →", href: "/courses" },
     ],
-    exams: ["CAT", "SNAP", "MAT", "CMAT", "XAT"],
+    exams: [
+      { name: "CAT", href: "/exams/cat" },
+      { name: "SNAP", href: "/exams/snap" },
+      { name: "MAT", href: "/exams/mat" },
+      { name: "CMAT", href: "/exams/cmat" },
+      { name: "XAT", href: "/exams/xat" },
+    ],
   },
   {
     label: "Medical",
@@ -59,7 +68,9 @@ const streams = [
       { name: "MBBS", href: "/courses/mbbs-pune-bachelor-medicine-surgery" },
       { name: "All Medical Courses →", href: "/courses" },
     ],
-    exams: ["NEET-UG", "NEET-PG"],
+    exams: [
+      { name: "NEET", href: "/exams/neet" },
+    ],
   },
   {
     label: "Arts & Science",
@@ -70,10 +81,12 @@ const streams = [
     ],
     courses: [
       { name: "BCA", href: "/courses/bca-bachelor-computer-applications-pune" },
-      { name: "B.Sc IT", href: "/courses" },
       { name: "All Science Courses →", href: "/courses" },
     ],
-    exams: ["MHT-CET", "CUET"],
+    exams: [
+      { name: "MHT-CET", href: "/exams/mht-cet" },
+      { name: "All Exams →", href: "/exams" },
+    ],
   },
   {
     label: "Law",
@@ -86,7 +99,10 @@ const streams = [
       { name: "LLB — Bachelor of Laws", href: "/courses" },
       { name: "BA LLB (5-year)", href: "/courses" },
     ],
-    exams: ["CLAT", "LSAT", "MH-CET Law"],
+    exams: [
+      { name: "CLAT", href: "/exams" },
+      { name: "MH-CET Law", href: "/exams" },
+    ],
   },
   {
     label: "Design",
@@ -99,7 +115,10 @@ const streams = [
       { name: "B.Des — Bachelor of Design", href: "/courses" },
       { name: "B.Arch", href: "/courses" },
     ],
-    exams: ["NATA", "NID DAT", "UCEED"],
+    exams: [
+      { name: "NATA", href: "/exams" },
+      { name: "NID DAT", href: "/exams" },
+    ],
   },
 ]
 
@@ -282,8 +301,8 @@ export default function Header() {
                             <Building2 className="w-3 h-3" /> Top Colleges
                           </p>
                           <ul className="space-y-1.5">
-                            {stream.colleges.map((c) => (
-                              <li key={c.href}>
+                            {stream.colleges.map((c, i) => (
+                              <li key={`${stream.label}-col-${i}`}>
                                 <Link href={c.href} className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
                                   {c.name}
                                 </Link>
@@ -297,8 +316,8 @@ export default function Header() {
                             <BookOpen className="w-3 h-3" /> Courses
                           </p>
                           <ul className="space-y-1.5">
-                            {stream.courses.map((c) => (
-                              <li key={c.href}>
+                            {stream.courses.map((c, i) => (
+                              <li key={`${stream.label}-course-${i}`}>
                                 <Link href={c.href} className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
                                   {c.name}
                                 </Link>
@@ -313,9 +332,9 @@ export default function Header() {
                           </p>
                           <ul className="space-y-1.5">
                             {stream.exams.map((e) => (
-                              <li key={e}>
-                                <Link href="/exams" className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
-                                  {e}
+                              <li key={e.name}>
+                                <Link href={e.href} className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
+                                  {e.name}
                                 </Link>
                               </li>
                             ))}
@@ -400,7 +419,7 @@ export default function Header() {
                   >
                     {explore.map((e) => (
                       <Link
-                        key={e.href}
+                        key={`desktop-explore-${e.href}`}
                         href={e.href}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                       >
@@ -460,8 +479,8 @@ export default function Header() {
                     <div className="bg-gray-50 px-4 pb-3 space-y-3">
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Colleges</p>
-                        {stream.colleges.map((c) => (
-                          <Link key={c.href} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
+                        {stream.colleges.map((c, i) => (
+                          <Link key={`mob-${stream.label}-col-${i}`} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
                             {c.name}
                           </Link>
                         ))}
@@ -477,8 +496,8 @@ export default function Header() {
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Exams</p>
                         {stream.exams.map((e) => (
-                          <Link key={e} href="/exams" onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
-                            {e}
+                          <Link key={e.name} href={e.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
+                            {e.name}
                           </Link>
                         ))}
                       </div>
@@ -511,7 +530,7 @@ export default function Header() {
               {/* Explore */}
               <div>
                 {explore.map((e) => (
-                  <Link key={e.href} href={e.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 border-b border-gray-100">
+                  <Link key={`mobile-explore-${e.href}`} href={e.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 border-b border-gray-100">
                     <e.icon className="w-4 h-4 text-gray-400" />
                     {e.label}
                   </Link>

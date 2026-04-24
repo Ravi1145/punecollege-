@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const validated = counsellingSchema.parse(body)
 
-    const leadId = insertLead({
+    const leadId = await insertLead({
       name: validated.name,
       phone: validated.phone,
       email: validated.email,
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       source: 'counselling',
     })
 
-    const bookingId = insertBooking({ ...validated, lead_id: leadId })
+    const bookingId = await insertBooking({ ...validated, lead_id: leadId })
 
     return NextResponse.json({
       success: true,
