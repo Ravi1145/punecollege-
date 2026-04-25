@@ -31,10 +31,17 @@ interface Post {
   tags: string[]
 }
 
+/** Filter out test/incomplete posts: title must be at least 10 chars */
+function isValidPost(p: { title: string; slug: string }): boolean {
+  return p.title.trim().length >= 10 && p.slug.length >= 5
+}
+
 async function fetchPosts(): Promise<Post[]> {
   try {
     const result = await getAllBlogs({ status: 'published', limit: 50 })
-    if (result.blogs && result.blogs.length > 0) return result.blogs as Post[]
+    if (result.blogs && result.blogs.length > 0) {
+      return (result.blogs as Post[]).filter(isValidPost)
+    }
   } catch {
     // fall through to static
   }

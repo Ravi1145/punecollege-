@@ -5,7 +5,7 @@ import { colleges, getCollegeBySlug } from "@/data/colleges"
 import { fetchCollegesFromAPI, mapAPICollege, generateSlug } from "@/lib/api"
 import { getCollegeBySlug as getDBCollege, DBCollege, CollegeDetails } from "@/lib/db"
 import CollegeProfile from "@/components/colleges/CollegeProfile"
-import { generateMetadata as genMeta, generateBreadcrumbSchema, generateCollegeSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateBreadcrumbSchema, generateCollegeSchema, generateFAQSchema } from "@/lib/seo"
 import type { College } from "@/types"
 
 function mapDBToCollege(db: DBCollege): College {
@@ -85,7 +85,13 @@ async function resolveCollege(slug: string): Promise<{ college: College; details
   try {
     const dbCollege = await getDBCollege(slug)
     if (dbCollege && dbCollege.status === 'published') {
-      return { college: mapDBToCollege(dbCollege), details: dbCollege.details }
+      // Merge top-level faqs into details so CollegeProfile and FAQ schema can find them
+      const details: CollegeDetails | undefined = dbCollege.details
+        ? { ...dbCollege.details, faqs: dbCollege.details.faqs ?? dbCollege.faqs }
+        : dbCollege.faqs?.length
+          ? { faqs: dbCollege.faqs }
+          : undefined
+      return { college: mapDBToCollege(dbCollege), details }
     }
   } catch {
     // ignore DB errors, fall through
@@ -153,10 +159,19 @@ export default async function CollegePage({ params }: Props) {
     image: college.image,
   })
 
+  // Build FAQ schema from details.faqs (DB) or college.faqs (static)
+  const rawFaqs = details?.faqs ?? (college as unknown as { faqs?: { q: string; a: string }[] }).faqs ?? []
+  const faqSchema = rawFaqs.length > 0
+    ? generateFAQSchema(rawFaqs.map((f: { q: string; a: string }) => ({ question: f.q, answer: f.a })))
+    : null
+
   return (
     <>
       <Script id="breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <Script id="college-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collegeSchema) }} />
+      {faqSchema && (
+        <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      )}
       <div className="bg-[#F8FAFC] min-h-screen">
         <CollegeProfile college={college} details={details} />
       </div>

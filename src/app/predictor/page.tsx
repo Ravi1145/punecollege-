@@ -229,6 +229,42 @@ export default function PredictorPage() {
             </div>
           </div>
         )}
+      {/* ── SEO Content Section ── */}
+      <div className="bg-white border-t border-gray-100 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">About the Pune College Predictor 2026</h2>
+          <p className="text-gray-600 text-sm leading-relaxed mb-4">
+            The CollegePune College Predictor helps students identify which Pune colleges they are eligible for based on their entrance exam performance. Enter your <strong>MHT-CET percentile</strong>, <strong>JEE Main score</strong>, <strong>NEET score</strong>, <strong>CAT percentile</strong>, or <strong>SNAP score</strong> and instantly see admission probabilities for 100+ Pune colleges including COEP, PICT, VIT Pune, SIBM Pune, AFMC, and BJ Medical College.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4 mb-6">
+            {[
+              { title: "MHT-CET 2026", desc: "95+ percentile for COEP. 90–95 for PICT. 75–85 for MIT-WPU. 60–75 for private colleges." },
+              { title: "NEET 2026", desc: "650+ for AFMC. 625+ (Open) for BJ Medical College. 500–550 for DY Patil Management quota." },
+              { title: "CAT / SNAP 2026", desc: "60+ SNAP percentile for SIBM Pune. 55+ for SCMHRD. CAT 50+ for MIT-SOM and BIMM." },
+            ].map(({ title, desc }) => (
+              <div key={title} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <h3 className="font-bold text-gray-900 text-sm mb-1">{title}</h3>
+                <p className="text-xs text-gray-600 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">How to Use the College Predictor</h2>
+          <ol className="space-y-2 text-sm text-gray-600">
+            {[
+              "Select your entrance exam (MHT-CET, JEE Main, NEET, CAT, or SNAP) from the dropdown.",
+              "Enter your score or percentile in the input box.",
+              "Select your category (General, OBC, SC, or ST) — reserved categories get cutoff relaxation.",
+              "Click Predict — the tool ranks all eligible Pune colleges by your admission probability.",
+              "Click View Details on any college to see fees, placements, and admission process.",
+            ].map((step, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="w-5 h-5 bg-orange-500 text-white rounded-full text-xs flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
       </div>
     </div>
   )

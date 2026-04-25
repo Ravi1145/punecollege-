@@ -4,7 +4,7 @@ import Link from "next/link"
 import Script from "next/script"
 import { blogs as staticBlogs, getBlogBySlug as getStaticBlog } from "@/data/blogs"
 import { getBlogBySlug as getDBBlog, getAllBlogs } from "@/lib/db"
-import { generateMetadata as genMeta } from "@/lib/seo"
+import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
 import { Clock, Calendar, ChevronRight, Tag } from "lucide-react"
 
 export const revalidate = 300
@@ -46,7 +46,7 @@ async function resolvePost(slug: string): Promise<Post | null> {
   // 1. Try DB
   try {
     const db = await getDBBlog(slug)
-    if (db && db.status === 'published') {
+    if (db && db.status === 'published' && db.title && db.title.trim().length >= 10) {
       return {
         id:           db.id ?? slug,
         slug:         db.slug,
@@ -127,6 +127,12 @@ export default async function BlogPostPage({ params }: Props) {
       .map((b) => ({ ...b, body: b.body ?? '' }))
   }
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Blog", url: "/blog" },
+    { name: post.title.slice(0, 60), url: `/blog/${slug}` },
+  ])
+
   const blogPostingSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -147,6 +153,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="blog-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }} />
 
       {/* Breadcrumb */}

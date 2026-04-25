@@ -246,6 +246,36 @@ export default function ROICalculatorPage() {
           )}
         </div>
       </div>
+
+      {/* ── SEO Content Section ── */}
+      <div className="bg-white border-t border-gray-100 py-12 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Is Your Pune College Worth the Investment?</h2>
+          <p className="text-gray-600 text-sm leading-relaxed mb-6">
+            The CollegePune ROI Calculator helps you decide whether a college is a good financial investment. Compare total fees against expected salary, estimate your payback period, and project 10-year earnings for any Pune college — covering B.Tech, MBA, MBBS, BCA, BBA, LLB, and more.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4 mb-6">
+            {[
+              { college: "COEP Pune (B.Tech)", fees: "₹3.2L–₹7.2L total", salary: "₹12 LPA avg", payback: "~3–7 months" },
+              { college: "SIBM Pune (MBA)", fees: "₹16L–₹22L total", salary: "₹28 LPA avg", payback: "~8–10 months" },
+              { college: "AFMC Pune (MBBS)", fees: "₹50K total", salary: "₹9–12 LPA", payback: "< 1 month" },
+            ].map(({ college, fees, salary, payback }) => (
+              <div key={college} className="bg-orange-50 border border-orange-100 rounded-xl p-4">
+                <h3 className="font-bold text-gray-900 text-sm mb-2">{college}</h3>
+                <div className="space-y-1 text-xs text-gray-700">
+                  <p>Total Fees: <strong>{fees}</strong></p>
+                  <p>Avg Starting Salary: <strong>{salary}</strong></p>
+                  <p>Payback Period: <strong className="text-green-700">{payback}</strong></p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Best ROI Colleges in Pune 2026</h2>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            <strong>For Engineering:</strong> COEP Pune offers the best ROI — government fees of ₹80K/yr vs ₹12 LPA average placement. PICT Pune offers strong ROI for CS/IT (₹1.4–1.9L fees, ₹7.5 LPA avg). <strong>For MBA:</strong> Indira Institute of Management (₹4.2–6.5L total fees, ₹7.2 LPA avg) and MIT-SOM (₹7–11L, ₹12 LPA avg) offer better ROI than SIBM if cost is a priority. <strong>For Medical:</strong> AFMC Pune is unbeatable — near-zero fees, guaranteed government job, and a prestigious career.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

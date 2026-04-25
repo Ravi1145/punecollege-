@@ -41,10 +41,10 @@ export default function HeroSection() {
 
           {/* H1 */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5">
-            Best Colleges in Pune 2026
+            Find the Right College in Pune
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-              Rankings, Fees &amp; Placements
+              AI-Powered · Free · Accurate 2026 Data
             </span>
           </h1>
 

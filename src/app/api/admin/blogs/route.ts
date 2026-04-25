@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAllBlogs, insertBlog, updateBlog, deleteBlog } from '@/lib/db'
 import { isAuthorized, unauthorized, safeInt, safeId } from '@/lib/admin-auth'
+import { pingIndexNow } from '@/lib/indexnow'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://collegepune.com'
 
 // GET /api/admin/blogs
 export async function GET(req: NextRequest) {
@@ -34,6 +37,10 @@ export async function POST(req: NextRequest) {
       body.published_at = new Date().toISOString()
     }
     const id = await insertBlog(body)
+    // Ping search engines immediately when publishing
+    if (body.status === 'published' && body.slug) {
+      pingIndexNow([`${BASE_URL}/blog/${body.slug}`, `${BASE_URL}/blog`])
+    }
     return NextResponse.json({ success: true, id }, { status: 201 })
   } catch (err) {
     const msg = String(err)
@@ -57,6 +64,10 @@ export async function PUT(req: NextRequest) {
       data.published_at = new Date().toISOString()
     }
     await updateBlog(safeId(String(id)), data)
+    // Ping on publish/update
+    if (data.status === 'published' && data.slug) {
+      pingIndexNow([`${BASE_URL}/blog/${data.slug}`, `${BASE_URL}/blog`])
+    }
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/blogs PUT]', err)

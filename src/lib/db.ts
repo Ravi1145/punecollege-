@@ -410,6 +410,8 @@ export interface CollegeDetails {
   total_students?: number
   faculty_count?: number
   student_faculty_ratio?: string
+  /** FAQs stored either inside details JSON or as a top-level column */
+  faqs?: { q: string; a: string }[]
 }
 
 // ── COLLEGE FUNCTIONS ─────────────────────────────────────────────

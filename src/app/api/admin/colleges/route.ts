@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAllColleges, insertCollege, updateCollege, deleteCollege } from '@/lib/db'
 import { isAuthorized, unauthorized, safeInt, safeId } from '@/lib/admin-auth'
+import { pingIndexNow } from '@/lib/indexnow'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://collegepune.com'
 
 // GET /api/admin/colleges — paginated list with filters
 export async function GET(req: NextRequest) {
@@ -31,6 +34,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'slug, name, and city are required' }, { status: 400 })
     }
     const id = await insertCollege(body)
+    if (body.slug) {
+      pingIndexNow([`${BASE_URL}/colleges/${body.slug}`, `${BASE_URL}/colleges`])
+    }
     return NextResponse.json({ success: true, id }, { status: 201 })
   } catch (err) {
     const msg = String(err)
@@ -50,6 +56,9 @@ export async function PUT(req: NextRequest) {
     const { id, ...data } = body
     if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 })
     await updateCollege(safeId(String(id)), data)
+    if (data.slug) {
+      pingIndexNow([`${BASE_URL}/colleges/${data.slug}`, `${BASE_URL}/colleges`])
+    }
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/colleges PUT]', err)
