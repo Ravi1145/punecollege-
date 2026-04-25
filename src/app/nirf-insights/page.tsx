@@ -1,9 +1,45 @@
 "use client"
 import { useState, useMemo } from "react"
+import Script from "next/script"
 import { Award, TrendingUp, MapPin, ExternalLink, Filter, ChevronUp, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { colleges } from "@/data/colleges"
 import { cn } from "@/lib/utils"
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
+
+const nirfPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Pune College Rankings 2026 — NIRF & NAAC Insights",
+  description: "Explore NIRF rankings, NAAC grades, and placement data for all major Pune colleges — all in one place.",
+  url: `${BASE_URL}/nirf-insights`,
+  breadcrumb: {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "NIRF Insights", item: `${BASE_URL}/nirf-insights` },
+    ],
+  },
+  mainEntity: {
+    "@type": "ItemList",
+    name: "NIRF Ranked Colleges in Pune",
+    numberOfItems: colleges.filter((c) => c.nirfRank).length,
+    itemListElement: colleges
+      .filter((c) => c.nirfRank)
+      .sort((a, b) => (a.nirfRank ?? 0) - (b.nirfRank ?? 0))
+      .slice(0, 20)
+      .map((c, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        item: {
+          "@type": "EducationalOrganization",
+          name: c.name,
+          url: `${BASE_URL}/colleges/${c.slug}`,
+        },
+      })),
+  },
+}
 
 type SortKey = "nirfRank" | "avgPlacement" | "naac" | "name"
 type StreamFilter = "All" | "Engineering" | "MBA" | "Medical"
@@ -78,6 +114,7 @@ export default function NIRFInsightsPage() {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <Script id="nirf-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(nirfPageSchema) }} />
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">

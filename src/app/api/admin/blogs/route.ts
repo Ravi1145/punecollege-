@@ -1,25 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAllBlogs, insertBlog, updateBlog, deleteBlog } from '@/lib/db'
+import { isAuthorized, unauthorized, safeInt, safeId } from '@/lib/admin-auth'
 
 // GET /api/admin/blogs
 export async function GET(req: NextRequest) {
+  if (!isAuthorized(req)) return unauthorized()
   try {
     const { searchParams } = new URL(req.url)
     const result = await getAllBlogs({
-      status:   searchParams.get('status')   ?? undefined,
-      category: searchParams.get('category') ?? undefined,
-      search:   searchParams.get('search')   ?? undefined,
-      page:     Number(searchParams.get('page')  ?? 1),
-      limit:    Number(searchParams.get('limit') ?? 20),
+      status:   searchParams.get('status')   || undefined,
+      category: searchParams.get('category') || undefined,
+      search:   searchParams.get('search')   || undefined,
+      page:     safeInt(searchParams.get('page'),  1),
+      limit:    safeInt(searchParams.get('limit'), 20, 100),
     })
     return NextResponse.json(result)
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 })
+    console.error('[admin/blogs GET]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // POST /api/admin/blogs — create blog post
 export async function POST(req: NextRequest) {
+  if (!isAuthorized(req)) return unauthorized()
   try {
     const body = await req.json()
     if (!body.slug || !body.title) {
@@ -36,12 +40,14 @@ export async function POST(req: NextRequest) {
     if (msg.includes('duplicate key') || msg.includes('unique')) {
       return NextResponse.json({ error: 'A blog post with this slug already exists' }, { status: 409 })
     }
-    return NextResponse.json({ error: msg }, { status: 500 })
+    console.error('[admin/blogs POST]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // PUT /api/admin/blogs — update blog by id in body
 export async function PUT(req: NextRequest) {
+  if (!isAuthorized(req)) return unauthorized()
   try {
     const body = await req.json()
     const { id, ...data } = body
@@ -50,21 +56,24 @@ export async function PUT(req: NextRequest) {
     if (data.status === 'published' && !data.published_at) {
       data.published_at = new Date().toISOString()
     }
-    await updateBlog(Number(id), data)
+    await updateBlog(safeId(String(id)), data)
     return NextResponse.json({ success: true })
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 })
+    console.error('[admin/blogs PUT]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // DELETE /api/admin/blogs?id=123
 export async function DELETE(req: NextRequest) {
+  if (!isAuthorized(req)) return unauthorized()
   try {
-    const id = new URL(req.url).searchParams.get('id')
-    if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 })
-    await deleteBlog(Number(id))
+    const rawId = new URL(req.url).searchParams.get('id')
+    if (!rawId) return NextResponse.json({ error: 'id is required' }, { status: 400 })
+    await deleteBlog(safeId(rawId))
     return NextResponse.json({ success: true })
   } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 })
+    console.error('[admin/blogs DELETE]', err)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

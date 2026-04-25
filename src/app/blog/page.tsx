@@ -1,6 +1,7 @@
 import { Metadata } from "next"
+import Script from "next/script"
 import Link from "next/link"
-import { generateMetadata as genMeta } from "@/lib/seo"
+import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
 import { blogs as staticBlogs } from "@/data/blogs"
 import { Clock, ArrowRight, Rss } from "lucide-react"
 
@@ -12,6 +13,8 @@ export const metadata: Metadata = genMeta({
   path: "/blog",
   keywords: ["pune college guides", "mht-cet preparation", "mba admission pune", "best colleges pune blog"],
 })
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
 interface Post {
   id: number | string
@@ -43,8 +46,38 @@ async function fetchPosts(): Promise<Post[]> {
 export default async function BlogPage() {
   const posts = await fetchPosts()
 
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: BASE_URL },
+    { name: "Blog", url: `${BASE_URL}/blog` },
+  ])
+
+  const blogListSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "CollegePune Blog",
+    description: "Expert guides on Pune college admissions, MHT-CET preparation, MBA fees, NEET cutoffs, and career planning.",
+    url: `${BASE_URL}/blog`,
+    publisher: {
+      "@type": "Organization",
+      name: "CollegePune",
+      url: BASE_URL,
+    },
+    blogPost: posts.slice(0, 10).map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.excerpt,
+      url: `${BASE_URL}/blog/${post.slug}`,
+      author: { "@type": "Person", name: post.author ?? "CollegePune" },
+      datePublished: post.published_at ?? post.date ?? new Date().toISOString(),
+      articleSection: post.category,
+    })),
+  }
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <Script id="blog-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <Script id="blog-list-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogListSchema) }} />
+
       <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-3">

@@ -1,8 +1,8 @@
 "use client"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Save, Sparkles, Loader2 } from "lucide-react"
+import { ArrowLeft, Save, Loader2, X } from "lucide-react"
 import { slugify } from "@/lib/utils"
 
 const STREAMS = ["Engineering", "MBA", "Medical", "Law", "Arts & Science", "Management", "Architecture", "Commerce"]
@@ -10,21 +10,57 @@ const TYPES   = ["Government", "Private", "Deemed", "Autonomous"]
 const NAAC    = ["A++", "A+", "A", "B++", "B+", "B", "C"]
 const CITIES  = ["Pune", "Mumbai", "Nagpur", "Nashik", "Aurangabad", "Kolhapur", "Solapur", "Amravati", "Thane", "Navi Mumbai"]
 
+function ChipsInput({ label, value, onChange, placeholder }: {
+  label: string; value: string[]; onChange: (v: string[]) => void; placeholder?: string
+}) {
+  const [input, setInput] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const add = () => {
+    const t = input.trim()
+    if (!t || value.includes(t)) { setInput(""); return }
+    onChange([...value, t]); setInput(""); inputRef.current?.focus()
+  }
+  const remove = (i: number) => onChange(value.filter((_, j) => j !== i))
+  const lc = "block text-xs font-semibold text-gray-600 mb-1"
+  return (
+    <div>
+      <label className={lc}>{label}</label>
+      <div className="min-h-[44px] flex flex-wrap gap-1.5 p-2 border border-gray-200 rounded-lg bg-white focus-within:border-orange-400 transition-colors">
+        {value.map((v, i) => (
+          <span key={i} className="inline-flex items-center gap-1 bg-orange-50 text-orange-700 border border-orange-200 text-xs font-medium px-2 py-1 rounded-full">
+            {v}
+            <button type="button" onClick={() => remove(i)} className="text-orange-400 hover:text-orange-700"><X className="w-3 h-3" /></button>
+          </span>
+        ))}
+        <input ref={inputRef} className="flex-1 min-w-[120px] text-sm outline-none bg-transparent px-1 placeholder:text-gray-400"
+          value={input} onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add() } if (e.key === "Backspace" && !input && value.length) remove(value.length - 1) }}
+          placeholder={value.length === 0 ? (placeholder ?? "Type and press Enter…") : "Add more…"} />
+      </div>
+      <p className="text-[10px] text-gray-400 mt-1">Press Enter or comma to add. Click ✕ to remove.</p>
+    </div>
+  )
+}
+
 export default function AddCollegePage() {
   const router = useRouter()
   const [saving, setSaving]       = useState(false)
-  const [generating, setGenerating] = useState(false)
   const [error, setError]         = useState("")
   const [success, setSuccess]     = useState("")
+
+  const [courses,         setCourses]         = useState<string[]>([])
+  const [specializations, setSpecializations] = useState<string[]>([])
+  const [entranceExams,   setEntranceExams]   = useState<string[]>([])
+  const [topRecruiters,   setTopRecruiters]   = useState<string[]>([])
 
   const [form, setForm] = useState({
     name: "", slug: "", short_name: "", type: "Private", stream: "Engineering",
     city: "Pune", state: "Maharashtra", established: "", affiliation: "",
     naac_grade: "A+", nirf_rank: "", address: "", description: "",
-    highlights: "", tags: "", fees_min: "", fees_max: "",
-    avg_placement: "", highest_pkg: "", top_recruiters: "",
-    entrance_exams: "", courses: "", specializations: "",
-    hostel: false, rating: "4.0", website: "", phone: "", email: "",
+    highlights: "", tags: "",
+    fees_min: "", fees_max: "", avg_placement: "", highest_pkg: "",
+    hostel: false, rating: "4.0", review_count: "0",
+    website: "", phone: "", email: "", image_url: "",
     meta_title: "", meta_desc: "", seo_keywords: "", status: "draft",
   })
 
@@ -33,59 +69,6 @@ export default function AddCollegePage() {
   const handleNameBlur = () => {
     if (form.name && !form.slug) {
       set("slug", slugify(form.name))
-    }
-  }
-
-  // ── AI Auto-Fill ──────────────────────────────────────────────────
-  const handleAIFill = async () => {
-    if (!form.name.trim()) { setError("Enter the college name first"); return }
-    const key = localStorage.getItem("admin_key")
-    if (!key) return
-    setGenerating(true); setError("")
-    try {
-      const res = await fetch("/api/admin/ai/generate-college", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-key": key },
-        body: JSON.stringify({ collegeName: form.name, city: form.city, stream: form.stream }),
-      })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error)
-      const c = json.college
-      setForm(f => ({
-        ...f,
-        slug:           c.slug         || slugify(c.name || f.name),
-        short_name:     c.short_name   || f.short_name,
-        type:           c.type         || f.type,
-        established:    String(c.established || f.established),
-        affiliation:    c.affiliation  || f.affiliation,
-        naac_grade:     c.naac_grade   || f.naac_grade,
-        nirf_rank:      String(c.nirf_rank ?? f.nirf_rank),
-        address:        c.address      || f.address,
-        description:    c.description  || f.description,
-        highlights:     (c.highlights  || []).join("\n"),
-        tags:           (c.tags        || []).join(", "),
-        fees_min:       String(c.fees_min    || f.fees_min),
-        fees_max:       String(c.fees_max    || f.fees_max),
-        avg_placement:  String(c.avg_placement  || f.avg_placement),
-        highest_pkg:    String(c.highest_pkg    || f.highest_pkg),
-        top_recruiters: (c.top_recruiters || []).join(", "),
-        entrance_exams: (c.entrance_exams || []).join(", "),
-        courses:        (c.courses       || []).join(", "),
-        specializations:(c.specializations || []).join(", "),
-        hostel:         c.hostel ?? f.hostel,
-        rating:         String(c.rating || f.rating),
-        website:        c.website  || f.website,
-        phone:          c.phone    || f.phone,
-        email:          c.email    || f.email,
-        meta_title:     c.meta_title || f.meta_title,
-        meta_desc:      c.meta_desc  || f.meta_desc,
-        seo_keywords:   (c.seo_keywords || []).join(", "),
-      }))
-      setSuccess(`AI filled ${json.tokensUsed?.toLocaleString() || 0} tokens used`)
-    } catch (e) {
-      setError(String(e))
-    } finally {
-      setGenerating(false)
     }
   }
 
@@ -99,20 +82,22 @@ export default function AddCollegePage() {
     try {
       const payload = {
         ...form,
-        established:    form.established    ? Number(form.established)    : null,
-        nirf_rank:      form.nirf_rank      ? Number(form.nirf_rank)      : null,
-        fees_min:       form.fees_min       ? Number(form.fees_min)       : null,
-        fees_max:       form.fees_max       ? Number(form.fees_max)       : null,
-        avg_placement:  form.avg_placement  ? Number(form.avg_placement)  : null,
-        highest_pkg:    form.highest_pkg    ? Number(form.highest_pkg)    : null,
-        rating:         form.rating         ? Number(form.rating)         : null,
-        highlights:     form.highlights     ? form.highlights.split("\n").map(s => s.trim()).filter(Boolean) : [],
-        tags:           form.tags           ? form.tags.split(",").map(s => s.trim()).filter(Boolean) : [],
-        top_recruiters: form.top_recruiters ? form.top_recruiters.split(",").map(s => s.trim()).filter(Boolean) : [],
-        entrance_exams: form.entrance_exams ? form.entrance_exams.split(",").map(s => s.trim()).filter(Boolean) : [],
-        courses:        form.courses        ? form.courses.split(",").map(s => s.trim()).filter(Boolean) : [],
-        specializations:form.specializations? form.specializations.split(",").map(s => s.trim()).filter(Boolean) : [],
-        seo_keywords:   form.seo_keywords   ? form.seo_keywords.split(",").map(s => s.trim()).filter(Boolean) : [],
+        established:     form.established   ? Number(form.established)   : null,
+        nirf_rank:       form.nirf_rank     ? Number(form.nirf_rank)     : null,
+        fees_min:        form.fees_min      ? Number(form.fees_min)      : null,
+        fees_max:        form.fees_max      ? Number(form.fees_max)      : null,
+        avg_placement:   form.avg_placement ? Number(form.avg_placement) : null,
+        highest_pkg:     form.highest_pkg   ? Number(form.highest_pkg)   : null,
+        rating:          form.rating        ? Number(form.rating)        : null,
+        review_count:    form.review_count  ? Number(form.review_count)  : 0,
+        highlights:      form.highlights    ? form.highlights.split("\n").map(s => s.trim()).filter(Boolean) : [],
+        tags:            form.tags          ? form.tags.split(",").map(s => s.trim()).filter(Boolean) : [],
+        seo_keywords:    form.seo_keywords  ? form.seo_keywords.split(",").map(s => s.trim()).filter(Boolean) : [],
+        // chip arrays
+        courses,
+        specializations,
+        entrance_exams:  entranceExams,
+        top_recruiters:  topRecruiters,
       }
       const res = await fetch("/api/admin/colleges", {
         method: "POST",
@@ -141,16 +126,8 @@ export default function AddCollegePage() {
         </Link>
         <div className="flex-1">
           <h2 className="text-base font-bold text-gray-900">Add College</h2>
-          <p className="text-xs text-gray-500">Fill manually or use AI Auto-Fill</p>
+          <p className="text-xs text-gray-500">Fill in the details below or use Import for bulk upload</p>
         </div>
-        <button
-          onClick={handleAIFill}
-          disabled={generating}
-          className="flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-60 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-        >
-          {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
-          AI Auto-Fill
-        </button>
         <button
           onClick={handleSave}
           disabled={saving}
@@ -265,27 +242,20 @@ export default function AddCollegePage() {
             </div>
           </div>
           <div className="mt-4">
-            <label className={labelCls}>Top Recruiters (comma-separated)</label>
-            <input className={inputCls} value={form.top_recruiters} onChange={e => set("top_recruiters", e.target.value)} placeholder="TCS, Infosys, Wipro, Amazon" />
+            <ChipsInput label="Top Recruiters" value={topRecruiters} onChange={setTopRecruiters} placeholder="e.g. TCS, Infosys, Amazon…" />
           </div>
         </section>
 
         {/* Courses & Exams */}
         <section>
           <h3 className="text-sm font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100">Courses & Entrance Exams</h3>
+          <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 mb-4 text-xs text-blue-700">
+            <strong>Tip:</strong> Type a value and press <strong>Enter</strong> or <strong>comma</strong> to add it as a chip. Click <strong>✕</strong> to remove.
+          </div>
           <div className="space-y-4">
-            <div>
-              <label className={labelCls}>Courses Offered (comma-separated)</label>
-              <input className={inputCls} value={form.courses} onChange={e => set("courses", e.target.value)} placeholder="B.Tech, M.Tech, MBA" />
-            </div>
-            <div>
-              <label className={labelCls}>Specializations (comma-separated)</label>
-              <input className={inputCls} value={form.specializations} onChange={e => set("specializations", e.target.value)} placeholder="Computer Engineering, Mechanical Engineering" />
-            </div>
-            <div>
-              <label className={labelCls}>Entrance Exams Accepted (comma-separated)</label>
-              <input className={inputCls} value={form.entrance_exams} onChange={e => set("entrance_exams", e.target.value)} placeholder="MHT-CET, JEE Main, JEE Advanced" />
-            </div>
+            <ChipsInput label="Courses Offered" value={courses} onChange={setCourses} placeholder="e.g. B.Tech, M.Tech, MBA…" />
+            <ChipsInput label="Specializations / Branches" value={specializations} onChange={setSpecializations} placeholder="e.g. Computer Engineering, Finance…" />
+            <ChipsInput label="Entrance Exams Accepted" value={entranceExams} onChange={setEntranceExams} placeholder="e.g. MHT-CET, JEE Main, NEET…" />
           </div>
         </section>
 
@@ -306,10 +276,18 @@ export default function AddCollegePage() {
               <input className={inputCls} value={form.email} onChange={e => set("email", e.target.value)} placeholder="info@college.ac.in" />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="mt-4">
+            <label className={labelCls}>Logo / Image URL</label>
+            <input className={inputCls} value={form.image_url} onChange={e => set("image_url", e.target.value)} placeholder="https://cdn.example.com/college-logo.png" />
+          </div>
+          <div className="grid grid-cols-3 gap-4 mt-4">
             <div>
               <label className={labelCls}>Rating (0-5)</label>
               <input className={inputCls} type="number" step="0.1" min="0" max="5" value={form.rating} onChange={e => set("rating", e.target.value)} />
+            </div>
+            <div>
+              <label className={labelCls}>Review Count</label>
+              <input className={inputCls} type="number" min="0" value={form.review_count} onChange={e => set("review_count", e.target.value)} placeholder="0" />
             </div>
             <div className="flex items-center gap-2 pt-5">
               <input type="checkbox" id="hostel" checked={form.hostel} onChange={e => set("hostel", e.target.checked)} className="w-4 h-4 accent-orange-500" />

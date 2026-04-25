@@ -74,7 +74,7 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
   const [activeTab, setActiveTab] = useState("overview")
   const [enquiryOpen, setEnquiryOpen] = useState(false)
 
-  const faqs = (college as unknown as { faqs?: { q: string; a: string }[] }).faqs ?? []
+  const faqs = college.faqs ?? (college as unknown as { faqs?: { q: string; a: string }[] }).faqs ?? []
 
   return (
     <div>

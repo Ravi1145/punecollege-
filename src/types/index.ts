@@ -1,3 +1,6 @@
+import type { CollegeDetails } from "@/lib/db"
+export type { CollegeDetails }
+
 export interface Review {
   id: number
   studentName: string
@@ -41,6 +44,8 @@ export interface College {
   email: string
   image?: string
   stream: "Engineering" | "MBA" | "Medical" | "Arts & Science" | "Management" | "Law" | "Architecture"
+  details?: CollegeDetails
+  faqs?: { q: string; a: string }[]
 }
 
 export interface Course {

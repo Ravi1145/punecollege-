@@ -233,8 +233,8 @@ export default function CollegeGrid() {
                   ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
                   : "grid-cols-1"
               )}>
-                {filteredColleges.slice(0, 5).map((college) => (
-                  <CollegeCard key={college.slug} college={college} />
+                {filteredColleges.slice(0, 5).map((college, idx) => (
+                  <CollegeCard key={college.slug} college={college} priority={idx < 3} />
                 ))}
               </div>
               {filteredColleges.length > 5 && (

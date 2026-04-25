@@ -1,8 +1,8 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Save, Loader2, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowLeft, Save, Loader2, Plus, Trash2, ChevronDown, ChevronUp, X } from "lucide-react"
 
 const STREAMS = ["Engineering", "MBA", "Medical", "Law", "Arts & Science", "Management", "Architecture", "Commerce"]
 const TYPES   = ["Government", "Private", "Deemed", "Autonomous"]
@@ -29,6 +29,52 @@ function Section({ title, children, defaultOpen = true }: { title: string; child
   )
 }
 
+// ── Chip input — add/remove individual items ─────────────────────────
+function ChipsInput({ label, value, onChange, placeholder }: {
+  label: string
+  value: string[]
+  onChange: (v: string[]) => void
+  placeholder?: string
+}) {
+  const [input, setInput] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const add = () => {
+    const trimmed = input.trim()
+    if (!trimmed || value.includes(trimmed)) { setInput(""); return }
+    onChange([...value, trimmed])
+    setInput("")
+    inputRef.current?.focus()
+  }
+
+  const remove = (i: number) => onChange(value.filter((_, j) => j !== i))
+
+  return (
+    <div>
+      <label className={labelCls}>{label}</label>
+      <div className="min-h-[44px] flex flex-wrap gap-1.5 p-2 border border-gray-200 rounded-lg bg-white focus-within:border-orange-400 transition-colors">
+        {value.map((v, i) => (
+          <span key={i} className="inline-flex items-center gap-1 bg-orange-50 text-orange-700 border border-orange-200 text-xs font-medium px-2 py-1 rounded-full">
+            {v}
+            <button type="button" onClick={() => remove(i)} className="text-orange-400 hover:text-orange-700 ml-0.5">
+              <X className="w-3 h-3" />
+            </button>
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          className="flex-1 min-w-[120px] text-sm outline-none bg-transparent px-1 placeholder:text-gray-400"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); add() } if (e.key === "Backspace" && !input && value.length) { remove(value.length - 1) } }}
+          placeholder={value.length === 0 ? (placeholder ?? "Type and press Enter…") : "Add more…"}
+        />
+      </div>
+      <p className="text-[10px] text-gray-400 mt-1">Press Enter or comma to add. Backspace removes last item.</p>
+    </div>
+  )
+}
+
 export default function EditCollegePage() {
   const router = useRouter()
   const params = useParams()
@@ -36,6 +82,11 @@ export default function EditCollegePage() {
 
   const [form, setForm]       = useState<Record<string, string | boolean>>({})
   const [details, setDetails] = useState<Record<string, unknown>>({})
+  // Chip arrays — stored separately for easy add/remove
+  const [courses,        setCourses]        = useState<string[]>([])
+  const [specializations,setSpecializations]= useState<string[]>([])
+  const [entranceExams,  setEntranceExams]  = useState<string[]>([])
+  const [topRecruiters,  setTopRecruiters]  = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving]   = useState(false)
   const [error, setError]     = useState("")
@@ -54,21 +105,23 @@ export default function EditCollegePage() {
         const { college: c } = await res.json()
         setForm({
           ...c,
-          highlights:     (c.highlights     || []).join("\n"),
-          tags:           (c.tags           || []).join(", "),
-          top_recruiters: (c.top_recruiters || []).join(", "),
-          entrance_exams: (c.entrance_exams || []).join(", "),
-          courses:        (c.courses        || []).join(", "),
-          specializations:(c.specializations|| []).join(", "),
-          seo_keywords:   (c.seo_keywords   || []).join(", "),
-          established:    String(c.established || ""),
-          nirf_rank:      String(c.nirf_rank   ?? ""),
-          fees_min:       String(c.fees_min    || ""),
-          fees_max:       String(c.fees_max    || ""),
-          avg_placement:  String(c.avg_placement || ""),
-          highest_pkg:    String(c.highest_pkg   || ""),
-          rating:         String(c.rating        || "4.0"),
+          highlights:   (c.highlights   || []).join("\n"),
+          tags:         (c.tags         || []).join(", "),
+          seo_keywords: (c.seo_keywords || []).join(", "),
+          established:  String(c.established || ""),
+          nirf_rank:    String(c.nirf_rank   ?? ""),
+          fees_min:     String(c.fees_min    || ""),
+          fees_max:     String(c.fees_max    || ""),
+          avg_placement:String(c.avg_placement || ""),
+          highest_pkg:  String(c.highest_pkg   || ""),
+          rating:       String(c.rating        || "4.0"),
+          review_count: String(c.review_count  || "0"),
         })
+        // Chip arrays
+        setCourses(c.courses || [])
+        setSpecializations(c.specializations || [])
+        setEntranceExams(c.entrance_exams || [])
+        setTopRecruiters(c.top_recruiters || [])
         if (c.details) setDetails(c.details)
       } catch { setError("Failed to load college") }
       finally { setLoading(false) }
@@ -85,21 +138,23 @@ export default function EditCollegePage() {
       const lines = (v: string) => String(v || "").split("\n").map(s => s.trim()).filter(Boolean)
       const payload = {
         ...form,
-        established:    form.established  ? Number(form.established)  : null,
-        nirf_rank:      form.nirf_rank    ? Number(form.nirf_rank)    : null,
-        fees_min:       form.fees_min     ? Number(form.fees_min)     : null,
-        fees_max:       form.fees_max     ? Number(form.fees_max)     : null,
-        avg_placement:  form.avg_placement? Number(form.avg_placement): null,
-        highest_pkg:    form.highest_pkg  ? Number(form.highest_pkg)  : null,
-        rating:         form.rating       ? Number(form.rating)       : null,
-        highlights:     lines(form.highlights as string),
-        tags:           arr(form.tags as string),
-        top_recruiters: arr(form.top_recruiters as string),
-        entrance_exams: arr(form.entrance_exams as string),
-        courses:        arr(form.courses as string),
-        specializations:arr(form.specializations as string),
-        seo_keywords:   arr(form.seo_keywords as string),
-        details:        Object.keys(details).length > 0 ? details : null,
+        established:     form.established  ? Number(form.established)  : null,
+        nirf_rank:       form.nirf_rank    ? Number(form.nirf_rank)    : null,
+        fees_min:        form.fees_min     ? Number(form.fees_min)     : null,
+        fees_max:        form.fees_max     ? Number(form.fees_max)     : null,
+        avg_placement:   form.avg_placement? Number(form.avg_placement): null,
+        highest_pkg:     form.highest_pkg  ? Number(form.highest_pkg)  : null,
+        rating:          form.rating       ? Number(form.rating)       : null,
+        review_count:    form.review_count ? Number(form.review_count) : 0,
+        highlights:      lines(form.highlights as string),
+        tags:            arr(form.tags as string),
+        seo_keywords:    arr(form.seo_keywords as string),
+        // chip arrays
+        courses,
+        specializations,
+        entrance_exams:  entranceExams,
+        top_recruiters:  topRecruiters,
+        details:         Object.keys(details).length > 0 ? details : null,
       }
       const res = await fetch(`/api/admin/colleges/${id}`, {
         method: "PUT",
@@ -201,17 +256,36 @@ export default function EditCollegePage() {
               <div><label className={labelCls}>Highest Package (₹)</label>
                 <input className={inputCls} type="number" value={String(form.highest_pkg||"")} onChange={e=>set("highest_pkg",e.target.value)} /></div>
             </div>
-            <div><label className={labelCls}>Top Recruiters (comma-separated)</label>
-              <input className={inputCls} value={String(form.top_recruiters||"")} onChange={e=>set("top_recruiters",e.target.value)} /></div>
+            <ChipsInput
+              label="Top Recruiters"
+              value={topRecruiters}
+              onChange={setTopRecruiters}
+              placeholder="e.g. TCS, Infosys, Google…"
+            />
           </Section>
 
           <Section title="Courses & Exams">
-            <div><label className={labelCls}>Courses (comma-separated)</label>
-              <input className={inputCls} value={String(form.courses||"")} onChange={e=>set("courses",e.target.value)} /></div>
-            <div><label className={labelCls}>Specializations (comma-separated)</label>
-              <input className={inputCls} value={String(form.specializations||"")} onChange={e=>set("specializations",e.target.value)} /></div>
-            <div><label className={labelCls}>Entrance Exams (comma-separated)</label>
-              <input className={inputCls} value={String(form.entrance_exams||"")} onChange={e=>set("entrance_exams",e.target.value)} /></div>
+            <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 mb-2 text-xs text-blue-700">
+              <strong>Tip:</strong> Type a course name and press <kbd className="bg-white border border-blue-200 rounded px-1">Enter</kbd> or <kbd className="bg-white border border-blue-200 rounded px-1">,</kbd> to add. Click <strong>✕</strong> to remove. These chips appear as badges on the college profile.
+            </div>
+            <ChipsInput
+              label="Courses Offered"
+              value={courses}
+              onChange={setCourses}
+              placeholder="e.g. B.Tech, M.Tech, MBA…"
+            />
+            <ChipsInput
+              label="Specializations / Branches"
+              value={specializations}
+              onChange={setSpecializations}
+              placeholder="e.g. Computer Engineering, MBA Finance…"
+            />
+            <ChipsInput
+              label="Entrance Exams Accepted"
+              value={entranceExams}
+              onChange={setEntranceExams}
+              placeholder="e.g. JEE Main, MHT-CET, NEET…"
+            />
           </Section>
 
           <Section title="Contact">
@@ -223,9 +297,13 @@ export default function EditCollegePage() {
               <div><label className={labelCls}>Email</label>
                 <input className={inputCls} value={String(form.email||"")} onChange={e=>set("email",e.target.value)} /></div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div><label className={labelCls}>Logo / Image URL</label>
+              <input className={inputCls} value={String(form.image_url||"")} onChange={e=>set("image_url",e.target.value)} placeholder="https://cdn.example.com/logo.png" /></div>
+            <div className="grid grid-cols-3 gap-4">
               <div><label className={labelCls}>Rating (0–5)</label>
                 <input className={inputCls} type="number" step="0.1" min="0" max="5" value={String(form.rating||"4.0")} onChange={e=>set("rating",e.target.value)} /></div>
+              <div><label className={labelCls}>Review Count</label>
+                <input className={inputCls} type="number" min="0" value={String(form.review_count||"0")} onChange={e=>set("review_count",e.target.value)} /></div>
               <div className="flex items-center gap-2 pt-5">
                 <input type="checkbox" id="hostel" checked={!!form.hostel} onChange={e=>set("hostel",e.target.checked)} className="w-4 h-4 accent-orange-500" />
                 <label htmlFor="hostel" className="text-sm text-gray-700">Hostel Available</label>

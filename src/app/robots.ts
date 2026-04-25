@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/admin/", "/api/ai/"],
       },
     ],
-    sitemap: "https://collegepune.in/sitemap.xml",
+    sitemap: `${process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"}/sitemap.xml`,
   }
 }

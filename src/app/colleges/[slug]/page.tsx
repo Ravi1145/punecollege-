@@ -93,7 +93,7 @@ async function resolveCollege(slug: string): Promise<{ college: College; details
 
   // 2. Try local hardcoded data
   const local = getCollegeBySlug(slug)
-  if (local) return { college: local }
+  if (local) return { college: local, details: local.details }
 
   // 3. Try external API
   try {

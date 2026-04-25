@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 import { colleges } from "@/data/colleges"
 import { seoPages } from "@/data/seoPages"
 
-const BASE_URL = "https://collegepune.in"
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()

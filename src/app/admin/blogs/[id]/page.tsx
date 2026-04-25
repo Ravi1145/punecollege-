@@ -62,7 +62,7 @@ export default function EditBlogPage() {
   const handleAIGenerate = async () => {
     if (!aiTopic.trim() || !aiKeyword.trim()) { setError("Enter topic and keyword first"); return }
     const key = localStorage.getItem("admin_key")
-    if (!key) return
+    if (!key) { router.replace("/admin/login"); return }
     setGenerating(true); setError("")
     try {
       const res = await fetch("/api/admin/ai/generate-blog", {
@@ -92,7 +92,7 @@ export default function EditBlogPage() {
   const handleSave = async () => {
     if (!form.title || !form.slug) { setError("Title and slug are required"); return }
     const key = localStorage.getItem("admin_key")
-    if (!key) return
+    if (!key) { router.replace("/admin/login"); return }
     setSaving(true); setError("")
     try {
       const payload = {
@@ -114,7 +114,7 @@ export default function EditBlogPage() {
   const handleDelete = async () => {
     if (!confirm(`Delete "${form.title}"? This cannot be undone.`)) return
     const key = localStorage.getItem("admin_key")
-    if (!key) return
+    if (!key) { router.replace("/admin/login"); return }
     setDeleting(true)
     try {
       await fetch(`/api/admin/blogs/${id}`, { method: "DELETE", headers: { "x-admin-key": key } })

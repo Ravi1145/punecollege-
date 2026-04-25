@@ -1,5 +1,6 @@
 import { Metadata } from "next"
-import { generateMetadata as genMeta } from "@/lib/seo"
+import Script from "next/script"
+import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
 import { exams } from "@/data/exams"
 import { Calendar, ExternalLink, Clock, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -12,15 +13,71 @@ export const metadata: Metadata = genMeta({
   keywords: ["mht-cet 2026", "jee main 2026 pune", "neet 2026", "cat 2026", "snap 2026", "entrance exams pune"],
 })
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
+
 const levelColors: Record<string, string> = {
   National: "bg-blue-100 text-blue-700",
   State: "bg-green-100 text-green-700",
   University: "bg-purple-100 text-purple-700",
 }
 
+// Parse "Apr 20 – May 15, 2026" → ISO date (returns start date)
+function parseExamDate(dateStr: string): string | undefined {
+  if (!dateStr) return undefined
+  const match = dateStr.match(/(\w+ \d+(?:–\d+)?,? \d{4})/)
+  if (!match) return undefined
+  const clean = match[1].replace(/–\d+/, "").trim()
+  const d = new Date(clean)
+  return isNaN(d.getTime()) ? undefined : d.toISOString().split("T")[0]
+}
+
 export default function ExamsPage() {
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: BASE_URL },
+    { name: "Entrance Exams", url: `${BASE_URL}/exams` },
+  ])
+
+  // Schema.org Event array for each exam
+  const eventListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Entrance Exam Calendar 2026 — Pune Colleges",
+    description: "Complete list of entrance exams for Pune college admissions in 2026",
+    numberOfItems: exams.length,
+    itemListElement: exams.map((exam, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      item: {
+        "@context": "https://schema.org",
+        "@type": "Event",
+        name: `${exam.name} 2026 — ${exam.fullName}`,
+        description: exam.description,
+        url: exam.website,
+        organizer: {
+          "@type": "Organization",
+          name: exam.conductedBy,
+        },
+        startDate: parseExamDate(exam.examDate) ?? "2026-01-01",
+        eventStatus: "https://schema.org/EventScheduled",
+        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        location: {
+          "@type": "Place",
+          name: exam.level === "State" ? "Maharashtra" : "India",
+          address: { "@type": "PostalAddress", addressCountry: "IN" },
+        },
+        audience: {
+          "@type": "Audience",
+          audienceType: "Students applying to colleges in Pune",
+        },
+      },
+    })),
+  }
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <Script id="exams-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <Script id="exams-events" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(eventListSchema) }} />
+
       <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">

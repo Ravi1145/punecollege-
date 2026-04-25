@@ -2,7 +2,7 @@ import { Metadata } from "next"
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 const SITE_NAME = "CollegePune"
-const DEFAULT_OG_IMAGE = `${BASE_URL}/og-default.jpg`
+const DEFAULT_OG_IMAGE = `${BASE_URL}/api/og`
 
 export function generateMetadata({
   title,

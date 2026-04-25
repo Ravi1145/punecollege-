@@ -2,14 +2,14 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { LayoutDashboard, Users, MessageSquare, Building2, FileText, Sparkles, LogOut, Menu, X } from "lucide-react"
+import { LayoutDashboard, Users, MessageSquare, Building2, FileText, Upload, LogOut, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { href: "/admin",           label: "Dashboard",  icon: LayoutDashboard },
   { href: "/admin/colleges",  label: "Colleges",   icon: Building2 },
   { href: "/admin/blogs",     label: "Blogs",      icon: FileText },
-  { href: "/admin/ai-studio", label: "AI Studio",  icon: Sparkles },
+  { href: "/admin/import",    label: "Import",     icon: Upload },
   { href: "/admin/leads",     label: "Leads",      icon: Users },
   { href: "/admin/enquiries", label: "Enquiries",  icon: MessageSquare },
 ]

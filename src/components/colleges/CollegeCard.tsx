@@ -12,9 +12,10 @@ const SHORTLIST_KEY = "shortlisted_colleges"
 interface CollegeCardProps {
   college: College
   variant?: "default" | "compact" | "featured"
+  priority?: boolean
 }
 
-function CollegeLogo({ college, size = "md" }: { college: College; size?: "sm" | "md" | "lg" }) {
+function CollegeLogo({ college, size = "md", priority = false }: { college: College; size?: "sm" | "md" | "lg"; priority?: boolean }) {
   const [imgError, setImgError] = useState(false)
   const sizeMap = { sm: 36, md: 52, lg: 64 }
   const px = sizeMap[size]
@@ -31,11 +32,12 @@ function CollegeLogo({ college, size = "md" }: { college: College; size?: "sm" |
       >
         <Image
           src={college.image}
-          alt={`${college.name} logo`}
+          alt={`${college.name} — ${college.type} college in Pune`}
           width={px}
           height={px}
           className="object-contain p-1"
           onError={() => setImgError(true)}
+          priority={priority}
           unoptimized
         />
       </div>
@@ -57,7 +59,7 @@ function CollegeLogo({ college, size = "md" }: { college: College; size?: "sm" |
   )
 }
 
-export default function CollegeCard({ college, variant = "default" }: CollegeCardProps) {
+export default function CollegeCard({ college, variant = "default", priority = false }: CollegeCardProps) {
   const [isShortlisted, setIsShortlisted] = useState(false)
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
         <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
           <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center">
             {college.image ? (
-              <Image src={college.image} alt={college.shortName} width={40} height={40} className="object-contain p-0.5" unoptimized onError={() => {}} />
+              <Image src={college.image} alt={`${college.name} — ${college.location} ${college.type} college`} width={40} height={40} className="object-contain p-0.5" unoptimized onError={() => {}} />
             ) : (
               <span className="text-xs font-bold text-gray-600">{college.shortName.slice(0, 2)}</span>
             )}
@@ -140,7 +142,7 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
 
           {/* Logo + Name */}
           <div className="flex items-start gap-3 pr-8">
-            <CollegeLogo college={college} size="md" />
+            <CollegeLogo college={college} size="md" priority={priority} />
             <div className="min-w-0 flex-1">
               <h3 className="text-white font-bold text-sm leading-snug group-hover:text-orange-300 transition-colors line-clamp-2">
                 {college.name}
