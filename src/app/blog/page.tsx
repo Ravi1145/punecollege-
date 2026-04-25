@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
+import { getAllBlogs } from "@/lib/db"
 import { blogs as staticBlogs } from "@/data/blogs"
 import { Clock, ArrowRight, Rss } from "lucide-react"
 
@@ -32,11 +33,8 @@ interface Post {
 
 async function fetchPosts(): Promise<Post[]> {
   try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const res = await fetch(`${base}/api/blogs?limit=50`, { next: { revalidate: 300 } })
-    if (!res.ok) throw new Error('api fail')
-    const { blogs } = await res.json()
-    if (Array.isArray(blogs) && blogs.length > 0) return blogs as Post[]
+    const result = await getAllBlogs({ status: 'published', limit: 50 })
+    if (result.blogs && result.blogs.length > 0) return result.blogs as Post[]
   } catch {
     // fall through to static
   }

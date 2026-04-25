@@ -1,7 +1,6 @@
 "use client"
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import {
   MapPin, Phone, Mail, Globe, Award, TrendingUp, Users, BookOpen,
   Star, ChevronRight, MessageSquare, Building2, CheckCircle2,
@@ -100,20 +99,10 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
 
           <div className="flex items-start gap-5 mb-5">
             {/* Logo */}
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white flex-shrink-0 shadow-lg overflow-hidden">
-              {college.image ? (
-                <Image
-                  src={college.image}
-                  alt={`${college.name} logo`}
-                  fill
-                  sizes="80px"
-                  className="object-contain p-1.5"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-[#0A1628] font-extrabold text-lg">{college.shortName.slice(0, 3)}</span>
-                </div>
-              )}
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/20 backdrop-blur flex-shrink-0 flex items-center justify-center shadow-lg">
+              <span className="text-white font-extrabold text-xs sm:text-sm leading-tight text-center px-1">
+                {college.shortName}
+              </span>
             </div>
 
             <div className="flex-1 min-w-0">
@@ -762,15 +751,29 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
                   )}
                 </div>
               )}
-            </div>
 
-            {/* CTA Card */}
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-5 text-white">
-              <h3 className="font-bold mb-1 text-sm">Free Admission Counseling</h3>
-              <p className="text-orange-100 text-xs mb-3">Get expert guidance for {college.stream} admissions. 100% free.</p>
-              <Link href="/counselling" className="block text-center bg-white text-orange-600 font-bold text-sm rounded-xl py-2.5 hover:bg-orange-50 transition-colors">
-                Book Free Session
-              </Link>
+              {/* CTA Card */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-4 text-white">
+                  <h3 className="font-bold mb-1 text-sm">Free Admission Counseling</h3>
+                  <p className="text-orange-100 text-xs mb-3">
+                    {college.stream === "Engineering"
+                      ? `MHT-CET / JEE guidance for ${college.shortName ?? college.name}. 100% free.`
+                      : college.stream === "Medical"
+                      ? `NEET counselling for ${college.shortName ?? college.name}. 100% free.`
+                      : college.stream === "MBA"
+                      ? `CAT / MAH-MBA-CET guidance for ${college.shortName ?? college.name}. 100% free.`
+                      : college.stream === "Law"
+                      ? `MH-CET Law / CLAT guidance for ${college.shortName ?? college.name}. 100% free.`
+                      : college.stream === "Architecture"
+                      ? `NATA / JEE Paper 2 guidance for ${college.shortName ?? college.name}. 100% free.`
+                      : `Get expert guidance for ${college.shortName ?? college.name} admissions. 100% free.`}
+                  </p>
+                  <Link href="/counselling" className="block text-center bg-white text-orange-600 font-bold text-sm rounded-xl py-2.5 hover:bg-orange-50 transition-colors">
+                    Book Free Session
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>

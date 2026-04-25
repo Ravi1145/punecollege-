@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { MapPin, TrendingUp, Heart, IndianRupee, Star, GitCompare } from "lucide-react"
 import { College } from "@/types"
 import CompareButton from "@/components/ui/CompareButton"
@@ -15,46 +14,17 @@ interface CollegeCardProps {
   priority?: boolean
 }
 
-function CollegeLogo({ college, size = "md", priority = false }: { college: College; size?: "sm" | "md" | "lg"; priority?: boolean }) {
-  const [imgError, setImgError] = useState(false)
-  const sizeMap = { sm: 36, md: 52, lg: 64 }
-  const px = sizeMap[size]
-
-  if (college.image && !imgError) {
-    return (
-      <div
-        className={cn(
-          "rounded-xl bg-white flex items-center justify-center overflow-hidden border border-white/20 flex-shrink-0 shadow-sm",
-          size === "sm" && "w-9 h-9",
-          size === "md" && "w-[52px] h-[52px]",
-          size === "lg" && "w-16 h-16",
-        )}
-      >
-        <Image
-          src={college.image}
-          alt={`${college.name} — ${college.type} college in Pune`}
-          width={px}
-          height={px}
-          className="object-contain p-1"
-          onError={() => setImgError(true)}
-          priority={priority}
-          unoptimized
-        />
-      </div>
-    )
-  }
-
-  // Fallback: initials badge
+function CollegeLogo({ college, size = "md" }: { college: College; size?: "sm" | "md" | "lg"; priority?: boolean }) {
   return (
     <div
       className={cn(
-        "rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 font-bold text-white",
-        size === "sm" && "w-9 h-9 text-xs",
-        size === "md" && "w-[52px] h-[52px] text-sm",
-        size === "lg" && "w-16 h-16 text-base",
+        "rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 font-bold text-white leading-tight text-center",
+        size === "sm" && "w-9 h-9 text-[9px]",
+        size === "md" && "w-[52px] h-[52px] text-xs",
+        size === "lg" && "w-16 h-16 text-sm",
       )}
     >
-      {college.shortName.slice(0, 3)}
+      {college.shortName}
     </div>
   )
 }
@@ -89,12 +59,8 @@ export default function CollegeCard({ college, variant = "default", priority = f
     return (
       <Link href={`/colleges/${college.slug}`} className="block">
         <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
-          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0 flex items-center justify-center">
-            {college.image ? (
-              <Image src={college.image} alt={`${college.name} — ${college.location} ${college.type} college`} width={40} height={40} className="object-contain p-0.5" unoptimized onError={() => {}} />
-            ) : (
-              <span className="text-xs font-bold text-gray-600">{college.shortName.slice(0, 2)}</span>
-            )}
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex-shrink-0 flex items-center justify-center">
+            <span className="text-[9px] font-bold text-white leading-tight text-center px-0.5">{college.shortName}</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-orange-600 transition-colors">
