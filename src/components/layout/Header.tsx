@@ -192,9 +192,9 @@ export default function Header() {
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
-              <div className="leading-none hidden sm:block">
+              <div className="leading-none">
                 <span className="text-lg font-extrabold text-white">College<span className="text-orange-400">Pune</span></span>
-                <p className="text-[10px] text-gray-400 -mt-0.5">AI-Powered Discovery</p>
+                <p className="text-[10px] text-gray-400 -mt-0.5 hidden sm:block">AI-Powered Discovery</p>
               </div>
             </Link>
 
