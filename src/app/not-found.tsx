@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import { Home, Search, GraduationCap, BookOpen, PhoneCall, ArrowLeft } from "lucide-react"
+import { Home, Search, GraduationCap, BookOpen, PhoneCall } from "lucide-react"
+import GoBackButton from "@/components/ui/GoBackButton"
 
 export const metadata: Metadata = {
   title: "Page Not Found — CollegePune",
@@ -146,13 +147,7 @@ export default function NotFound() {
 
         {/* Go back link */}
         <div className="text-center mt-6">
-          <button
-            onClick={() => typeof window !== "undefined" && window.history.back()}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-orange-600 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Go back to previous page
-          </button>
+          <GoBackButton />
         </div>
 
         {/* SEO text for bots */}

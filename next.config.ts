@@ -61,13 +61,9 @@ const nextConfig: NextConfig = {
           { key: "X-Robots-Tag", value: "noindex, nofollow" },
         ],
       },
-      // Cache static assets aggressively (production only — avoids stale chunk errors in dev)
-      ...(process.env.NODE_ENV === "production" ? [{
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      }] : []),
+      // NOTE: /_next/static cache headers intentionally omitted — Vercel sets
+      // immutable cache-control on /_next/static automatically. Adding it here
+      // triggers a Next.js warning and can break dev HMR.
       // Cache college & blog pages with ISR
       {
         source: "/colleges/:path*",
