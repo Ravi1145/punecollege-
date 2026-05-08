@@ -45,14 +45,16 @@ export async function GET(req: NextRequest) {
               <div style={{
                 display: "flex",
                 width: "48px", height: "48px",
-                background: "#f97316",
-                borderRadius: "12px",
+                background: "#f8fafc",
+                borderRadius: "14px",
                 alignItems: "center", justifyContent: "center",
-                fontSize: "22px", fontWeight: 800, color: "white",
+                fontSize: "22px", fontWeight: 800, color: "#ff5a14",
+                border: "1px solid rgba(255,255,255,0.08)",
               }}>C</div>
-              <span style={{ fontSize: "22px", fontWeight: 700, color: "white", letterSpacing: "-0.5px" }}>
-                CollegePune
-              </span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "0px", fontSize: "22px", fontWeight: 800, letterSpacing: "-0.5px" }}>
+                <span style={{ color: "white" }}>College</span>
+                <span style={{ color: "#ff5a14" }}>Pune</span>
+              </div>
             </div>
             {category && (
               <div style={{

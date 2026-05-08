@@ -20,6 +20,9 @@ const streams = [
       { name: "VIT Pune", href: "/colleges/vit-pune-vishwakarma-institute-of-technology" },
       { name: "PICT", href: "/colleges/pict-pune-institute-of-computer-technology" },
       { name: "Engineering Colleges Guide 2026 →", href: "/engineering-colleges-pune" },
+      { name: "Top 10 Engineering Colleges →", href: "/top-10-engineering-colleges-in-pune" },
+      { name: "Placement Rankings 2026 →", href: "/engineering-colleges-pune-placement" },
+      { name: "Low Fees Colleges →", href: "/low-fees-engineering-colleges-pune" },
       { name: "All Engineering Colleges →", href: "/colleges?stream=Engineering" },
     ],
     courses: [
@@ -41,6 +44,9 @@ const streams = [
       { name: "SIBM Pune", href: "/colleges/sibm-symbiosis-institute-business-management-pune" },
       { name: "MIT-SOM Pune", href: "/colleges/mit-school-of-management-pune" },
       { name: "MBA Colleges Guide 2026 →", href: "/mba-colleges-pune" },
+      { name: "Top 10 MBA Colleges →", href: "/top-10-mba-colleges-in-pune" },
+      { name: "MBA Placement Rankings →", href: "/mba-colleges-pune-placement" },
+      { name: "MBA Without CAT →", href: "/mba-admission-pune-without-cat" },
       { name: "All MBA Colleges →", href: "/colleges?stream=MBA" },
     ],
     courses: [
@@ -126,6 +132,9 @@ const tools = [
   { label: "College Predictor", href: "/predictor", icon: GraduationCap, desc: "Find colleges by your score", color: "text-orange-600 bg-orange-50" },
   { label: "Compare Colleges", href: "/compare", icon: BarChart3, desc: "Side-by-side comparison", color: "text-blue-600 bg-blue-50" },
   { label: "ROI Calculator", href: "/roi-calculator", icon: Calculator, desc: "Calculate education returns", color: "text-green-600 bg-green-50" },
+  { label: "Fees Calculator", href: "/pune-college-fees-calculator", icon: Calculator, desc: "Total course fee estimator", color: "text-yellow-600 bg-yellow-50" },
+  { label: "Placement Comparator", href: "/pune-college-placement-comparator", icon: TrendingUp, desc: "Compare placement data", color: "text-indigo-600 bg-indigo-50" },
+  { label: "Admission Deadlines", href: "/pune-admission-deadline-tracker-2026", icon: Star, desc: "2026 deadline tracker", color: "text-red-600 bg-red-50" },
   { label: "NIRF Insights", href: "/nirf-insights", icon: Award, desc: "Official rankings & data", color: "text-purple-600 bg-purple-50" },
   { label: "AI College Finder", href: "/ai-finder", icon: Sparkles, desc: "AI-powered matching", color: "text-pink-600 bg-pink-50" },
   { label: "Free Counselling", href: "/counselling", icon: PhoneCall, desc: "Talk to an expert", color: "text-teal-600 bg-teal-50" },
@@ -188,14 +197,14 @@ export default function Header() {
         <div className="bg-[#0A1628]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-white" />
-              </div>
-              <div className="leading-none">
-                <span className="text-lg font-extrabold text-white">College<span className="text-orange-400">Pune</span></span>
-                <p className="text-[10px] text-gray-400 -mt-0.5 hidden sm:block">AI-Powered Discovery</p>
-              </div>
+            <Link href="/" className="flex items-center flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.svg"
+                alt="CollegePune — Best Colleges in Pune"
+                height={56}
+                className="h-16 sm:h-20 lg:h-20 w-auto"
+              />
             </Link>
 
             {/* Search bar — desktop */}
@@ -442,11 +451,9 @@ export default function Header() {
           <div className="absolute top-0 left-0 h-full w-[320px] max-w-full bg-white flex flex-col shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between p-4 bg-[#0A1628]">
-              <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-extrabold text-white text-lg">College<span className="text-orange-400">Pune</span></span>
+              <Link href="/" onClick={() => setMobileOpen(false)}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.svg" alt="CollegePune" height={40} className="h-16 sm:h-20 w-auto" />
               </Link>
               <button onClick={() => setMobileOpen(false)} className="text-white/70 hover:text-white p-1">
                 <X className="w-5 h-5" />

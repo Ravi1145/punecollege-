@@ -24,8 +24,13 @@ export function generateMetadata({
     description,
     keywords: [
       "colleges in pune",
+      "colleges in pune 2026",
       "best college in pune",
+      "best college in pune 2026",
+      "top colleges in pune 2026",
+      "college admission pune 2026",
       "pune university colleges",
+      "sppu affiliated colleges 2026",
       ...keywords,
     ],
     authors: [{ name: SITE_NAME }],
@@ -113,7 +118,7 @@ export function generateWebSiteSchema() {
     "@type": "WebSite",
     name: "CollegePune",
     url: BASE_URL,
-    description: "Find the best colleges in Pune. Compare fees, placements, rankings for engineering, MBA, medical and more.",
+    description: "Find the best colleges in Pune 2026. Compare fees, placements, NAAC grades and 2026 admission details for engineering, MBA, medical, arts, design and more.",
     potentialAction: {
       "@type": "SearchAction",
       target: {

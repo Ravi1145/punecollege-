@@ -20,6 +20,31 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // SEO keyword slug aliases → canonical pages
+      {
+        source: "/engineering-colleges-in-pune",
+        destination: "/engineering-colleges-pune",
+        permanent: true,
+      },
+      {
+        source: "/mba-colleges-in-pune",
+        destination: "/mba-colleges-pune",
+        permanent: true,
+      },
+      {
+        source: "/best-engineering-colleges-pune",
+        destination: "/engineering-colleges-pune",
+        permanent: true,
+      },
+      {
+        source: "/best-mba-colleges-pune",
+        destination: "/mba-colleges-pune",
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       // Tell Google to index all public pages
@@ -36,13 +61,13 @@ const nextConfig: NextConfig = {
           { key: "X-Robots-Tag", value: "noindex, nofollow" },
         ],
       },
-      // Cache static assets aggressively
-      {
+      // Cache static assets aggressively (production only — avoids stale chunk errors in dev)
+      ...(process.env.NODE_ENV === "production" ? [{
         source: "/_next/static/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
-      },
+      }] : []),
       // Cache college & blog pages with ISR
       {
         source: "/colleges/:path*",

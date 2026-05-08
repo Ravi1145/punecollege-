@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { GraduationCap, Mail, Phone, MapPin, Share2, ExternalLink, Rss, Play } from "lucide-react"
+import { Mail, Phone, MapPin, Share2, ExternalLink, Rss, Play } from "lucide-react"
 
 const footerLinks = {
   "Top Colleges": [
@@ -10,43 +10,49 @@ const footerLinks = {
     { label: "VIT Pune", href: "/colleges/vit-pune-vishwakarma-institute-of-technology" },
     { label: "Fergusson College", href: "/colleges/fergusson-college-pune" },
   ],
-  "Top Courses": [
-    { label: "B.Tech in Pune", href: "/courses/btech-computer-engineering-pune" },
-    { label: "MBA in Pune", href: "/courses/mba-pune-master-business-administration" },
-    { label: "MBBS in Pune", href: "/courses/mbbs-pune-bachelor-medicine-surgery" },
-    { label: "BCA in Pune", href: "/courses/bca-bachelor-computer-applications-pune" },
-    { label: "BBA in Pune", href: "/courses/bba-bachelor-business-administration-pune" },
-    { label: "All Courses", href: "/courses" },
+  "Engineering Guides": [
+    { label: "Engineering Colleges Pune", href: "/engineering-colleges-pune" },
+    { label: "Top 10 Engineering Colleges", href: "/top-10-engineering-colleges-in-pune" },
+    { label: "Placement Rankings", href: "/engineering-colleges-pune-placement" },
+    { label: "Low Fees Engineering Colleges", href: "/low-fees-engineering-colleges-pune" },
+    { label: "Scholarships for Engineering", href: "/engineering-colleges-pune-scholarship" },
+    { label: "Admission Without JEE", href: "/engineering-admission-pune-without-jee" },
   ],
-  "Entrance Exams": [
-    { label: "MHT-CET 2026", href: "/exams" },
-    { label: "JEE Main 2026", href: "/exams" },
-    { label: "NEET 2026", href: "/exams" },
-    { label: "CAT 2026", href: "/exams" },
-    { label: "SNAP 2026", href: "/exams" },
-    { label: "All Exams", href: "/exams" },
+  "MBA Guides": [
+    { label: "MBA Colleges Pune", href: "/mba-colleges-pune" },
+    { label: "Top 10 MBA Colleges", href: "/top-10-mba-colleges-in-pune" },
+    { label: "MBA Placement Rankings", href: "/mba-colleges-pune-placement" },
+    { label: "Low Fees MBA Colleges", href: "/low-fees-mba-colleges-pune" },
+    { label: "MBA Without CAT", href: "/mba-admission-pune-without-cat" },
+    { label: "MBA Scholarships Pune", href: "/mba-colleges-pune-scholarship" },
   ],
-  "Quick Links": [
+  "Tools & Quick Links": [
     { label: "AI College Finder", href: "/ai-finder" },
     { label: "Compare Colleges", href: "/compare" },
-    { label: "College Blog", href: "/blog" },
-    { label: "Engineering Colleges Pune", href: "/colleges?stream=Engineering" },
-    { label: "MBA Colleges Pune", href: "/colleges?stream=MBA" },
-    { label: "Medical Colleges Pune", href: "/colleges?stream=Medical" },
+    { label: "Fees Calculator", href: "/pune-college-fees-calculator" },
+    { label: "Placement Comparator", href: "/pune-college-placement-comparator" },
+    { label: "Admission Deadlines 2026", href: "/pune-admission-deadline-tracker-2026" },
+    { label: "Free Counselling", href: "/counselling" },
   ],
 }
 
 const seoLinks = [
-  "Best College in Pune",
-  "Best BTech College in Pune",
-  "Best MBA College in Pune",
-  "Top Engineering Colleges Pune",
-  "Medical Colleges Pune",
-  "Government Colleges Pune",
-  "Colleges with Hostel Pune",
-  "NAAC A++ Colleges Pune",
-  "Colleges in Pune with Fees",
-  "Pune University Colleges List",
+  { label: "Best College in Pune", href: "/" },
+  { label: "Best BTech College in Pune", href: "/engineering-colleges-pune" },
+  { label: "Best MBA College in Pune", href: "/mba-colleges-pune" },
+  { label: "Top Engineering Colleges Pune", href: "/top-10-engineering-colleges-in-pune" },
+  { label: "Top MBA Colleges Pune", href: "/top-10-mba-colleges-in-pune" },
+  { label: "Medical Colleges Pune", href: "/colleges?stream=Medical" },
+  { label: "Private Engineering Colleges Pune", href: "/private-engineering-colleges-pune" },
+  { label: "Private MBA Colleges Pune", href: "/private-mba-colleges-pune" },
+  { label: "Engineering Placement 2026", href: "/engineering-colleges-pune-placement" },
+  { label: "MBA Placement 2026", href: "/mba-colleges-pune-placement" },
+  { label: "Cheapest Engineering Colleges Pune", href: "/low-fees-engineering-colleges-pune" },
+  { label: "Cheapest MBA Colleges Pune", href: "/low-fees-mba-colleges-pune" },
+  { label: "Direct Admission Engineering Pune", href: "/direct-admission-engineering-colleges-pune" },
+  { label: "Direct Admission MBA Pune", href: "/direct-admission-mba-colleges-pune" },
+  { label: "Colleges in Pune with Fees", href: "/pune-college-fees-calculator" },
+  { label: "Pune University Colleges List", href: "/colleges" },
 ]
 
 export default function Footer() {
@@ -57,13 +63,9 @@ export default function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-6 sm:gap-10">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-orange-500 rounded-lg flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-white">
-                College<span className="text-orange-500">Pune</span>
-              </span>
+            <Link href="/" className="inline-flex mb-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.svg" alt="CollegePune" height={40} className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
               India&apos;s AI-powered college discovery portal for Pune. Find and compare the best engineering, MBA, medical, and arts colleges with real fees, placements, and student reviews.
@@ -125,13 +127,13 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-wrap gap-x-4 gap-y-2">
-            {seoLinks.map((keyword, i) => (
+            {seoLinks.map((link, i) => (
               <Link
                 key={i}
-                href={`/colleges?search=${encodeURIComponent(keyword)}`}
+                href={link.href}
                 className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
               >
-                {keyword}
+                {link.label}
               </Link>
             ))}
           </div>

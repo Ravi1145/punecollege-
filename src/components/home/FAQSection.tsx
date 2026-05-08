@@ -35,6 +35,22 @@ const faqs = [
   {
     q: "What are the best low-budget colleges in Pune for 2026?",
     a: "Best low-budget options in Pune 2026 — Engineering: COEP (₹80K/yr, govt), JSPM RSCOE (₹1.2L/yr), AISSMS COE (₹1.1L/yr). Arts & Science: Fergusson College (₹15K–45K/yr), SP College (₹12K–35K/yr), Modern College (₹18K–50K/yr). MBA: Indira Institute of Management (₹4.2–6.5L total), BIMM (₹5–7.5L total). Government scholarship (Rajarshi Chhatrapati Shahu Maharaj Scholarship) provides full fee waiver for students whose family income is below ₹8L/year."
+  },
+  {
+    q: "Which is the No. 1 college in Pune in 2026?",
+    a: "AFMC (Armed Forces Medical College) is Pune's highest NIRF-ranked college at #4 nationally. Among engineering colleges, COEP is #1 in Pune (NIRF #49, NAAC A+, fees ₹80K/yr). Among MBA colleges, SIBM Pune is #1 (NIRF #13, avg ₹28 LPA). For arts and science, Fergusson College (est. 1885, NAAC A+) is the most prestigious. For design, Symbiosis Institute of Design (SID) ranks among India's top 5."
+  },
+  {
+    q: "When does college admission start in Pune 2026?",
+    a: "Pune college admissions 2026 calendar: MHT-CET exam — April 20–May 15, 2026. NEET — May 3, 2026. MHT-CET results — June 2026. CAP Round 1 for engineering — July 2026. Arts, Commerce, Science (CUET/HSC-merit based) — June–July 2026. MBA (CAT/SNAP) — November–December 2026 for the 2027 batch. Direct / management quota admissions open in July–August 2026 after CAP rounds close."
+  },
+  {
+    q: "Which areas in Pune have the best colleges?",
+    a: "Major college zones in Pune 2026: Shivajinagar / Deccan — COEP, SP College, Fergusson, Garware. Katraj / Dhankawadi — PICT, Sinhgad COE. Bibwewadi — VIT Pune. Akurdi / Pimpri-Chinchwad — DY Patil Engineering, AISSMS, DY Patil ACS. Lavale / Mulshi — Full Symbiosis campus (SIBM, SIT, SID, SMCW). Alandi — MIT-ADT campus (MITAOE, MIT ACS). Erandwane — SCACS and other Sinhgad colleges. Loni Kalbhor — MIT-ID design school."
+  },
+  {
+    q: "Which colleges in Pune are NAAC A+ accredited in 2026?",
+    a: "NAAC A+ (and A++) colleges in Pune 2026: AFMC (A++ — highest grade), COEP (A+), MIT-WPU (A+), SIT Pune / Symbiosis (A+), VIT Pune (A+), Cummins College (A+), Fergusson College (A+), SP College (A+), Garware College (A+), SIBM Pune (A+), Symbiosis Institute of Design / SID (A+), MIT-ADT University (A+). NAAC grade is checked by banks for education loans and by employers for recruitment."
   }
 ]
 

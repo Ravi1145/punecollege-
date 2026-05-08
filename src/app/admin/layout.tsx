@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { LayoutDashboard, Users, MessageSquare, Building2, FileText, Upload, LogOut, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -52,8 +53,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}>
         <div className="px-5 py-5 border-b border-white/10">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="font-extrabold text-white text-base">CollegePune</p>
+            <div className="space-y-2">
+              <Image
+                src="/logo.png"
+                alt="CollegePune"
+                width={190}
+                height={50}
+                unoptimized
+                className="h-8 w-auto"
+                priority
+              />
               <p className="text-xs text-blue-300">Admin Panel</p>
             </div>
             <button className="md:hidden text-white/60 hover:text-white" onClick={() => setSidebarOpen(false)}>

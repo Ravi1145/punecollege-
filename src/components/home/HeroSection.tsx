@@ -1,118 +1,325 @@
 "use client"
+
+import { useState } from "react"
 import Link from "next/link"
-import { Sparkles, BookOpen, Award, Shield, Star, Users } from "lucide-react"
-import SearchBar from "@/components/ui/SearchBar"
+import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
+import {
+  Sparkles, Phone, GraduationCap, Search, ChevronRight,
+  Building2, Users, FileText, Gift, BookOpen, Headphones, Shield,
+} from "lucide-react"
 
-const QUICK_FILTERS = [
-  { label: "B.Tech", href: "/colleges?stream=Engineering" },
-  { label: "MBA", href: "/colleges?stream=MBA" },
-  { label: "MBBS", href: "/colleges?stream=Medical" },
-  { label: "BBA", href: "/courses/bba-bachelor-business-administration-pune" },
-  { label: "Law", href: "/courses/llb-law-pune-bachelor-legislative-law" },
-  { label: "B.Arch", href: "/courses/barch-bachelor-architecture-pune" },
-  { label: "B.Sc", href: "/courses/bsc-computer-science-pune" },
-  { label: "Arts & Commerce", href: "/colleges?stream=Arts+%26+Science" },
+// ── Animation — only used on decorative elements, never on critical text ──────
+const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number]
+
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+const FEATURE_CARDS = [
+  { icon: Building2, label: "Top Colleges", sub: "in Pune"    },
+  { icon: Users,     label: "Expert",       sub: "Counseling" },
+  { icon: FileText,  label: "Easy",         sub: "Admission"  },
+  { icon: Gift,      label: "Scholarships", sub: "Available"  },
 ]
 
-const TRUST_BADGES = [
-  { icon: Award, text: "NAAC Verified Data" },
-  { icon: Shield, text: "Accurate Fee Info" },
-  { icon: Star, text: "50K+ Student Reviews" },
-  { icon: Users, text: "Free Counseling" },
+const STATS = [
+  { icon: Building2,  value: "25+",  label: "Colleges"          },
+  { icon: BookOpen,   value: "500+", label: "Courses"           },
+  { icon: Users,      value: "50K+", label: "Student Reviews"   },
+  { icon: Headphones, value: "100%", label: "Admission Support" },
 ]
+
+const PILLS = ["COEP", "MIT-WPU", "PICT", "Symbiosis", "DY Patil"]
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function HeroSection() {
+  const [query, setQuery] = useState("")
+  const router = useRouter()
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const q = query.trim()
+    if (q) router.push(`/colleges?search=${encodeURIComponent(q)}`)
+  }
+
   return (
-    <section className="relative bg-gradient-to-br from-[#0A1628] via-[#0d1f3c] to-[#1E3A5F] min-h-[92vh] flex items-center overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+    <section className="relative overflow-hidden" style={{ minHeight: "44vh" }}>
+
+      {/* ── Full-width background image ──
+          Save your hero photo to:  public/hero-students.jpg
+          The image should be ~1400×800px with dark navy on the left half.
+      ── */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/hero-students.jpg"
+        alt=""
+        aria-hidden
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ objectPosition: "center center" }}
+        onError={e => { e.currentTarget.style.display = "none" }}
+      />
+
+      {/* Subtle overlay — image already has dark navy on left, just boost text contrast slightly */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(7,27,59,0.55) 0%, rgba(7,27,59,0.30) 45%, rgba(7,27,59,0.10) 70%, rgba(7,27,59,0.05) 100%)",
+        }}
+      />
+
+      {/* Fallback background — visible when image is missing */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{ background: "linear-gradient(135deg, #0A1628 0%, #071B3B 55%, #0a1f40 100%)" }}
+      />
+
+      {/* ── Decorative circles top-right ── */}
+      <div className="absolute pointer-events-none rounded-full"
+           style={{ width: 340, height: 340, top: -90, right: -90,
+                    border: "3px solid rgba(255,106,0,0.40)", zIndex: 1 }} />
+      <div className="absolute pointer-events-none rounded-full"
+           style={{ width: 220, height: 220, top: -40, right: -40,
+                    border: "2px solid rgba(255,106,0,0.18)", zIndex: 1 }} />
+
+      {/* ── Main grid ── */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+
+          {/* ════════ LEFT — text content (always visible, no framer-motion opacity) ════════ */}
+          <div className="pt-4 pb-8 lg:pt-10 lg:pb-16">
+
+            {/* AI badge */}
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold mb-5"
+              style={{ border: "1.5px solid rgba(255,140,0,0.6)", color: "#FF8C00" }}
+            >
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              India&apos;s AI-Powered College Portal 2026
+            </div>
+
+            {/* H1 */}
+            <h1
+              className="text-white font-extrabold leading-[1.05] tracking-tight mb-1"
+              style={{ fontSize: "clamp(2rem, 3.8vw, 3.2rem)" }}
+            >
+              Admission Open 2026
+            </h1>
+
+            {/* H2 */}
+            <h2
+              className="font-extrabold leading-[1.1] tracking-tight mb-4"
+              style={{ fontSize: "clamp(1.75rem, 3.3vw, 2.85rem)" }}
+            >
+              <span style={{ color: "#FF6A00" }}>Find Top Colleges in Pune</span>
+              <span className="text-white"> with AI</span>
+            </h2>
+
+            {/* Subheading */}
+            <p
+              className="leading-relaxed mb-6 max-w-lg"
+              style={{ color: "rgba(200,218,240,0.92)", fontSize: "0.97rem" }}
+            >
+              Compare colleges, fees, placements &amp; get direct admission
+              guidance for BTech, MBA, BCA &amp; more.
+            </p>
+
+            {/* Scholarship banner */}
+            <div
+              className="rounded-2xl overflow-hidden mb-6 flex items-center justify-between px-5 py-3.5"
+              style={{
+                background: "linear-gradient(90deg, #FFD000 0%, #FFA500 45%, #FF7A00 100%)",
+                boxShadow: "0 4px 20px rgba(255,160,0,0.30)",
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-3xl select-none" aria-hidden>🎓</span>
+                <div>
+                  <p className="font-bold text-[11px] uppercase tracking-[0.12em]" style={{ color: "#1a0500" }}>
+                    Scholarships Upto
+                  </p>
+                  <p className="font-extrabold leading-none mt-0.5" style={{ color: "#1a0500", fontSize: "1.85rem" }}>
+                    ₹50,000<sup style={{ verticalAlign: "super", fontSize: "0.75rem", fontWeight: 700 }}>*</sup>
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="font-semibold text-sm" style={{ color: "#1a0500" }}>Apply Before</p>
+                  <p className="font-extrabold text-xl leading-tight" style={{ color: "#1a0500" }}>Deadline!</p>
+                </div>
+                <span className="text-3xl select-none" aria-hidden>💰</span>
+              </div>
+            </div>
+
+            {/* Search bar */}
+            <form onSubmit={handleSearch} className="mb-4">
+              <div
+                className="flex items-center bg-white rounded-2xl overflow-hidden"
+                style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.28)" }}
+              >
+                <Search className="ml-4 w-5 h-5 shrink-0" style={{ color: "#9CA3AF" }} />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  placeholder="Search colleges in Pune (e.g. COEP, MIT-WPU, PICT...)"
+                  className="flex-1 px-3 py-[14px] text-gray-900 text-sm outline-none placeholder:text-gray-400 bg-transparent"
+                />
+                <button
+                  type="submit"
+                  className="shrink-0 font-bold text-white px-6 py-[14px] text-sm transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: "#FF6A00" }}
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+
+            {/* Quick-search pills */}
+            <div className="flex flex-wrap gap-2 mb-7">
+              {PILLS.map(p => (
+                <button
+                  key={p}
+                  onClick={() => router.push(`/colleges?search=${p}`)}
+                  className="text-sm font-medium px-4 py-1.5 rounded-full text-white transition-all hover:opacity-75"
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.30)",
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                  }}
+                >
+                  {p}
+                </button>
+              ))}
+              <Link
+                href="/colleges"
+                className="text-sm font-medium px-4 py-1.5 rounded-full text-white flex items-center gap-1 transition-all hover:opacity-75"
+                style={{
+                  border: "1px solid rgba(255,255,255,0.30)",
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                }}
+              >
+                View All <ChevronRight className="w-3 h-3" />
+              </Link>
+            </div>
+
+            {/* CTA buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <Link
+                href="/ai-finder"
+                className="flex items-center justify-center gap-2.5 font-bold text-white px-7 py-3.5 rounded-xl text-base transition-all hover:opacity-90 active:scale-95"
+                style={{
+                  backgroundColor: "#FF6A00",
+                  boxShadow: "0 4px 18px rgba(255,106,0,0.42)",
+                }}
+              >
+                <GraduationCap className="w-5 h-5" />
+                Find My College
+              </Link>
+
+              <Link
+                href="/counselling"
+                className="flex items-center justify-center gap-2.5 font-semibold text-white px-7 py-3.5 rounded-xl text-base transition-all active:scale-95"
+                style={{ border: "1px solid rgba(255,255,255,0.35)", backgroundColor: "rgba(255,255,255,0.05)" }}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)")}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)")}
+              >
+                <Phone className="w-4 h-4" />
+                Talk to Counselor
+              </Link>
+            </div>
+
+            {/* Trust micro-copy */}
+            <p className="flex items-center gap-1.5 text-sm" style={{ color: "rgba(74,222,128,0.9)" }}>
+              <Shield className="w-3.5 h-3.5 shrink-0" />
+              100% Free Guidance &nbsp;·&nbsp; No Hidden Charges
+            </p>
+          </div>
+
+          {/* ════════ RIGHT — floating cards + stats (sit over the student photo) ════════ */}
+          <div className="relative hidden lg:flex flex-col justify-between self-stretch py-10">
+
+            {/* Feature cards */}
+            <div className="flex flex-col gap-3 items-end pr-2">
+              {FEATURE_CARDS.map(({ icon: Icon, label, sub }, i) => (
+                <motion.div
+                  key={label}
+                  initial={{ opacity: 0.1, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.35 + i * 0.1, duration: 0.45, ease: EASE }}
+                  className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3"
+                  style={{
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.20)",
+                    minWidth: 172,
+                    maxWidth: 200,
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "#FFF3E0" }}
+                  >
+                    <Icon className="w-[18px] h-[18px]" style={{ color: "#FF6A00" }} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-gray-900 leading-tight">{label}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{sub}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Stats bar */}
+            <div
+              className="mt-8 rounded-2xl"
+              style={{
+                backgroundColor: "rgba(7,27,59,0.88)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.10)",
+                padding: "14px 20px",
+              }}
+            >
+              <div className="grid grid-cols-4 gap-2">
+                {STATS.map(({ icon: Icon, value, label }) => (
+                  <div key={label} className="flex items-center gap-2">
+                    <Icon className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.42)" }} />
+                    <div>
+                      <p className="font-extrabold text-base leading-none" style={{ color: "#FF6A00" }}>
+                        {value}
+                      </p>
+                      <p className="leading-tight mt-0.5" style={{ color: "rgba(178,200,228,0.82)", fontSize: "0.62rem" }}>
+                        {label}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 text-orange-300 text-sm font-medium px-4 py-2 rounded-full mb-6 animate-pulse-slow">
-            <Sparkles className="w-4 h-4" />
-            India&apos;s #1 AI-Powered Pune College Portal 2026
-          </div>
-
-          {/* H1 */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-5">
-            Find the Right College in Pune
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-              AI-Powered · Free · Accurate 2026 Data
-            </span>
-          </h1>
-
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Compare COEP (NIRF #49), SIBM (NIRF #13), AFMC (NIRF #4) and 25+ Pune colleges by fees (₹15K–25L/yr), placements (₹12–65 LPA) &amp; NAAC grade. Free AI counselor for 2026 admissions.
-          </p>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-6">
-            <SearchBar
-              size="lg"
-              placeholder="Search colleges like COEP, SIBM, AFMC, VIT Pune..."
-              className="shadow-2xl"
-            />
-          </div>
-
-          {/* Quick Filter Chips */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {QUICK_FILTERS.map((filter) => (
-              <Link
-                key={filter.label}
-                href={filter.href}
-                className="bg-white/10 hover:bg-orange-500 border border-white/20 hover:border-orange-500 text-white text-sm font-medium px-4 py-2 rounded-full transition-all hover:scale-105"
-              >
-                {filter.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-14">
-            <Link
-              href="/ai-finder"
-              className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-7 py-4 rounded-2xl text-base transition-all hover:scale-105 shadow-lg shadow-orange-500/30 w-full sm:w-auto"
-            >
-              <Sparkles className="w-5 h-5" />
-              Try AI College Finder
-            </Link>
-            <Link
-              href="/colleges"
-              className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-7 py-4 rounded-2xl text-base transition-all w-full sm:w-auto"
-            >
-              <BookOpen className="w-5 h-5" />
-              Browse 25+ Colleges
-            </Link>
-          </div>
-
-          {/* Animated Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto mb-10">
+      {/* ── Bottom trust strip ── */}
+      <div className="relative z-10 mt-6 sm:mt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-wrap items-center justify-center">
             {[
-              { value: "25+", label: "Verified Colleges" },
-              { value: "500+", label: "Courses Listed" },
-              { value: "50K+", label: "Student Reviews" },
-              { value: "₹0", label: "Free to Use" },
-            ].map(({ value, label }) => (
-              <div key={label} className="bg-white/10 backdrop-blur border border-white/10 rounded-2xl p-4">
-                <p className="text-3xl font-extrabold text-orange-400 mb-1">{value}</p>
-                <p className="text-sm text-gray-400">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Trust Badges */}
-          <div className="flex flex-wrap justify-center gap-4">
-            {TRUST_BADGES.map(({ icon: Icon, text }) => (
-              <div key={text} className="flex items-center gap-2 text-gray-400 text-sm">
-                <Icon className="w-4 h-4 text-green-400" />
-                <span>{text}</span>
+              { emoji: "🛡", text: "NAAC Verified Data"   },
+              { emoji: "💰", text: "Accurate Fee Info"     },
+              { emoji: "⭐", text: "50K+ Student Reviews"  },
+              { emoji: "🎧", text: "Free Counseling"       },
+            ].map(({ emoji, text }, i, arr) => (
+              <div
+                key={text}
+                className="flex items-center gap-2 text-sm px-4 sm:px-6 py-1"
+                style={{
+                  color: "rgba(178,200,228,0.85)",
+                  borderRight: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.12)" : "none",
+                }}
+              >
+                <span aria-hidden>{emoji}</span>
+                {text}
               </div>
             ))}
           </div>

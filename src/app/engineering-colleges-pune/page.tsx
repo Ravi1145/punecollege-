@@ -350,6 +350,29 @@ export default function EngineeringCollegesPunePage() {
             </div>
           </div>
 
+          {/* Related Guides */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Related Engineering Guides</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+                { label: "Top 10 Engineering Colleges in Pune — Ranked", href: "/top-10-engineering-colleges-in-pune", icon: "🏆" },
+                { label: "Placement Guide — Avg & Highest LPA 2026", href: "/engineering-colleges-pune-placement", icon: "💼" },
+                { label: "Low Fees Engineering Colleges (Under ₹5L)", href: "/low-fees-engineering-colleges-pune", icon: "💰" },
+                { label: "Engineering Scholarships in Pune", href: "/engineering-colleges-pune-scholarship", icon: "🎓" },
+                { label: "Private Engineering Colleges Pune", href: "/private-engineering-colleges-pune", icon: "🏛️" },
+                { label: "Admission Without JEE (MHT-CET Only)", href: "/engineering-admission-pune-without-jee", icon: "📝" },
+                { label: "Direct Admission — Management Quota", href: "/direct-admission-engineering-colleges-pune", icon: "🚀" },
+                { label: "Engineering vs MBA — Which is Better?", href: "/pune-colleges-comparison-engineering-mba", icon: "⚖️" },
+                { label: "Placement Comparator Tool", href: "/pune-college-placement-comparator", icon: "📊" },
+              ].map(({ label, href, icon }) => (
+                <Link key={href} href={href} className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 hover:border-orange-200 hover:shadow transition-all group">
+                  <span className="text-xl">{icon}</span>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">{label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-white">

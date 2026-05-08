@@ -1,7 +1,8 @@
 "use client"
 import { useState } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Loader2, Lock } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
@@ -36,9 +37,12 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-[#0A1628] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8">
-        <div className="flex items-center justify-center w-14 h-14 bg-orange-100 rounded-full mx-auto mb-5">
-          <Lock className="w-7 h-7 text-orange-500" />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.png"
+          alt="CollegePune"
+          className="h-12 w-auto mx-auto mb-5"
+        />
         <h1 className="text-2xl font-extrabold text-gray-900 text-center mb-1">Admin Panel</h1>
         <p className="text-sm text-gray-500 text-center mb-6">CollegePune Lead Management</p>
         <form onSubmit={handleSubmit} className="space-y-4">
