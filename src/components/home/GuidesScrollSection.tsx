@@ -161,23 +161,27 @@ export default async function GuidesScrollSection() {
 
       </div>
 
-      {/* Full-width scroll track (no container padding) */}
+      {/* Scrolling row constrained to site container */}
       <div className="relative overflow-hidden guides-pause-on-hover">
-        {/* Left + right fade masks */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, white, transparent)" }}
-        />
-        <div
-          className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, white, transparent)" }}
-        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative">
+            {/* Left + right fade masks (positioned inside container) */}
+            <div
+              className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none"
+              style={{ background: "linear-gradient(to right, white, transparent)" }}
+            />
+            <div
+              className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none"
+              style={{ background: "linear-gradient(to left, white, transparent)" }}
+            />
 
-        {/* Scrolling row */}
-        <div className="animate-guides-scroll flex gap-4 py-2" style={{ paddingLeft: "1rem" }}>
-          {looped.map((guide, i) => (
-            <GuideCard key={`${guide.slug}-${i}`} guide={guide} />
-          ))}
+            {/* Scrolling row */}
+            <div className="animate-guides-scroll flex gap-4 py-2" style={{ paddingLeft: "0.5rem" }}>
+              {looped.map((guide, i) => (
+                <GuideCard key={`${guide.slug}-${i}`} guide={guide} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -103,10 +103,14 @@ export default function HomePage() {
         {/* Browse by Stream */}
         <QuickExploreSection />
 
+        {/* Cutoff Predictor Teaser moved below FeaturedColleges */}
+
+        <FeaturedColleges />
+
         {/* Cutoff Predictor Teaser */}
         <section className="py-14 bg-surface">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-xl mx-auto lg:mx-0">
+            <div className="max-w-xl mx-auto">
               <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
                 ⚡ 30-Second Check
               </div>
@@ -139,7 +143,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        <FeaturedColleges />
         <RankingTables />
         <section className="py-16 bg-[#0A1628]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

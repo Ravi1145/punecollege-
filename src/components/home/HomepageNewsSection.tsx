@@ -110,12 +110,12 @@ export default function HomepageNewsSection() {
           </Link>
         </div>
 
-        {/* Equal 50/50 grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Main grid: content + right column (fixed width) */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 items-start">
 
           {/* ── Left: article list ──────────────────────────────────────── */}
           <div className="flex flex-col">
-            <div className="divide-y divide-gray-100 flex-1">
+            <div className="divide-y divide-gray-100">
               {ARTICLES.map((article, i) => (
                 <Link
                   key={article.slug}
@@ -176,7 +176,7 @@ export default function HomepageNewsSection() {
 
           {/* ── Right: auto-scrolling popular news ─────────────────────── */}
           <div>
-            <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm h-full flex flex-col">
+            <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm flex flex-col">
 
               {/* Header */}
               <div
@@ -193,7 +193,7 @@ export default function HomepageNewsSection() {
               </div>
 
               {/* Scroll container */}
-              <div className="flex-1 overflow-hidden relative" style={{ height: 390 }}>
+              <div className="overflow-hidden relative h-80">
                 {/* Fade overlays */}
                 <div className="absolute top-0 left-0 right-0 h-5 z-10 pointer-events-none"
                   style={{ background: "linear-gradient(to bottom, white, transparent)" }} />
