@@ -418,6 +418,7 @@ export interface CollegeDetails {
 
 export async function getAllColleges(filters?: {
   status?: string
+  excludeArchived?: boolean   // when true and no status filter, hides archived records
   city?: string
   stream?: string
   search?: string
@@ -434,7 +435,11 @@ export async function getAllColleges(filters?: {
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1)
 
-  if (filters?.status) query = query.eq('status', filters.status)
+  if (filters?.status) {
+    query = query.eq('status', filters.status)
+  } else if (filters?.excludeArchived) {
+    query = query.neq('status', 'archived')
+  }
   if (filters?.city)   query = query.eq('city', filters.city)
   if (filters?.stream) query = query.eq('stream', filters.stream)
   if (filters?.search) {
@@ -514,10 +519,11 @@ export async function getCollegesStats(): Promise<{
     { count: draft },
     { count: aiGenerated },
   ] = await Promise.all([
-    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }),
+    // total = published + draft only (excludes archived)
+    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).neq('status', 'archived'),
     supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'published'),
     supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'draft'),
-    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('ai_generated', true),
+    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('ai_generated', true).neq('status', 'archived'),
   ])
   return {
     total: total ?? 0,
@@ -553,6 +559,7 @@ export interface DBBlog {
 
 export async function getAllBlogs(filters?: {
   status?: string
+  excludeArchived?: boolean   // when true and no status filter, hides archived records
   category?: string
   search?: string
   page?: number
@@ -568,7 +575,11 @@ export async function getAllBlogs(filters?: {
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1)
 
-  if (filters?.status)   query = query.eq('status', filters.status)
+  if (filters?.status) {
+    query = query.eq('status', filters.status)
+  } else if (filters?.excludeArchived) {
+    query = query.neq('status', 'archived')
+  }
   if (filters?.category) query = query.eq('category', filters.category)
   if (filters?.search) {
     const s = filters.search

@@ -54,10 +54,20 @@ export default function AdminBlogsPage() {
   useEffect(() => { fetchBlogs() }, [fetchBlogs])
 
   const handleDelete = async (id: number, title: string) => {
-    if (!confirm(`Archive "${title}"?`)) return
+    if (!confirm(`Archive "${title}"?\n\nIt will be hidden from the public site immediately.`)) return
     const key = localStorage.getItem("admin_key")
     if (!key) return
-    await fetch(`/api/admin/blogs?id=${id}`, { method: "DELETE", headers: { "x-admin-key": key } })
+    try {
+      const res = await fetch(`/api/admin/blogs?id=${id}`, { method: "DELETE", headers: { "x-admin-key": key } })
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}))
+        setError(json.error ?? `Delete failed (${res.status})`)
+        return
+      }
+    } catch {
+      setError("Network error — could not delete blog post")
+      return
+    }
     fetchBlogs()
   }
 
@@ -78,9 +88,10 @@ export default function AdminBlogsPage() {
       <div className="flex flex-wrap items-center gap-3">
         <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
           className="border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white">
-          <option value="">All Status</option>
+          <option value="">Active (Published + Draft)</option>
           <option value="published">Published</option>
           <option value="draft">Draft</option>
+          <option value="archived">Archived</option>
         </select>
         <button onClick={fetchBlogs}
           className="flex items-center gap-1.5 border border-gray-200 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 transition-colors">

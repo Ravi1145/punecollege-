@@ -1,8 +1,10 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
 import { CheckCircle, TrendingUp, Award, BookOpen, Users, Star } from "lucide-react"
+import { getCutoff } from "@/data/cutoffs"
+import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
 
 export const metadata: Metadata = genMeta({
   title: "Best MBA Colleges in Pune 2026 | Fees, SNAP/CAT Cutoff & Placements",
@@ -25,16 +27,16 @@ export const metadata: Metadata = genMeta({
 })
 
 const colleges = [
-  { rank: 1, name: "SIBM Pune – Symbiosis Institute of Business Management", type: "Deemed", nirf: 13, naac: "A+", fees: "₹16L–₹22L total", placement: "₹28 LPA avg | ₹65 LPA highest", exam: "SNAP 2026 (60+ %ile)", slug: "sibm-pune-symbiosis-institute-of-business-management", highlight: "NIRF #13 | McKinsey, BCG Recruiters" },
-  { rank: 2, name: "MIT School of Management (MIT-SOM)", type: "Autonomous", nirf: null, naac: "A+", fees: "₹7L–₹11L total", placement: "₹12 LPA avg | ₹32 LPA highest", exam: "CAT / MAT / CMAT", slug: "mit-som-school-of-management-pune", highlight: "Best Value | Strong Alumni" },
-  { rank: 3, name: "Balaji Institute of Modern Management (BIMM)", type: "Autonomous", nirf: null, naac: "A", fees: "₹5L–₹7.5L total", placement: "₹8.5 LPA avg | ₹22 LPA highest", exam: "CAT / MAT / CMAT", slug: "bimm-balaji-institute-pune", highlight: "Best Budget MBA" },
+  { rank: 1, name: "SIBM Pune – Symbiosis Institute of Business Management", type: "Deemed", nirf: 13, naac: "A+", fees: "₹16L–₹22L total", placement: "₹28 LPA avg | ₹65 LPA highest", exam: "SNAP 2026 (60+ %ile)", slug: "sibm-symbiosis-institute-business-management-pune", highlight: "NIRF #13 | McKinsey, BCG Recruiters" },
+  { rank: 2, name: "MIT School of Management (MIT-SOM)", type: "Autonomous", nirf: null, naac: "A+", fees: "₹7L–₹11L total", placement: "₹12 LPA avg | ₹32 LPA highest", exam: "CAT / MAT / CMAT", slug: "mit-school-of-management-pune", highlight: "Best Value | Strong Alumni" },
+  { rank: 3, name: "Balaji Institute of Modern Management (BIMM)", type: "Autonomous", nirf: null, naac: "A", fees: "₹5L–₹7.5L total", placement: "₹8.5 LPA avg | ₹22 LPA highest", exam: "CAT / MAT / CMAT", slug: "balaji-institute-of-modern-management-pune", highlight: "Best Budget MBA" },
   { rank: 4, name: "Indira Institute of Management Pune (IIMP)", type: "Autonomous", nirf: null, naac: "A", fees: "₹4.2L–₹6.5L total", placement: "₹7.2 LPA avg | ₹18 LPA highest", exam: "CAT / MAT / CMAT", slug: "indira-institute-of-management-pune", highlight: "Best ROI in Pune" },
   { rank: 5, name: "SCIT – Symbiosis Centre for Information Technology", type: "Deemed", nirf: null, naac: "A+", fees: "₹14L–₹18L total", placement: "₹18 LPA avg | ₹45 LPA highest", exam: "SNAP 2026 (50+ %ile)", slug: "symbiosis-centre-information-technology-pune", highlight: "Best for IT+MBA" },
-  { rank: 6, name: "SCMHRD – Symbiosis Centre for Management & HRD", type: "Deemed", nirf: null, naac: "A+", fees: "₹12L–₹16L total", placement: "₹22 LPA avg | ₹55 LPA highest", exam: "SNAP 2026 (55+ %ile)", slug: "scmhrd-symbiosis-centre-management-hrd-pune", highlight: "Best for Operations/HR" },
-  { rank: 7, name: "IIMM – Indian Institute of Materials Management", type: "Autonomous", nirf: null, naac: "B++", fees: "₹3.8L–₹5.5L total", placement: "₹6.5 LPA avg | ₹16 LPA highest", exam: "CAT / MAT / CMAT", slug: "iimm-pune-indian-institute-materials-management", highlight: "Specialization in Supply Chain" },
+  { rank: 6, name: "SCMHRD – Symbiosis Centre for Management & HRD", type: "Deemed", nirf: null, naac: "A+", fees: "₹12L–₹16L total", placement: "₹22 LPA avg | ₹55 LPA highest", exam: "SNAP 2026 (55+ %ile)", slug: "scmhrd-symbiosis-centre-management-hrd", highlight: "Best for Operations/HR" },
+  { rank: 7, name: "IIMM – Indian Institute of Materials Management", type: "Autonomous", nirf: null, naac: "B++", fees: "₹3.8L–₹5.5L total", placement: "₹6.5 LPA avg | ₹16 LPA highest", exam: "CAT / MAT / CMAT", slug: "pumba-pune-university-mba", highlight: "Specialization in Supply Chain" },
   { rank: 8, name: "Suryadatta Institute of Management", type: "Private", nirf: null, naac: "B+", fees: "₹2.8L–₹4.5L total", placement: "₹5.8 LPA avg | ₹14 LPA highest", exam: "MAT / CMAT / XAT", slug: "suryadatta-institute-management-pune", highlight: "Most Affordable Pune MBA" },
   { rank: 9, name: "BATU – Bharati Vidyapeeth Institute of Management", type: "Deemed", nirf: null, naac: "A", fees: "₹4L–₹6.8L total", placement: "₹6.8 LPA avg | ₹16 LPA highest", exam: "CAT / MAT / CMAT", slug: "bharati-vidyapeeth-institute-management-pune", highlight: "Part of Deemed University" },
-  { rank: 10, name: "MAEER MIT College of Management", type: "Autonomous", nirf: null, naac: "A", fees: "₹4.5L–₹7L total", placement: "₹7.5 LPA avg | ₹20 LPA highest", exam: "CAT / MAT / CMAT", slug: "mit-college-of-management-pune", highlight: "MIT Group – Strong Placements" },
+  { rank: 10, name: "MAEER MIT College of Management", type: "Autonomous", nirf: null, naac: "A", fees: "₹4.5L–₹7L total", placement: "₹7.5 LPA avg | ₹20 LPA highest", exam: "CAT / MAT / CMAT", slug: "mit-school-of-management-pune", highlight: "MIT Group – Strong Placements" },
 ]
 
 const faqs = [
@@ -143,7 +145,7 @@ export default function MBACollegesPunePage() {
                 <li className="flex gap-2"><Star className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" /><span>Exam: <strong>SNAP 2026 (60+ %ile)</strong></span></li>
                 <li className="flex gap-2"><Users className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" /><span>Recruiters: McKinsey, BCG, P&amp;G, Deloitte</span></li>
               </ul>
-              <Link href="/colleges/sibm-pune-symbiosis-institute-of-business-management" className="mt-4 block text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
+              <Link href="/colleges/sibm-symbiosis-institute-business-management-pune" className="mt-4 block text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
                 View Full Profile →
               </Link>
             </div>
@@ -161,7 +163,7 @@ export default function MBACollegesPunePage() {
                 <li className="flex gap-2"><Star className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" /><span>Exam: <strong>CAT / MAT / CMAT</strong></span></li>
                 <li className="flex gap-2"><Users className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" /><span>Recruiters: TCS, Wipro, HDFC, Amazon</span></li>
               </ul>
-              <Link href="/colleges/mit-som-school-of-management-pune" className="mt-4 block text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
+              <Link href="/colleges/mit-school-of-management-pune" className="mt-4 block text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-colors">
                 View Full Profile →
               </Link>
             </div>
@@ -284,6 +286,30 @@ export default function MBACollegesPunePage() {
           </div>
         </section>
 
+        {/* SNAP Cutoff Chart — SIBM (gated) */}
+        {(() => {
+          const sibmData = getCutoff("sibm-symbiosis-institute-business-management-pune", "snap")
+          if (!sibmData) return null
+          return (
+            <section className="py-10 bg-white">
+              <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">SIBM Pune SNAP Cutoff Trend 2020–2026</h2>
+                      <p className="text-sm text-gray-500 mt-1">Open & OBC category percentile trends. Unlock full data free.</p>
+                    </div>
+                    <Link href="/cutoffs" className="text-xs text-orange-600 hover:underline font-semibold shrink-0">
+                      All college cutoffs →
+                    </Link>
+                  </div>
+                  <GatedCutoffChartClient data={sibmData} slug="sibm-symbiosis-institute-business-management-pune" height={240} />
+                </div>
+              </div>
+            </section>
+          )
+        })()}
+
         {/* FAQ Section */}
         <section className="bg-gray-50 py-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -300,7 +326,7 @@ export default function MBACollegesPunePage() {
         </section>
 
         {/* Related Guides */}
-        <section className="py-10 bg-[#F8FAFC]">
+        <section className="py-10 bg-surface">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Related MBA Guides</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import { Suspense } from "react"
 import { generateMetadata as genMeta, generateBreadcrumbSchema, generateFAQSchema, generateItemListSchema } from "@/lib/seo"
 import Script from "next/script"
@@ -8,7 +8,7 @@ import { colleges } from "@/data/colleges"
 
 export const metadata: Metadata = genMeta({
   title: "All Colleges in Pune 2026 — Fees, Rankings & Reviews",
-  description: "Browse and compare 108+ colleges in Pune. Filter by stream (Engineering, MBA, Medical), fees, NAAC grade, and location. Government, private & deemed colleges with real placement data.",
+  description: "Browse and compare 103+ colleges in Pune. Filter by stream (Engineering, MBA, Medical), fees, NAAC grade, and location. Government, private & deemed colleges with real placement data.",
   path: "/colleges",
   keywords: [
     "colleges in pune", "engineering colleges pune", "mba colleges pune",
@@ -18,7 +18,7 @@ export const metadata: Metadata = genMeta({
 })
 
 const listingFaqs = [
-  { question: "How many colleges are there in Pune?", answer: "Pune has over 800 colleges including 400+ engineering colleges, 100+ MBA institutes, and 50+ medical colleges. CollegePune profiles 108+ top colleges with verified fees, placements, and NAAC data." },
+  { question: "How many colleges are there in Pune?", answer: "Pune has over 800 colleges including 400+ engineering colleges, 100+ MBA institutes, and 50+ medical colleges. CollegePune profiles 103+ top colleges with verified fees, placements, and NAAC data." },
   { question: "Which is the best government college in Pune?", answer: "COEP (College of Engineering Pune) is the best government engineering college — NIRF #49, NAAC A+, fees ₹80K–1.8L/yr, avg placement ₹12 LPA. For medical: AFMC (NIRF #4, NAAC A++). For arts/commerce: BMCC and Fergusson College." },
   { question: "Which Pune college has the best placements?", answer: "For MBA: SIBM Pune with ₹28 LPA average and McKinsey/BCG recruiters. For engineering: COEP with ₹12 LPA average and ₹45 LPA highest package. For overall placement salary, SIBM Pune leads all Pune colleges." },
   { question: "What is the fee range for engineering colleges in Pune?", answer: "Engineering fees in Pune 2026: Government (COEP) ₹80K–1.8L/yr; Autonomous private (PICT, VIT Pune) ₹1.4L–2.2L/yr; Deemed universities (SIT, MIT-WPU) ₹2L–4.8L/yr. SC/ST students get full fee waiver at government colleges." },
@@ -41,20 +41,20 @@ export default function CollegesPage() {
       <Script id="breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="item-list" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Page Header */}
         <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="text-xs text-blue-300 mb-4 flex gap-1">
               <Link href="/" className="hover:text-white">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">Colleges in Pune</span>
             </nav>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
               All Colleges in Pune 2026
             </h1>
             <p className="text-gray-300 text-lg max-w-2xl">
-              Discover and compare 108+ top engineering, MBA, medical and arts colleges in Pune. Real fees, placements, and NAAC data.
+              Discover and compare {colleges.length}+ top engineering, MBA, medical and arts colleges in Pune. Real fees, placements, and NAAC data.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               {["Engineering", "MBA", "Medical", "Law", "Design", "Government"].map(s => (

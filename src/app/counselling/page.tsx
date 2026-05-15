@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import { CheckCircle, Clock, Phone, Users, Star, Award } from "lucide-react"
 import CounsellingBooking from "@/components/leads/CounsellingBooking"
 import { generateMetadata as genMeta } from "@/lib/seo"
@@ -45,7 +45,7 @@ const stats = [
 
 export default function CounsellingPage() {
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       {/* Hero */}
       <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] py-14 px-4">
         <div className="max-w-4xl mx-auto text-center">

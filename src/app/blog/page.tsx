@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
@@ -79,7 +79,7 @@ export default async function BlogPage() {
   }
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       <Script id="blog-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <Script id="blog-list-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogListSchema) }} />
 
@@ -95,7 +95,7 @@ export default async function BlogPage() {
           <p className="text-gray-300 max-w-2xl">
             Expert advice on Pune college admissions, entrance exam preparation, fees, placements, and career planning.
           </p>
-          <p className="text-gray-400 text-sm mt-2">{posts.length} articles published</p>
+          <p className="text-gray-400 text-sm mt-2">{posts.length} {posts.length === 1 ? "article" : "articles"} published</p>
         </div>
       </div>
 

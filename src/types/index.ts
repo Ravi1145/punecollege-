@@ -90,6 +90,7 @@ export interface BlogPost {
   body: string
   author: string
   date: string
+  publishedAt?: string  // ISO date string — optional alias for sitemap/API
   readTime: string
   category: string
   tags: string[]

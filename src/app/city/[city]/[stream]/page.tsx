@@ -112,9 +112,9 @@ export default async function CityStreamPage({ params }: Props) {
           <div className="max-w-6xl mx-auto px-4 py-10 md:py-14">
             <nav className="flex items-center gap-2 text-xs text-blue-300 mb-6">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/colleges" className="hover:text-white transition-colors">Colleges</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">{streamLabel} in {cityLabel}</span>
             </nav>
             <div className="flex items-center gap-2 mb-3">

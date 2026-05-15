@@ -1,11 +1,13 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
 import { CheckCircle, TrendingUp, Award, MapPin, ExternalLink, BookOpen, Users } from "lucide-react"
+import { getCutoff } from "@/data/cutoffs"
+import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Engineering Colleges in Pune 2026 | Fees, Rankings & Placements",
+  title: "Best Engineering Colleges Pune 2026 | Fees & Rankings",
   description: "List of top 12 engineering colleges in Pune 2026 with NIRF ranks, NAAC grades, annual fees (₹80K–₹4.8L), and average placements (₹5–12 LPA). Compare COEP, PICT, VIT Pune, SIT Pune & more.",
   path: "/engineering-colleges-pune",
   keywords: [
@@ -79,16 +81,16 @@ export default function EngineeringCollegesPunePage() {
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
 
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
           <div className="max-w-5xl mx-auto">
             {/* Breadcrumb */}
             <nav className="text-xs text-blue-300 mb-4 flex flex-wrap items-center gap-1">
               <Link href="/" className="hover:text-white">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/colleges" className="hover:text-white">Colleges</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">Engineering Colleges in Pune</span>
             </nav>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
@@ -336,6 +338,26 @@ export default function EngineeringCollegesPunePage() {
               </div>
             </div>
           </div>
+
+          {/* MHT-CET Cutoff Chart — COEP (gated lead capture) */}
+          {(() => {
+            const coepData = getCutoff("coep-college-of-engineering-pune", "mht-cet")
+            if (!coepData) return null
+            return (
+              <div className="mb-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">COEP MHT-CET Cutoff Trend 2020–2026</h2>
+                    <p className="text-sm text-gray-500 mt-1">Open, OBC & SC category percentile trends. Unlock full data free.</p>
+                  </div>
+                  <Link href="/cutoffs" className="text-xs text-orange-600 hover:underline font-semibold shrink-0">
+                    All college cutoffs →
+                  </Link>
+                </div>
+                <GatedCutoffChartClient data={coepData} slug="coep-college-of-engineering-pune" height={240} />
+              </div>
+            )
+          })()}
 
           {/* FAQ Section */}
           <div className="mb-8">

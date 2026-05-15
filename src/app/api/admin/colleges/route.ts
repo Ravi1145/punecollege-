@@ -1,22 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAllColleges, insertCollege, updateCollege, deleteCollege } from '@/lib/db'
+import { revalidatePath } from 'next/cache'
+import { getAllColleges, getCollegeById, insertCollege, updateCollege, deleteCollege } from '@/lib/db'
 import { isAuthorized, unauthorized, safeInt, safeId } from '@/lib/admin-auth'
 import { pingIndexNow } from '@/lib/indexnow'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://collegepune.com'
 
 // GET /api/admin/colleges — paginated list with filters
+// By default excludes archived; pass ?status=archived to see them
 export async function GET(req: NextRequest) {
   if (!isAuthorized(req)) return unauthorized()
   try {
     const { searchParams } = new URL(req.url)
+    const statusParam = searchParams.get('status') || undefined
     const result = await getAllColleges({
-      status: searchParams.get('status') || undefined,
-      city:   searchParams.get('city')   || undefined,
-      stream: searchParams.get('stream') || undefined,
-      search: searchParams.get('search') || undefined,
-      page:   safeInt(searchParams.get('page'),  1),
-      limit:  safeInt(searchParams.get('limit'), 25, 100),
+      status:          statusParam,
+      excludeArchived: !statusParam,
+      city:            searchParams.get('city')   || undefined,
+      stream:          searchParams.get('stream') || undefined,
+      search:          searchParams.get('search') || undefined,
+      page:            safeInt(searchParams.get('page'),  1),
+      limit:           safeInt(searchParams.get('limit'), 25, 100),
     })
     return NextResponse.json(result)
   } catch (err) {
@@ -34,7 +38,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'slug, name, and city are required' }, { status: 400 })
     }
     const id = await insertCollege(body)
+    revalidatePath('/colleges')
     if (body.slug) {
+      revalidatePath(`/colleges/${body.slug}`)
       pingIndexNow([`${BASE_URL}/colleges/${body.slug}`, `${BASE_URL}/colleges`])
     }
     return NextResponse.json({ success: true, id }, { status: 201 })
@@ -56,7 +62,9 @@ export async function PUT(req: NextRequest) {
     const { id, ...data } = body
     if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 })
     await updateCollege(safeId(String(id)), data)
+    revalidatePath('/colleges')
     if (data.slug) {
+      revalidatePath(`/colleges/${data.slug}`)
       pingIndexNow([`${BASE_URL}/colleges/${data.slug}`, `${BASE_URL}/colleges`])
     }
     return NextResponse.json({ success: true })
@@ -72,7 +80,14 @@ export async function DELETE(req: NextRequest) {
   try {
     const rawId = new URL(req.url).searchParams.get('id')
     if (!rawId) return NextResponse.json({ error: 'id is required' }, { status: 400 })
-    await deleteCollege(safeId(rawId))
+    const numId = safeId(rawId)
+    // Fetch slug before archiving so we can revalidate the correct page
+    const college = await getCollegeById(numId)
+    await deleteCollege(numId)
+    revalidatePath('/colleges')
+    if (college?.slug) {
+      revalidatePath(`/colleges/${college.slug}`)
+    }
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/colleges DELETE]', err)

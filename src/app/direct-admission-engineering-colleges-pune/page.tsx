@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
@@ -167,7 +167,7 @@ export default function DirectAdmissionEngineeringPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
           <div className="max-w-5xl mx-auto">
@@ -175,11 +175,11 @@ export default function DirectAdmissionEngineeringPage() {
               <Link href="/" className="hover:text-white">
                 Home
               </Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/admissions" className="hover:text-white">
                 Admissions
               </Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">Direct Admission Engineering Pune</span>
             </nav>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">

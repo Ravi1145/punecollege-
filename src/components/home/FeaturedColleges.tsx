@@ -1,4 +1,4 @@
-import Link from "next/link"
+﻿import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { getFeaturedColleges, getTopEngineeringColleges } from "@/data/colleges"
 import CollegeCard from "@/components/colleges/CollegeCard"
@@ -7,7 +7,7 @@ export default function FeaturedColleges() {
   const featured = [...getFeaturedColleges(), ...getTopEngineeringColleges()].slice(0, 8)
 
   return (
-    <section className="py-16 bg-[#F8FAFC]">
+    <section className="py-16 bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>

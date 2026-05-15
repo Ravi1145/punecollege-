@@ -1,15 +1,18 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import HeroSection from "@/components/home/HeroSection"
 import CollegeMarquee from "@/components/home/CollegeMarquee"
-import StatsCounter from "@/components/home/StatsCounter"
 import FeaturedColleges from "@/components/home/FeaturedColleges"
 import RankingTables from "@/components/home/RankingTables"
 import AIRecommender from "@/components/ai/AIRecommender"
 import ExamCalendar from "@/components/home/ExamCalendar"
 import FAQSection from "@/components/home/FAQSection"
-import BlogPreview from "@/components/home/BlogPreview"
+import GuidesScrollSection from "@/components/home/GuidesScrollSection"
+import TestimonialsSection from "@/components/home/TestimonialsSection"
+import QuickExploreSection from "@/components/home/QuickExploreSection"
+import HomepageNewsSection from "@/components/home/HomepageNewsSection"
+import AlumniQASection from "@/components/home/AlumniQASection"
 import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema, generateLocalBusinessSchema } from "@/lib/seo"
 
 export const metadata: Metadata = genMeta({
@@ -97,7 +100,45 @@ export default function HomePage() {
         {/* College Marquee — scrolling college cards */}
         <CollegeMarquee />
 
-        <StatsCounter />
+        {/* Browse by Stream */}
+        <QuickExploreSection />
+
+        {/* Cutoff Predictor Teaser */}
+        <section className="py-14 bg-surface">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-xl mx-auto lg:mx-0">
+              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+                ⚡ 30-Second Check
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+                Know Your Chances<br />in 30 Seconds
+              </h2>
+              <p className="text-gray-500 text-sm mb-5">
+                Enter your MHT-CET percentile, JEE rank, NEET score, or CAT percentile. We&apos;ll show you which Pune colleges are within reach — based on real 2020–2026 cutoff data.
+              </p>
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {[
+                    { label: "MHT-CET", sub: "Percentile", href: "/cutoffs/mht-cet/coep-college-of-engineering-pune" },
+                    { label: "JEE Main",  sub: "Percentile", href: "/cutoffs/jee/coep-college-of-engineering-pune" },
+                    { label: "NEET",      sub: "Score",      href: "/cutoffs/neet/afmc-armed-forces-medical-college-pune" },
+                    { label: "SNAP",      sub: "Percentile", href: "/cutoffs/snap/sibm-symbiosis-institute-business-management-pune" },
+                  ].map(({ label, sub, href }) => (
+                    <a key={label} href={href} className="flex flex-col p-3 rounded-xl border border-gray-100 hover:border-orange-300 hover:bg-orange-50 transition-colors">
+                      <span className="font-bold text-sm text-gray-900">{label}</span>
+                      <span className="text-xs text-gray-400">{sub} cutoffs</span>
+                    </a>
+                  ))}
+                </div>
+                <a href="/predictor" className="flex items-center justify-center gap-2 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-sm transition-colors">
+                  Open Full Predictor →
+                </a>
+                <p className="text-[11px] text-center text-gray-400">Based on CET Cell Maharashtra data 2020–2026 · Free</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <FeaturedColleges />
         <RankingTables />
         <section className="py-16 bg-[#0A1628]">
@@ -106,6 +147,7 @@ export default function HomePage() {
           </div>
         </section>
         <ExamCalendar />
+        <HomepageNewsSection />
 
         {/* Tools Hub */}
         <section className="py-14 bg-white">
@@ -134,7 +176,7 @@ export default function HomePage() {
         </section>
 
         {/* Guides & Tools Hub */}
-        <section className="py-14 bg-[#F8FAFC]">
+        <section className="py-14 bg-surface">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Explore College Guides & Tools</h2>
@@ -222,8 +264,10 @@ export default function HomePage() {
           </div>
         </section>
 
+        <TestimonialsSection />
+        <AlumniQASection />
         <FAQSection />
-        <BlogPreview />
+        <GuidesScrollSection />
       </main>
     </>
   )

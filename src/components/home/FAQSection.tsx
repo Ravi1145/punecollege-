@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 import * as Accordion from "@radix-ui/react-accordion"
 import { ChevronDown, HelpCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -56,7 +56,7 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="py-16 bg-[#F8FAFC]">
+    <section className="py-16 bg-surface">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-sm font-medium px-4 py-2 rounded-full mb-3">

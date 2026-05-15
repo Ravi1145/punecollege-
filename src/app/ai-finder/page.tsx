@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import { generateMetadata as genMeta } from "@/lib/seo"
 import AIRecommender from "@/components/ai/AIRecommender"
 import AIChatWidget from "@/components/ai/AIChatWidget"
@@ -13,7 +13,7 @@ export const metadata: Metadata = genMeta({
 
 export default function AIFinderPage() {
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

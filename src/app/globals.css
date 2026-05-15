@@ -3,10 +3,21 @@
 @theme {
   --color-background: #ffffff;
   --color-foreground: #0A1628;
+  /* Brand navy — primary dark color used across header, footer, cards, AI sections */
   --color-primary: #0A1628;
   --color-secondary: #1E3A5F;
+  /* Aliases so bg-navy / text-navy / border-navy work as utility classes */
+  --color-navy: #0A1628;
+  --color-navy-light: #1E3A5F;
+  /* Orange CTA — all primary action buttons */
   --color-accent: #FF6B2C;
+  --color-orange: #FF6B2C;
+  /* Semantic */
   --color-surface: #F8FAFC;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-muted: #64748b;
   --font-heading: var(--font-plus-jakarta), system-ui, sans-serif;
   --font-body: var(--font-dm-sans), system-ui, sans-serif;
 }
@@ -39,6 +50,30 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-marquee {
   animation: marquee 28s linear infinite;
+}
+
+/* ── News sidebar auto-scroll ── */
+@keyframes newsScroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.animate-news-scroll {
+  animation: newsScroll 30s linear infinite;
+}
+
+/* ── Guides horizontal scroll ── */
+@keyframes guidesScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-guides-scroll {
+  animation: guidesScroll 40s linear infinite;
+}
+
+.guides-pause-on-hover:hover .animate-guides-scroll {
+  animation-play-state: paused;
 }
 
 /* ── Existing animations ── */

@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
@@ -7,9 +7,9 @@ import { CheckCircle, MapPin, ExternalLink, BookOpen } from "lucide-react"
 export const revalidate = 300
 
 export const metadata: Metadata = genMeta({
-  title: "Top 10 MBA Colleges in Pune 2026 (NIRF Ranked & SNAP/CAT)",
+  title: "Top 10 MBA Colleges in Pune 2026 | SNAP/CAT Cutoff, Fees & Placements",
   description:
-    "Ranked list of top 10 MBA colleges in Pune 2026 by NIRF rank, SNAP/CAT cutoff, fees & placements. SIBM #13, SCMHRD, MIT-SOM — compare all at once.",
+    "Top 10 MBA colleges in Pune 2026: SIBM (NIRF #13, ₹28 LPA avg), SCMHRD (₹22 LPA), MIT-SOM (₹8–10L fees). SNAP cutoff 88–97 %ile. Fees ₹2.5L–₹21L. Compare free.",
   path: "/top-10-mba-colleges-in-pune",
   keywords: [
     "top 10 mba colleges in pune",
@@ -31,7 +31,7 @@ const colleges = [
     highestPackage: "₹65 LPA",
     placement: "100%",
     exam: "SNAP",
-    slug: "sibm-pune-symbiosis-institute-business-management",
+    slug: "sibm-symbiosis-institute-business-management-pune",
     highlight: "NIRF #13 | Best MBA Pune",
     location: "Viman Nagar, Pune",
   },
@@ -46,7 +46,7 @@ const colleges = [
     highestPackage: "₹55 LPA",
     placement: "100%",
     exam: "SNAP",
-    slug: "scmhrd-symbiosis-centre-management-hrd-pune",
+    slug: "scmhrd-symbiosis-centre-management-hrd",
     highlight: "Top SNAP College",
     location: "Hinjewadi, Pune",
   },
@@ -76,7 +76,7 @@ const colleges = [
     highestPackage: "₹38 LPA",
     placement: "98%",
     exam: "SNAP",
-    slug: "scit-symbiosis-centre-information-technology-pune",
+    slug: "siib-symbiosis-institute-of-international-business-pune",
     highlight: "Best MBA IT/IS",
     location: "Hinjewadi, Pune",
   },
@@ -91,7 +91,7 @@ const colleges = [
     highestPackage: "₹28 LPA",
     placement: "92%",
     exam: "CAT / MAT / CMAT / XAT",
-    slug: "bimm-balaji-institute-modern-management-pune",
+    slug: "balaji-institute-of-modern-management-pune",
     highlight: "Best Budget MBA",
     location: "Tathawade, Pune",
   },
@@ -166,7 +166,7 @@ const colleges = [
     highestPackage: "₹22 LPA",
     placement: "86%",
     exam: "CAT / MAT / CMAT",
-    slug: "mit-college-of-management-pune",
+    slug: "mit-school-of-management-pune",
     highlight: "Good ROI MBA",
     location: "Kothrud, Pune",
   },
@@ -178,7 +178,7 @@ const topFiveDetails = [
     emoji: "🥇",
     badge: "bg-yellow-100 text-yellow-700",
     name: "Symbiosis Institute of Business Management (SIBM Pune)",
-    slug: "sibm-pune-symbiosis-institute-business-management",
+    slug: "sibm-symbiosis-institute-business-management-pune",
     location: "Viman Nagar, Pune · Est. 1978",
     nirf: 13,
     naac: "A+",
@@ -198,7 +198,7 @@ const topFiveDetails = [
     emoji: "🥈",
     badge: "bg-gray-100 text-gray-700",
     name: "Symbiosis Centre for Management & HRD (SCMHRD)",
-    slug: "scmhrd-symbiosis-centre-management-hrd-pune",
+    slug: "scmhrd-symbiosis-centre-management-hrd",
     location: "Hinjewadi, Pune · Est. 1993",
     nirf: null,
     naac: "A+",
@@ -238,7 +238,7 @@ const topFiveDetails = [
     emoji: "4️⃣",
     badge: "bg-blue-100 text-blue-700",
     name: "Symbiosis Centre for Information Technology (SCIT)",
-    slug: "scit-symbiosis-centre-information-technology-pune",
+    slug: "siib-symbiosis-institute-of-international-business-pune",
     location: "Hinjewadi, Pune · Est. 2000",
     nirf: null,
     naac: "A+",
@@ -258,7 +258,7 @@ const topFiveDetails = [
     emoji: "5️⃣",
     badge: "bg-green-100 text-green-700",
     name: "Balaji Institute of Modern Management (BIMM Pune)",
-    slug: "bimm-balaji-institute-modern-management-pune",
+    slug: "balaji-institute-of-modern-management-pune",
     location: "Tathawade, Pune · Est. 2004",
     nirf: null,
     naac: "A",
@@ -342,15 +342,15 @@ export default function Top10MBACollegesPunePage() {
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
 
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
           <div className="max-w-5xl mx-auto">
             <nav className="text-xs text-blue-300 mb-4 flex flex-wrap items-center gap-1">
               <Link href="/" className="hover:text-white">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/colleges" className="hover:text-white">Colleges</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">Top 10 MBA Colleges in Pune</span>
             </nav>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">

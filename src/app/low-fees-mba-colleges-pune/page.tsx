@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
@@ -40,7 +40,7 @@ const under5LMBAColleges = [
     feesPerYear: "~₹1.9L/yr",
     naac: "A",
     exam: "MAH-CET / CAT / XAT",
-    slug: "iimm-pune-indian-institute-management-commerce",
+    slug: "pumba-pune-university-mba",
     note: "Affordable & NAAC accredited",
   },
   {
@@ -60,7 +60,7 @@ const under5LMBAColleges = [
     feesPerYear: "~₹2.5L/yr",
     naac: "A",
     exam: "MAH-CET / CAT / XAT",
-    slug: "bimm-balaji-institute-modern-management-pune",
+    slug: "balaji-institute-of-modern-management-pune",
     note: "Strong alumni network",
   },
 ]
@@ -73,7 +73,7 @@ const under10LMBAColleges = [
     feesPerYear: "~₹3.5–5.5L/yr",
     naac: "A+",
     exam: "MAH-CET / CAT / XAT / CMAT",
-    slug: "mit-som-school-of-management-pune",
+    slug: "mit-school-of-management-pune",
     note: "NAAC A+ deemed university",
   },
   {
@@ -83,7 +83,7 @@ const under10LMBAColleges = [
     feesPerYear: "~₹4–5L/yr",
     naac: "A+",
     exam: "SNAP",
-    slug: "symbiosis-centre-management-studies-pune",
+    slug: "scmhrd-symbiosis-centre-management-hrd",
     note: "Symbiosis group",
   },
 ]
@@ -141,15 +141,15 @@ export default function LowFeesMBACollegesPunePage() {
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
           <div className="max-w-5xl mx-auto">
             <nav className="text-xs text-blue-300 mb-4 flex flex-wrap items-center gap-1">
               <Link href="/" className="hover:text-white">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/colleges" className="hover:text-white">Colleges</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">Low Fees MBA Colleges Pune</span>
             </nav>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">

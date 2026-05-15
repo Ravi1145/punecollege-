@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { Building2 } from "lucide-react"
@@ -127,7 +127,7 @@ function CollegeCard({ college }: { college: typeof COLLEGES[0] }) {
 
       {/* Text */}
       <div className="min-w-0">
-        <p className="text-gray-900 font-bold text-sm truncate group-hover/card:text-[#FF6A00] transition-colors">
+        <p className="text-gray-900 font-bold text-sm truncate group-hover/card:text-[var(--color-accent)] transition-colors">
           {college.name}
         </p>
         <p className="text-gray-400 text-[11px] truncate leading-tight mt-0.5">

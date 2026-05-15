@@ -5,7 +5,7 @@ import Link from "next/link"
 import { cn, formatCurrency } from "@/lib/utils"
 import { RecommendedCollege } from "@/types"
 
-const STREAMS = ["Engineering (B.Tech/BE)", "MBA/Management", "Medical (MBBS)", "Commerce/BBA", "Arts/Humanities", "Computer Applications (BCA)"]
+const STREAMS = ["Engineering", "MBA/Management", "Medical (MBBS)", "Commerce/BBA", "Arts/Humanities", "BCA/BSc IT"]
 const EXAM_TYPES = ["MHT-CET", "JEE Main/Advanced", "NEET", "CAT", "SNAP", "MAT/CMAT", "Class 12 Merit"]
 
 interface FormData {
@@ -104,7 +104,7 @@ export default function AIRecommender() {
                     key={s}
                     onClick={() => setForm((p) => ({ ...p, stream: s }))}
                     className={cn(
-                      "text-sm px-3 py-2.5 rounded-xl border transition-all text-left",
+                      "text-xs px-2.5 py-2 rounded-xl border transition-all text-left leading-tight",
                       form.stream === s
                         ? "bg-orange-500 border-orange-500 text-white font-medium"
                         : "border-white/20 text-gray-300 hover:border-orange-400 hover:text-white"

@@ -2,6 +2,8 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Script from "next/script"
 import { colleges, getCollegeBySlug } from "@/data/colleges"
+
+export const revalidate = 300 // ISR — re-render every 5 min; on-demand revalidation via admin also busts this
 import { fetchCollegesFromAPI, mapAPICollege, generateSlug } from "@/lib/api"
 import { getCollegeBySlug as getDBCollege, DBCollege, CollegeDetails } from "@/lib/db"
 import CollegeProfile from "@/components/colleges/CollegeProfile"
@@ -118,17 +120,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!resolved) return {}
   const { college } = resolved
 
+  const nirfText  = college.nirfRank ? `, NIRF #${college.nirfRank}` : ""
+  const feesMin   = college.feesRange.min > 0 ? `₹${(college.feesRange.min / 100000).toFixed(1)}L` : ""
+  const feesMax   = college.feesRange.max > 0 ? `₹${(college.feesRange.max / 100000).toFixed(1)}L/yr` : ""
+  const feesText  = feesMin && feesMax ? ` | Fees ${feesMin}–${feesMax}` : ""
+  const placText  = college.avgPlacement > 0
+    ? ` | ₹${(college.avgPlacement / 100000).toFixed(1)}L avg pkg`
+    : ""
+
   return genMeta({
-    title: `${college.name} — Fees, Placements, Cutoff 2026`,
-    description: `${college.name} (${college.shortName}) — ${college.type} college in ${college.location}. NAAC ${college.naac}${college.nirfRank ? `, NIRF Rank ${college.nirfRank}` : ""}. Annual fees: ₹${(college.feesRange.min / 100000).toFixed(1)}L–${(college.feesRange.max / 100000).toFixed(1)}L. Avg placement: ₹${(college.avgPlacement / 100000).toFixed(1)}L PA. ${college.description.slice(0, 100)}`,
+    title: `${college.name} Admission 2026 | NAAC ${college.naac}${nirfText} | Fees & Cutoff`,
+    description: `${college.name} (${college.shortName}) admission 2026 — ${college.type} college in Pune. NAAC ${college.naac}${nirfText}${feesText}${placText}. Entrance: ${college.entranceExams.slice(0, 2).join(", ") || "MHT-CET"}. Compare fees, cutoffs & reviews — free.`,
     path: `/colleges/${slug}`,
     keywords: [
       college.name.toLowerCase(),
       college.shortName.toLowerCase(),
+      `${college.shortName.toLowerCase()} admission 2026`,
       `${college.shortName.toLowerCase()} fees`,
       `${college.shortName.toLowerCase()} placements`,
-      `${college.shortName.toLowerCase()} admission`,
+      `${college.shortName.toLowerCase()} cutoff 2026`,
+      `${college.shortName.toLowerCase()} reviews`,
+      `${college.name.toLowerCase()} pune`,
       "colleges in pune",
+      "pune college admission 2026",
     ],
   })
 }
@@ -157,6 +171,8 @@ export default async function CollegePage({ params }: Props) {
     nirfRank: college.nirfRank,
     courses: college.courses,
     image: college.image,
+    rating: college.rating,
+    reviewCount: college.reviewCount,
   })
 
   // Build FAQ schema from details.faqs (DB) or college.faqs (static)
@@ -172,7 +188,7 @@ export default async function CollegePage({ params }: Props) {
       {faqSchema && (
         <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         <CollegeProfile college={college} details={details} />
       </div>
     </>

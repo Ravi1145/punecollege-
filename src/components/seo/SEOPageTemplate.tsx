@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { ExternalLink, MapPin, Star, TrendingUp, BookOpen, Building2 } from "lucide-react"
@@ -23,7 +23,7 @@ function formatPkg(n: number): string {
 
 export default function SEOPageTemplate({ page, colleges }: Props) {
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-surface">
       {/* Hero */}
       <section className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-14 px-4">
         <div className="max-w-5xl mx-auto">

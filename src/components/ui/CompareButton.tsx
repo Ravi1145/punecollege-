@@ -52,8 +52,8 @@ export default function CompareButton({ collegeSlug, collegeName }: CompareButto
       className={cn(
         "flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border transition-all",
         isSelected
-          ? "bg-navy-50 border-navy-200 text-navy-700 bg-[#0A1628]/10 border-[#0A1628]/20 text-[#0A1628]"
-          : "border-gray-200 text-gray-600 hover:border-orange-300 hover:text-orange-600"
+          ? "bg-navy/10 border-navy/20 text-navy"
+          : "border-gray-200 text-gray-600 hover:border-accent/40 hover:text-accent"
       )}
       title={isSelected ? "Remove from compare" : "Add to compare"}
     >

@@ -56,6 +56,8 @@ export function generateMetadata({
       canonical: canonicalUrl,
       languages: {
         "en-IN": canonicalUrl,
+        "mr-IN": canonicalUrl,
+        "x-default": canonicalUrl,
       },
     },
     openGraph: {
@@ -171,8 +173,10 @@ export function generateCollegeSchema(college: {
   nirfRank?: number | null
   courses?: string[]
   image?: string
+  rating?: number
+  reviewCount?: number
 }) {
-  return {
+  const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
     name: college.name,
@@ -201,6 +205,19 @@ export function generateCollegeSchema(college: {
       })),
     } : undefined,
   }
+
+  // Add AggregateRating if we have rating data — enables gold star rich snippets in Google
+  if (college.rating && college.rating > 0) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: college.rating.toFixed(1),
+      reviewCount: college.reviewCount && college.reviewCount > 0 ? college.reviewCount : 1,
+      bestRating: "5",
+      worstRating: "1",
+    }
+  }
+
+  return schema
 }
 
 export function generateItemListSchema(items: { name: string; url: string; description?: string }[]) {

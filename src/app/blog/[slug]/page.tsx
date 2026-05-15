@@ -152,7 +152,7 @@ export default async function BlogPostPage({ params }: Props) {
   const isHTML = post.body.trimStart().startsWith('<')
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="blog-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }} />
 

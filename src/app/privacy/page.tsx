@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
@@ -95,13 +95,13 @@ export default function PrivacyPage() {
   ]
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-10 px-4">
         <div className="max-w-3xl mx-auto">
           <nav className="text-xs text-blue-300 mb-3 flex items-center gap-1">
             <Link href="/" className="hover:text-white">Home</Link>
-            <span>/</span>
+            <span>›</span>
             <span className="text-white">Privacy Policy</span>
           </nav>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">Privacy Policy</h1>

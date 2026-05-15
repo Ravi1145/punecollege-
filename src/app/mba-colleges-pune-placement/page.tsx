@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
@@ -24,15 +24,15 @@ export const metadata: Metadata = genMeta({
 
 const placementData = [
   { rank: 1, name: "SIBM Pune — Symbiosis Institute of Business Management", type: "Deemed", avg: "₹28 LPA", highest: "₹65 LPA", rate: "100%", slug: "sibm-pune-symbiosis-institute-of-business-management", recruiters: "McKinsey, BCG, Goldman Sachs, P&G, Deloitte, Hindustan Unilever" },
-  { rank: 2, name: "SCMHRD — Symbiosis Centre for Management & HRD", type: "Deemed", avg: "₹22 LPA", highest: "₹55 LPA", rate: "100%", slug: "scmhrd-symbiosis-centre-management-hrd-pune", recruiters: "Amazon, Accenture, Capgemini, EY, KPMG, Tata Motors" },
+  { rank: 2, name: "SCMHRD — Symbiosis Centre for Management & HRD", type: "Deemed", avg: "₹22 LPA", highest: "₹55 LPA", rate: "100%", slug: "scmhrd-symbiosis-centre-management-hrd", recruiters: "Amazon, Accenture, Capgemini, EY, KPMG, Tata Motors" },
   { rank: 3, name: "SCIT — Symbiosis Centre for Information Technology", type: "Deemed", avg: "₹18 LPA", highest: "₹45 LPA", rate: "98%", slug: "symbiosis-centre-information-technology-pune", recruiters: "Microsoft, TCS, Cognizant, Infosys BPM, Wipro Digital" },
-  { rank: 4, name: "MIT School of Management (MIT-SOM)", type: "Autonomous", avg: "₹12 LPA", highest: "₹32 LPA", rate: "92%", slug: "mit-som-school-of-management-pune", recruiters: "HDFC Bank, ICICI, Bajaj Finserv, Mahindra, Tata Group" },
-  { rank: 5, name: "BIMM — Balaji Institute of Modern Management", type: "Autonomous", avg: "₹8.5 LPA", highest: "₹22 LPA", rate: "88%", slug: "bimm-balaji-institute-pune", recruiters: "HDFC, Axis Bank, Reliance, HUL, Aditya Birla Group" },
+  { rank: 4, name: "MIT School of Management (MIT-SOM)", type: "Autonomous", avg: "₹12 LPA", highest: "₹32 LPA", rate: "92%", slug: "mit-school-of-management-pune", recruiters: "HDFC Bank, ICICI, Bajaj Finserv, Mahindra, Tata Group" },
+  { rank: 5, name: "BIMM — Balaji Institute of Modern Management", type: "Autonomous", avg: "₹8.5 LPA", highest: "₹22 LPA", rate: "88%", slug: "balaji-institute-of-modern-management-pune", recruiters: "HDFC, Axis Bank, Reliance, HUL, Aditya Birla Group" },
   { rank: 6, name: "Indira Institute of Management Pune (IIMP)", type: "Autonomous", avg: "₹7.2 LPA", highest: "₹18 LPA", rate: "85%", slug: "indira-institute-of-management-pune", recruiters: "BFSI companies, FMCG firms, IT services, Retail chains" },
   { rank: 7, name: "Suryadatta Institute of Management", type: "Private", avg: "₹5.8 LPA", highest: "₹14 LPA", rate: "80%", slug: "suryadatta-institute-management-pune", recruiters: "Local Pune companies, Banking sector, Insurance, Retail" },
   { rank: 8, name: "BATU — Bharati Vidyapeeth Institute of Management", type: "Deemed", avg: "₹6.8 LPA", highest: "₹16 LPA", rate: "82%", slug: "bharati-vidyapeeth-institute-management-pune", recruiters: "HDFC, Kotak, Bajaj, Tech Mahindra, Infosys BPM" },
-  { rank: 9, name: "MAEER MIT College of Management", type: "Autonomous", avg: "₹7.5 LPA", highest: "₹20 LPA", rate: "86%", slug: "mit-college-of-management-pune", recruiters: "Mahindra, Bajaj, TCS, Wipro, Barclays, Citi" },
-  { rank: 10, name: "IIMM — Indian Institute of Materials Management", type: "Autonomous", avg: "₹6.5 LPA", highest: "₹16 LPA", rate: "80%", slug: "iimm-pune-indian-institute-materials-management", recruiters: "Amazon, Flipkart, DHL, Blue Dart, Maersk, TVS Logistics" },
+  { rank: 9, name: "MAEER MIT College of Management", type: "Autonomous", avg: "₹7.5 LPA", highest: "₹20 LPA", rate: "86%", slug: "mit-school-of-management-pune", recruiters: "Mahindra, Bajaj, TCS, Wipro, Barclays, Citi" },
+  { rank: 10, name: "IIMM — Indian Institute of Materials Management", type: "Autonomous", avg: "₹6.5 LPA", highest: "₹16 LPA", rate: "80%", slug: "pumba-pune-university-mba", recruiters: "Amazon, Flipkart, DHL, Blue Dart, Maersk, TVS Logistics" },
 ]
 
 const topMBARecruiters = [
@@ -102,7 +102,7 @@ export default function MBACollegesPunePlacementPage() {
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
 
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
           <div className="max-w-5xl mx-auto">

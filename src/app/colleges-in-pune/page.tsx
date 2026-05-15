@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Link from "next/link"
 import { BookOpen, Building2, GraduationCap, MapPin, TrendingUp, Shield } from "lucide-react"
 import { seoPages } from "@/data/seoPages"
@@ -69,7 +69,7 @@ const iconColorMap: Record<string, string> = {
 
 export default function CollegesInPunePage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-surface">
       {/* Hero */}
       <section className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">

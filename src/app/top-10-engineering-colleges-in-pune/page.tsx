@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
@@ -7,9 +7,9 @@ import { CheckCircle, MapPin, ExternalLink, BookOpen } from "lucide-react"
 export const revalidate = 300
 
 export const metadata: Metadata = genMeta({
-  title: "Top 10 Engineering Colleges in Pune 2026 (NIRF Ranked)",
+  title: "Top 10 Engineering Colleges in Pune 2026 | Fees, MHT-CET Cutoff & Placements",
   description:
-    "Ranked list of top 10 engineering colleges in Pune 2026 by NIRF rank, NAAC grade, fees & placements. COEP #49, VIT Pune #101 — compare all data in one place.",
+    "Top 10 engineering colleges in Pune 2026: COEP (NIRF #49, ₹80K/yr, ₹12 LPA avg), VIT Pune (NIRF #101, ₹8.5 LPA), SIT Pune (₹9.8 LPA). MHT-CET cutoffs 60–95 %ile. Compare free.",
   path: "/top-10-engineering-colleges-in-pune",
   keywords: [
     "top 10 engineering colleges in pune",
@@ -342,15 +342,15 @@ export default function Top10EngineeringCollegesPunePage() {
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
 
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <div className="bg-surface min-h-screen">
         {/* Hero */}
         <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
           <div className="max-w-5xl mx-auto">
             <nav className="text-xs text-blue-300 mb-4 flex flex-wrap items-center gap-1">
               <Link href="/" className="hover:text-white">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/colleges" className="hover:text-white">Colleges</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">Top 10 Engineering Colleges in Pune</span>
             </nav>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">

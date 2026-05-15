@@ -2,6 +2,7 @@ import { MetadataRoute } from "next"
 import { colleges } from "@/data/colleges"
 import { getAllBlogs } from "@/lib/db"
 import { blogs as staticBlogs } from "@/data/blogs"
+import { getAllCutoffParams } from "@/data/cutoffs"
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
@@ -62,9 +63,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/engineering-colleges-pune`,                 lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
     { url: `${BASE_URL}/mba-colleges-pune`,                         lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
     { url: `${BASE_URL}/medical-colleges-pune`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/design-colleges-pune`,                      lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/law-colleges-pune`,                         lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/arts-colleges-pune`,                        lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/pharmacy-colleges-pune`,                    lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/bca-colleges-pune`,                         lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/government-colleges-pune`,                  lastModified: new Date(), changeFrequency: "monthly", priority: 0.90 },
+    { url: `${BASE_URL}/architecture-colleges-pune`,               lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/bba-colleges-pune`,                        lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/bsc-it-colleges-pune`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/colleges-in-pune-with-hostel`,             lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
     // Ranking pages
     { url: `${BASE_URL}/top-10-engineering-colleges-in-pune`,       lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/top-10-mba-colleges-in-pune`,               lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/top-10-medical-colleges-in-pune`,           lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     // Placement guides
     { url: `${BASE_URL}/engineering-colleges-pune-placement`,       lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
     { url: `${BASE_URL}/mba-colleges-pune-placement`,               lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
@@ -89,7 +101,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Interactive tools
     { url: `${BASE_URL}/pune-college-fees-calculator`,              lastModified: new Date(), changeFrequency: "monthly", priority: 0.75 },
     { url: `${BASE_URL}/pune-college-placement-comparator`,         lastModified: new Date(), changeFrequency: "monthly", priority: 0.75 },
+    // New content pages
+    { url: `${BASE_URL}/scholarships`,                              lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/news`,                                      lastModified: new Date(), changeFrequency: "daily",   priority: 0.85 },
+    { url: `${BASE_URL}/qa`,                                        lastModified: new Date(), changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${BASE_URL}/ask`,                                       lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ]
 
-  return [...staticPages, ...seoPages, ...streamPages, ...collegePages, ...blogPages]
+  // Cutoff pages — one per [exam, college] pair
+  const cutoffIndexPage: MetadataRoute.Sitemap = [
+    { url: `${BASE_URL}/cutoffs`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.9 },
+  ]
+  const cutoffPages: MetadataRoute.Sitemap = getAllCutoffParams().map(({ exam, college }) => ({
+    url: `${BASE_URL}/cutoffs/${exam}/${college}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }))
+
+  const alumniPages: MetadataRoute.Sitemap = [
+    "alumni", "alumni/rahul-sharma-coep-2023", "alumni/priya-desai-sibm-2022",
+    "alumni/aditya-kulkarni-pict-2023", "alumni/sneha-patil-afmc-2021",
+    "alumni/karan-mehta-vit-2023", "alumni/ananya-joshi-mit-wpu-2022",
+  ].map((path) => ({
+    url: `${BASE_URL}/${path}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, ...seoPages, ...streamPages, ...collegePages, ...blogPages, ...cutoffIndexPage, ...cutoffPages, ...alumniPages]
 }

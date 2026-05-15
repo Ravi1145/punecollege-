@@ -13,7 +13,11 @@ export async function GET(req: NextRequest) {
       limit:    Number(searchParams.get('limit') ?? 10),
     })
     return NextResponse.json(result, {
-      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
+      // s-maxage=60: CDN caches for 60s; stale-while-revalidate=120 allows serving stale
+      // for 2 more minutes while revalidating in background. Total max stale = 3 min.
+      // Admin delete triggers revalidatePath() which busts the ISR pages immediately;
+      // the CDN API response will be at most 60s stale.
+      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' },
     })
   } catch {
     return NextResponse.json({ error: 'Failed to load blogs' }, { status: 500 })

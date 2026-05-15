@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 import { useState, useMemo } from "react"
 import { Calculator, TrendingUp, IndianRupee, Clock, CheckCircle, AlertCircle } from "lucide-react"
 import Link from "next/link"
@@ -61,7 +61,7 @@ export default function ROICalculatorPage() {
   }, [course, totalFees, livingCost, currentSalary, data])
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">
         <div className="max-w-3xl mx-auto text-center">

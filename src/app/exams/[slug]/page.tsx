@@ -73,9 +73,9 @@ export default async function ExamDetailPage({ params }: Props) {
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-xs text-blue-300 mb-6">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <span>/</span>
+              <span>›</span>
               <Link href="/exams" className="hover:text-white transition-colors">Exams</Link>
-              <span>/</span>
+              <span>›</span>
               <span className="text-white">{exam.name}</span>
             </nav>
 

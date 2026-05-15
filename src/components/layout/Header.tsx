@@ -5,9 +5,12 @@ import { usePathname } from "next/navigation"
 import {
   Menu, X, GraduationCap, ChevronDown, Sparkles, PhoneCall,
   Search, Calculator, BarChart3, BookOpen, Award, Compass,
-  Building2, Microscope, Scale, Palette, TrendingUp, Star
+  Building2, Microscope, Scale, Palette, TrendingUp, Star,
+  Newspaper, MessageCircle, LineChart, Gift, Bell
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import dynamic from "next/dynamic"
+const SearchModal = dynamic(() => import("@/components/ui/SearchModal"), { ssr: false })
 
 // ── Mega-menu data ────────────────────────────────────────────
 const streams = [
@@ -141,6 +144,10 @@ const tools = [
 ]
 
 const explore = [
+  { label: "News & Updates", href: "/news", icon: Newspaper },
+  { label: "Cutoffs 2026", href: "/cutoffs", icon: LineChart },
+  { label: "Scholarships", href: "/scholarships", icon: Gift },
+  { label: "Community Q&A", href: "/qa", icon: MessageCircle },
   { label: "Blog & Guides", href: "/blog", icon: BookOpen },
   { label: "Entrance Exams", href: "/exams", icon: Compass },
   { label: "All Courses", href: "/courses", icon: Star },
@@ -207,19 +214,9 @@ export default function Header() {
               />
             </Link>
 
-            {/* Search bar — desktop */}
+            {/* Search bar — desktop (CMD+K modal) */}
             <div className="hidden md:flex flex-1 max-w-xl mx-4">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <form action="/colleges" method="get">
-                  <input
-                    name="search"
-                    type="text"
-                    placeholder="Search colleges, courses, exams..."
-                    className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 text-sm rounded-xl pl-9 pr-4 py-2 outline-none focus:bg-white/20 focus:border-white/40 transition-all"
-                  />
-                </form>
-              </div>
+              <SearchModal />
             </div>
 
             {/* Right CTAs */}
@@ -301,7 +298,7 @@ export default function Header() {
                     <div
                       onMouseEnter={keepDropdown}
                       onMouseLeave={closeDropdown}
-                      className="absolute top-full left-0 mt-0 w-[560px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-5"
+                      className="absolute top-full left-0 mt-0 w-[min(560px,calc(100vw-2rem))] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-5"
                     >
                       <div className="grid grid-cols-3 gap-6">
                         {/* Colleges */}
@@ -381,7 +378,7 @@ export default function Header() {
                   <div
                     onMouseEnter={keepDropdown}
                     onMouseLeave={closeDropdown}
-                    className="absolute top-full left-0 mt-0 w-[440px] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-4"
+                    className="absolute top-full left-0 mt-0 w-[min(440px,calc(100vw-2rem))] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-4"
                   >
                     <div className="grid grid-cols-2 gap-2">
                       {tools.map((t) => (
@@ -424,18 +421,20 @@ export default function Header() {
                   <div
                     onMouseEnter={keepDropdown}
                     onMouseLeave={closeDropdown}
-                    className="absolute top-full left-0 mt-0 w-52 bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 py-2"
+                    className="absolute top-full left-0 mt-0 w-80 bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-2"
                   >
+                    <div className="grid grid-cols-2 gap-0.5">
                     {explore.map((e) => (
                       <Link
                         key={`desktop-explore-${e.href}`}
                         href={e.href}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                        className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors rounded-lg"
                       >
-                        <e.icon className="w-4 h-4 text-gray-400" />
+                        <e.icon className="w-4 h-4 text-gray-400 flex-shrink-0" />
                         {e.label}
                       </Link>
                     ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -543,6 +542,26 @@ export default function Header() {
                   </Link>
                 ))}
               </div>
+            </div>
+
+            {/* Quick access — News / Cutoffs / Scholarships / Q&A */}
+            <div className="px-3 pb-2 pt-1 border-t border-gray-100 grid grid-cols-4 gap-1.5">
+              {[
+                { href: "/news",         icon: Newspaper,       label: "News",        color: "text-blue-600 bg-blue-50" },
+                { href: "/cutoffs",      icon: LineChart,       label: "Cutoffs",     color: "text-orange-600 bg-orange-50" },
+                { href: "/scholarships", icon: Gift,            label: "Scholarships",color: "text-green-600 bg-green-50" },
+                { href: "/qa",           icon: MessageCircle,   label: "Q&A",         color: "text-purple-600 bg-purple-50" },
+              ].map(({ href, icon: Icon, label, color }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-xl ${color} transition-colors`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="text-[10px] font-semibold">{label}</span>
+                </Link>
+              ))}
             </div>
 
             {/* Bottom CTAs */}

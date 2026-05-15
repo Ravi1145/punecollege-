@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAllColleges, DBCollege } from '@/lib/db'
 import type { College } from '@/types'
 
-export const revalidate = 60 // revalidate every 60s
-
 function mapDBToCollege(db: DBCollege, index: number): College {
   return {
     id:                db.id ?? index,
@@ -52,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       { colleges: mapped, total: mapped.length },
-      { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' } }
+      { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' } }
     )
   } catch (err) {
     console.error('[GET /api/colleges]', err)

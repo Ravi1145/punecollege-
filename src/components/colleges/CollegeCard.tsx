@@ -1,7 +1,8 @@
 "use client"
+
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { MapPin, TrendingUp, Heart, IndianRupee, Star, GitCompare } from "lucide-react"
+import { MapPin, TrendingUp, Heart, IndianRupee, Star } from "lucide-react"
 import { College } from "@/types"
 import CompareButton from "@/components/ui/CompareButton"
 import { formatFeesRange, formatCurrency, getNaacColor, getTypeColor, cn } from "@/lib/utils"
@@ -14,30 +15,12 @@ interface CollegeCardProps {
   priority?: boolean
 }
 
-function CollegeLogo({ college, size = "md" }: { college: College; size?: "sm" | "md" | "lg"; priority?: boolean }) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0 font-bold text-white leading-tight text-center",
-        size === "sm" && "w-9 h-9 text-[9px]",
-        size === "md" && "w-[52px] h-[52px] text-xs",
-        size === "lg" && "w-16 h-16 text-sm",
-      )}
-    >
-      {college.shortName}
-    </div>
-  )
-}
-
-export default function CollegeCard({ college, variant = "default", priority = false }: CollegeCardProps) {
+export default function CollegeCard({ college, variant = "default" }: CollegeCardProps) {
   const [isShortlisted, setIsShortlisted] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem(SHORTLIST_KEY)
-    if (stored) {
-      const list = JSON.parse(stored)
-      setIsShortlisted(list.includes(college.slug))
-    }
+    if (stored) setIsShortlisted(JSON.parse(stored).includes(college.slug))
   }, [college.slug])
 
   const toggleShortlist = (e: React.MouseEvent) => {
@@ -45,11 +28,7 @@ export default function CollegeCard({ college, variant = "default", priority = f
     e.stopPropagation()
     const stored = localStorage.getItem(SHORTLIST_KEY)
     let list: string[] = stored ? JSON.parse(stored) : []
-    if (isShortlisted) {
-      list = list.filter((s) => s !== college.slug)
-    } else {
-      list.push(college.slug)
-    }
+    list = isShortlisted ? list.filter(s => s !== college.slug) : [...list, college.slug]
     localStorage.setItem(SHORTLIST_KEY, JSON.stringify(list))
     setIsShortlisted(!isShortlisted)
   }
@@ -76,7 +55,7 @@ export default function CollegeCard({ college, variant = "default", priority = f
     )
   }
 
-  /* ── Default / Featured variant ── */
+  /* ── Derived values ── */
   const feesText = college.feesRange.min > 0 || college.feesRange.max > 0
     ? formatFeesRange(college.feesRange.min, college.feesRange.max)
     : "Contact College"
@@ -85,36 +64,48 @@ export default function CollegeCard({ college, variant = "default", priority = f
     ? formatCurrency(college.avgPlacement)
     : "—"
 
+  const topCourses = college.courses.slice(0, 3)
+  const extraCourses = college.courses.length - 3
+
   return (
     <Link href={`/colleges/${college.slug}`} className="block group h-full">
-      <article className="bg-white rounded-2xl border border-gray-100 hover:border-orange-300 hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+      <article className="bg-white rounded-2xl border border-gray-100 hover:border-orange-400 hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full">
 
-        {/* ── Header ── */}
-        <div className="relative bg-gradient-to-br from-[#0A1628] via-[#0d1f3c] to-[#1E3A5F] p-5">
-
-          {/* Shortlist button */}
+        {/* ── Dark navy header ── */}
+        <div
+          className="relative p-4 pb-3"
+          style={{ background: "linear-gradient(135deg, #0A1628 0%, #0d1f3c 60%, #1E3A5F 100%)" }}
+        >
+          {/* Heart button */}
           <button
             onClick={toggleShortlist}
             className={cn(
               "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all z-10",
               isShortlisted
                 ? "bg-red-500 text-white shadow-lg"
-                : "bg-white/10 text-white/70 hover:bg-red-500 hover:text-white"
+                : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white"
             )}
             aria-label={isShortlisted ? "Remove from shortlist" : "Add to shortlist"}
           >
             <Heart className={cn("w-4 h-4", isShortlisted && "fill-current")} />
           </button>
 
-          {/* Logo + Name */}
-          <div className="flex items-start gap-3 pr-8">
-            <CollegeLogo college={college} size="md" priority={priority} />
-            <div className="min-w-0 flex-1">
-              <h3 className="text-white font-bold text-sm leading-snug group-hover:text-orange-300 transition-colors line-clamp-2">
+          {/* Abbreviation badge + name row */}
+          <div className="flex items-start gap-3 pr-10">
+            {/* Badge */}
+            <div className="shrink-0 w-14 h-14 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
+              <span className="text-white font-extrabold text-[11px] leading-tight text-center px-1 break-all">
+                {college.shortName}
+              </span>
+            </div>
+
+            {/* Name + location */}
+            <div className="flex-1 min-w-0 pt-0.5">
+              <h3 className="text-white font-bold text-sm leading-snug line-clamp-2 group-hover:text-orange-300 transition-colors">
                 {college.name}
               </h3>
               <div className="flex items-center gap-1 mt-1.5">
-                <MapPin className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                <MapPin className="w-3 h-3 text-gray-400 shrink-0" />
                 <span className="text-xs text-gray-400 truncate">{college.location}</span>
               </div>
             </div>
@@ -122,51 +113,60 @@ export default function CollegeCard({ college, variant = "default", priority = f
 
           {/* Badge row */}
           <div className="flex flex-wrap gap-1.5 mt-3">
-            <span className={cn("text-xs px-2 py-0.5 rounded-full font-semibold", getNaacColor(college.naac))}>
+            <span className={cn("text-xs px-2.5 py-0.5 rounded-full font-bold", getNaacColor(college.naac))}>
               NAAC {college.naac}
             </span>
-            <span className={cn("text-xs px-2 py-0.5 rounded-full font-medium", getTypeColor(college.type))}>
+            <span className={cn("text-xs px-2.5 py-0.5 rounded-full font-medium", getTypeColor(college.type))}>
               {college.type}
             </span>
-            {college.nirfRank && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/90 text-white font-semibold">
+            {college.nirfRank ? (
+              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-orange-500 text-white">
                 NIRF #{college.nirfRank}
+              </span>
+            ) : (
+              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-orange-500 text-white">
+                Est. {college.established}
               </span>
             )}
           </div>
         </div>
 
         {/* ── Body ── */}
-        <div className="p-4 flex flex-col flex-1">
+        <div className="p-4 flex flex-col flex-1 gap-3">
 
-          {/* Fees + Placement stats */}
-          <div className="grid grid-cols-2 gap-2 mb-3">
+          {/* Fees + Placement */}
+          <div className="grid grid-cols-2 gap-2.5">
             <div className="bg-orange-50 border border-orange-100 rounded-xl px-3 py-2.5">
-              <div className="flex items-center gap-1 mb-0.5">
-                <IndianRupee className="w-3 h-3 text-orange-400" />
-                <span className="text-[10px] text-orange-500 font-medium uppercase tracking-wide">Annual Fees</span>
+              <div className="flex items-center gap-1 mb-1">
+                <IndianRupee className="w-3 h-3 text-orange-400 shrink-0" />
+                <span className="text-[9px] text-orange-500 font-semibold uppercase tracking-wider">Annual Fees</span>
               </div>
-              <p className="text-sm font-bold text-gray-900 leading-tight">{feesText}</p>
+              <p className="text-xs font-bold text-gray-900 leading-tight">{feesText}</p>
             </div>
             <div className="bg-blue-50 border border-blue-100 rounded-xl px-3 py-2.5">
-              <div className="flex items-center gap-1 mb-0.5">
-                <TrendingUp className="w-3 h-3 text-blue-400" />
-                <span className="text-[10px] text-blue-500 font-medium uppercase tracking-wide">Avg Package</span>
+              <div className="flex items-center gap-1 mb-1">
+                <TrendingUp className="w-3 h-3 text-blue-400 shrink-0" />
+                <span className="text-[9px] text-blue-500 font-semibold uppercase tracking-wider">Avg Package</span>
               </div>
-              <p className="text-sm font-bold text-gray-900 leading-tight">{placementText}</p>
+              <p className="text-xs font-bold text-gray-900 leading-tight">{placementText}</p>
             </div>
           </div>
 
-          {/* Stream + Exams */}
-          <div className="flex flex-wrap gap-1 mb-3">
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">
+          {/* Stream + entrance exam tags */}
+          <div className="flex flex-wrap gap-1.5">
+            <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full font-medium">
               {college.stream}
             </span>
-            {college.entranceExams.slice(0, 2).map((exam) => (
-              <span key={exam} className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">
+            {college.entranceExams.slice(0, 2).map(exam => (
+              <span key={exam} className="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full font-medium">
                 {exam}
               </span>
             ))}
+            {topCourses.length > 0 && extraCourses > 0 && (
+              <span className="text-xs bg-gray-100 text-gray-500 px-2.5 py-0.5 rounded-full font-medium">
+                +{extraCourses} More
+              </span>
+            )}
           </div>
 
           {/* Rating + Compare — pushed to bottom */}
@@ -180,6 +180,7 @@ export default function CollegeCard({ college, variant = "default", priority = f
             </div>
             <CompareButton collegeSlug={college.slug} collegeName={college.shortName} />
           </div>
+
         </div>
       </article>
     </Link>

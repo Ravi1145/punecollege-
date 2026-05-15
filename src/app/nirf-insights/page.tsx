@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 import { useState, useMemo } from "react"
 import Script from "next/script"
 import { Award, TrendingUp, MapPin, ExternalLink, Filter, ChevronUp, ChevronDown } from "lucide-react"
@@ -113,7 +113,7 @@ export default function NIRFInsightsPage() {
   }
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       <Script id="nirf-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(nirfPageSchema) }} />
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] py-12 px-4">

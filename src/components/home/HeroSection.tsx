@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import {
@@ -49,14 +50,15 @@ export default function HeroSection() {
           Save your hero photo to:  public/hero-students.jpg
           The image should be ~1400×800px with dark navy on the left half.
       ── */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src="/hero-students.jpg"
-        alt=""
-        aria-hidden
+        alt="Students at top colleges in Pune 2026"
+        fill
+        priority
+        quality={85}
+        sizes="100vw"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ objectPosition: "center center" }}
-        onError={e => { e.currentTarget.style.display = "none" }}
       />
 
       {/* Subtle overlay — image already has dark navy on left, just boost text contrast slightly */}
@@ -92,27 +94,27 @@ export default function HeroSection() {
             {/* AI badge */}
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold mb-5"
-              style={{ border: "1.5px solid rgba(255,140,0,0.6)", color: "#FF8C00" }}
+              style={{ border: "1.5px solid color-mix(in srgb, var(--color-accent) 60%, transparent)", color: "var(--color-accent)" }}
             >
               <Sparkles className="w-3.5 h-3.5 shrink-0" />
               India&apos;s AI-Powered College Portal 2026
             </div>
 
-            {/* H1 */}
+            {/* H1 — includes primary keyword "colleges in pune 2026" */}
             <h1
-              className="text-white font-extrabold leading-[1.05] tracking-tight mb-1"
+              className="font-extrabold leading-[1.05] tracking-tight mb-1"
               style={{ fontSize: "clamp(2rem, 3.8vw, 3.2rem)" }}
             >
-              Admission Open 2026
+              <span className="text-accent">Best Colleges in Pune</span>
+              <span className="text-white"> 2026</span>
             </h1>
 
             {/* H2 */}
             <h2
-              className="font-extrabold leading-[1.1] tracking-tight mb-4"
+              className="text-white font-extrabold leading-[1.1] tracking-tight mb-4"
               style={{ fontSize: "clamp(1.75rem, 3.3vw, 2.85rem)" }}
             >
-              <span style={{ color: "#FF6A00" }}>Find Top Colleges in Pune</span>
-              <span className="text-white"> with AI</span>
+              Find Your College with AI — Admission Open
             </h2>
 
             {/* Subheading */}
@@ -168,8 +170,7 @@ export default function HeroSection() {
                 />
                 <button
                   type="submit"
-                  className="shrink-0 font-bold text-white px-6 py-[14px] text-sm transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: "#FF6A00" }}
+                  className="shrink-0 font-bold text-white bg-accent px-6 py-[14px] text-sm transition-opacity hover:opacity-90"
                 >
                   Search
                 </button>
@@ -209,8 +210,8 @@ export default function HeroSection() {
                 href="/ai-finder"
                 className="flex items-center justify-center gap-2.5 font-bold text-white px-7 py-3.5 rounded-xl text-base transition-all hover:opacity-90 active:scale-95"
                 style={{
-                  backgroundColor: "#FF6A00",
-                  boxShadow: "0 4px 18px rgba(255,106,0,0.42)",
+                  backgroundColor: "var(--color-accent)",
+                  boxShadow: "0 4px 18px color-mix(in srgb, var(--color-accent) 42%, transparent)",
                 }}
               >
                 <GraduationCap className="w-5 h-5" />
@@ -258,7 +259,7 @@ export default function HeroSection() {
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                     style={{ backgroundColor: "#FFF3E0" }}
                   >
-                    <Icon className="w-[18px] h-[18px]" style={{ color: "#FF6A00" }} />
+                    <Icon className="w-[18px] h-[18px] text-accent" />
                   </div>
                   <div>
                     <p className="font-bold text-sm text-gray-900 leading-tight">{label}</p>
@@ -284,7 +285,7 @@ export default function HeroSection() {
                   <div key={label} className="flex items-center gap-2">
                     <Icon className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.42)" }} />
                     <div>
-                      <p className="font-extrabold text-base leading-none" style={{ color: "#FF6A00" }}>
+                      <p className="font-extrabold text-base leading-none text-accent">
                         {value}
                       </p>
                       <p className="leading-tight mt-0.5" style={{ color: "rgba(178,200,228,0.82)", fontSize: "0.62rem" }}>
@@ -305,10 +306,12 @@ export default function HeroSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex flex-wrap items-center justify-center">
             {[
-              { emoji: "🛡", text: "NAAC Verified Data"   },
-              { emoji: "💰", text: "Accurate Fee Info"     },
-              { emoji: "⭐", text: "50K+ Student Reviews"  },
-              { emoji: "🎧", text: "Free Counseling"       },
+              { emoji: "🤝", text: "Shiksha Partner"        },
+              { emoji: "🛡", text: "NAAC Verified Data"     },
+              { emoji: "🏛️", text: "SPPU Listed"            },
+              { emoji: "💰", text: "Accurate Fee Info"      },
+              { emoji: "⭐", text: "50K+ Student Reviews"   },
+              { emoji: "🎧", text: "Free Counseling"        },
             ].map(({ emoji, text }, i, arr) => (
               <div
                 key={text}

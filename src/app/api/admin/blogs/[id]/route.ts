@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getBlogById, updateBlog, deleteBlog } from '@/lib/db'
 import { isAuthorized, unauthorized, safeId } from '@/lib/admin-auth'
 
@@ -32,6 +33,8 @@ export async function PUT(
       body.published_at = new Date().toISOString()
     }
     await updateBlog(safeId(id), body)
+    revalidatePath('/blog')
+    if (body.slug) revalidatePath(`/blog/${body.slug}`)
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/blogs/[id] PUT]', err)
@@ -47,7 +50,11 @@ export async function DELETE(
   if (!isAuthorized(req)) return unauthorized()
   try {
     const { id } = await params
-    await deleteBlog(safeId(id))
+    const numId = safeId(id)
+    const blog = await getBlogById(numId)
+    await deleteBlog(numId)
+    revalidatePath('/blog')
+    if (blog?.slug) revalidatePath(`/blog/${blog.slug}`)
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/blogs/[id] DELETE]', err)

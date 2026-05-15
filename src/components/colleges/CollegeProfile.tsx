@@ -13,6 +13,7 @@ import { formatCurrency, formatFeesRange, getNaacColor, getTypeColor, cn } from 
 import EnquiryForm from "@/components/leads/EnquiryForm"
 import CounsellingBooking from "@/components/leads/CounsellingBooking"
 import CompareButton from "@/components/ui/CompareButton"
+import ReviewSection from "@/components/colleges/ReviewSection"
 
 interface CollegeProfileProps {
   college: College
@@ -29,6 +30,7 @@ const TABS = [
   { id: "scholarships",label: "Scholarships" },
   { id: "facilities",  label: "Facilities" },
   { id: "alumni",      label: "Alumni" },
+  { id: "reviews",     label: "Reviews" },
   { id: "faqs",        label: "FAQs" },
 ]
 
@@ -682,6 +684,18 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
                   </SectionCard>
                 )}
               </>
+            )}
+
+            {/* ── REVIEWS TAB ── */}
+            {activeTab === "reviews" && (
+              <ReviewSection
+                collegeSlug={college.slug}
+                collegeName={college.name}
+                staticReviews={
+                  (college as unknown as { reviews?: { id: number; studentName: string; course: string; year: string; rating: number; title: string; body: string; pros: string[]; cons: string[] }[] }).reviews ?? []
+                }
+                staticRating={college.rating}
+              />
             )}
 
             {/* ── FAQs TAB ── */}

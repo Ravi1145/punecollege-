@@ -1,4 +1,4 @@
-import { Metadata } from "next"
+﻿import { Metadata } from "next"
 import Script from "next/script"
 import { generateMetadata as genMeta, generateBreadcrumbSchema } from "@/lib/seo"
 import { exams } from "@/data/exams"
@@ -74,7 +74,7 @@ export default function ExamsPage() {
   }
 
   return (
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <div className="bg-surface min-h-screen">
       <Script id="exams-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <Script id="exams-events" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(eventListSchema) }} />
 

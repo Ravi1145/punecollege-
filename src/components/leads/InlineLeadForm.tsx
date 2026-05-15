@@ -27,10 +27,20 @@ export default function InlineLeadForm({ context }: InlineLeadFormProps) {
     if (!validate()) return
     setLoading(true)
     try {
+      const sp = new URLSearchParams(window.location.search)
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, source: "inline_form", message: context }),
+        body: JSON.stringify({
+          name,
+          phone,
+          source:       "inline_form",
+          message:      context,
+          utm_source:   sp.get("utm_source")   || "organic",
+          utm_medium:   sp.get("utm_medium")   || "none",
+          utm_campaign: sp.get("utm_campaign") || "none",
+          utm_content:  sp.get("utm_content")  || "none",
+        }),
       })
       const data = await res.json()
       if (data.success) {

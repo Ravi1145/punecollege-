@@ -11,7 +11,7 @@ export default function WhatsAppCTA() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="fixed bottom-24 right-4 sm:right-6 z-[90] w-14 h-14 flex items-center justify-center bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-full shadow-2xl transition-all hover:scale-110"
+      className="fixed bottom-4 right-20 sm:right-24 z-[90] w-14 h-14 flex items-center justify-center bg-[#25D366] hover:bg-[#1ebe5d] text-white rounded-full shadow-2xl transition-all hover:scale-110"
       style={{ boxShadow: "0 4px 20px rgba(37,211,102,0.45)" }}
     >
       {/* Pulse ring */}

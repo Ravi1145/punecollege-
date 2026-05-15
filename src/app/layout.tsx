@@ -6,17 +6,22 @@ import Footer from "@/components/layout/Footer"
 import AIChatWidget from "@/components/ai/AIChatWidget"
 import { CompareFloatingBar } from "@/components/ui/CompareButton"
 import LeadWidgets from "@/components/leads/LeadWidgets"
+import LeadBar from "@/components/leads/LeadBar"
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",        // avoids render-blocking — text shows in fallback font while custom loads
+  preload: true,
 })
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: false,         // secondary font — no need to block on it
 })
 
 export const metadata: Metadata = {
@@ -69,12 +74,18 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
     ],
     shortcut: "/favicon.svg",
   },
+  manifest: "/manifest.json",
+  // NOTE: canonical is NOT set at root layout level — every page sets its own
+  // via generateMetadata({ path }) in lib/seo.ts to prevent canonical bleeding.
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -103,6 +114,7 @@ export default function RootLayout({
   return (
     <html lang="en-IN" className={`${plusJakarta.variable} ${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-dm-sans bg-white">
+        <LeadBar />
         <Header />
         <div className="flex-1 pt-14 lg:pt-24">
           {children}

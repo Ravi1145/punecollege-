@@ -1,4 +1,4 @@
-import Link from "next/link"
+﻿import Link from "next/link"
 import type { Metadata } from "next"
 import { Home, Search, GraduationCap, BookOpen, PhoneCall } from "lucide-react"
 import GoBackButton from "@/components/ui/GoBackButton"
@@ -20,7 +20,7 @@ const QUICK_LINKS = [
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#F8FAFC" }}>
+    <div className="min-h-screen flex flex-col bg-surface">
       {/* Hero */}
       <div
         className="py-20 px-4 text-center"
@@ -55,8 +55,8 @@ export default function NotFound() {
             href="/"
             className="inline-flex items-center justify-center gap-2 font-bold text-white px-7 py-3.5 rounded-xl text-sm transition-all hover:opacity-90 active:scale-95"
             style={{
-              background: "linear-gradient(90deg,#FF6A00,#FF9A00)",
-              boxShadow: "0 4px 18px rgba(255,106,0,0.40)",
+              background: "linear-gradient(90deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 70%, #FFD000))",
+              boxShadow: "0 4px 18px color-mix(in srgb, var(--color-accent) 40%, transparent)",
             }}
           >
             <Home className="w-4 h-4" />
@@ -85,7 +85,7 @@ export default function NotFound() {
             <button
               type="submit"
               className="shrink-0 font-bold text-white text-sm px-4 py-3 transition-opacity hover:opacity-90"
-              style={{ backgroundColor: "#FF6A00" }}
+              style={{ backgroundColor: "var(--color-accent)" }}
             >
               Go
             </button>

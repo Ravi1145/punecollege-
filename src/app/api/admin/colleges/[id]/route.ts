@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getCollegeById, updateCollege, deleteCollege } from '@/lib/db'
 import { isAuthorized, unauthorized, safeId } from '@/lib/admin-auth'
 
@@ -29,6 +30,8 @@ export async function PUT(
     const { id } = await params
     const body = await req.json()
     await updateCollege(safeId(id), body)
+    revalidatePath('/colleges')
+    if (body.slug) revalidatePath(`/colleges/${body.slug}`)
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/colleges/[id] PUT]', err)
@@ -44,7 +47,11 @@ export async function DELETE(
   if (!isAuthorized(req)) return unauthorized()
   try {
     const { id } = await params
-    await deleteCollege(safeId(id))
+    const numId = safeId(id)
+    const college = await getCollegeById(numId)
+    await deleteCollege(numId)
+    revalidatePath('/colleges')
+    if (college?.slug) revalidatePath(`/colleges/${college.slug}`)
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('[admin/colleges/[id] DELETE]', err)

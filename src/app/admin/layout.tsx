@@ -3,16 +3,20 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { LayoutDashboard, Users, MessageSquare, Building2, FileText, Upload, LogOut, Menu, X } from "lucide-react"
+import { LayoutDashboard, Users, MessageSquare, Building2, FileText, Upload, LogOut, Menu, X, CalendarDays, Star, Settings, Newspaper } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
-  { href: "/admin",           label: "Dashboard",  icon: LayoutDashboard },
-  { href: "/admin/colleges",  label: "Colleges",   icon: Building2 },
-  { href: "/admin/blogs",     label: "Blogs",      icon: FileText },
-  { href: "/admin/import",    label: "Import",     icon: Upload },
-  { href: "/admin/leads",     label: "Leads",      icon: Users },
-  { href: "/admin/enquiries", label: "Enquiries",  icon: MessageSquare },
+  { href: "/admin",                label: "Dashboard",      icon: LayoutDashboard },
+  { href: "/admin/colleges",       label: "Colleges",       icon: Building2 },
+  { href: "/admin/blogs",          label: "Blogs",          icon: FileText },
+  { href: "/admin/blog-calendar",  label: "Blog Calendar",  icon: CalendarDays },
+  { href: "/admin/reviews",        label: "Reviews",        icon: Star },
+  { href: "/admin/import",         label: "Import",         icon: Upload },
+  { href: "/admin/leads",          label: "Leads",          icon: Users },
+  { href: "/admin/enquiries",      label: "Enquiries",      icon: MessageSquare },
+  { href: "/admin/news",           label: "News",           icon: Newspaper },
+  { href: "/admin/settings",       label: "Settings",       icon: Settings },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

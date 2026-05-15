@@ -3,6 +3,8 @@ import Script from "next/script"
 import Link from "next/link"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
 import { CheckCircle, TrendingUp, Award, BookOpen, Users, AlertCircle } from "lucide-react"
+import { getCutoff } from "@/data/cutoffs"
+import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
 
 export const metadata: Metadata = genMeta({
   title: "Best Medical Colleges in Pune 2026 | NEET Cutoff, Fees & MBBS Seats",
@@ -268,6 +270,23 @@ export default function MedicalCollegesPunePage() {
             </div>
           </div>
         </section>
+
+        {/* AFMC NEET Cutoff Chart */}
+        {(() => {
+          const afmcData = getCutoff("afmc-armed-forces-medical-college-pune", "neet")
+          if (!afmcData) return null
+          return (
+            <section className="py-10 bg-white">
+              <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">AFMC Pune NEET Cutoff Trend 2020–2026</h2>
+                  <p className="text-sm text-gray-500 mb-4">Historical NEET score required for AFMC — India&apos;s top defence medical college.</p>
+                  <GatedCutoffChartClient data={afmcData} slug="afmc-armed-forces-medical-college-pune" height={240} />
+                </div>
+              </div>
+            </section>
+          )
+        })()}
 
         {/* FAQ Section */}
         <section className="py-12">

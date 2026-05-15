@@ -57,10 +57,20 @@ export default function AdminCollegesPage() {
   useEffect(() => { fetchColleges() }, [fetchColleges])
 
   const handleDelete = async (id: number, name: string) => {
-    if (!confirm(`Archive "${name}"? It will be hidden from public view.`)) return
+    if (!confirm(`Archive "${name}"?\n\nIt will be hidden from the public site immediately.`)) return
     const key = localStorage.getItem("admin_key")
     if (!key) return
-    await fetch(`/api/admin/colleges?id=${id}`, { method: "DELETE", headers: { "x-admin-key": key } })
+    try {
+      const res = await fetch(`/api/admin/colleges?id=${id}`, { method: "DELETE", headers: { "x-admin-key": key } })
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}))
+        setError(json.error ?? `Delete failed (${res.status})`)
+        return
+      }
+    } catch {
+      setError("Network error — could not archive college")
+      return
+    }
     fetchColleges()
   }
 
