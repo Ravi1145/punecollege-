@@ -48,7 +48,7 @@ export default function CounsellingBooking() {
     if (!validate()) return
     setLoading(true)
     try {
-      // ✅ Updated: Now calling actual backend
+      // ✅ Direct call to backend API
       const res = await fetch(`${API_URL}/counselling`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
