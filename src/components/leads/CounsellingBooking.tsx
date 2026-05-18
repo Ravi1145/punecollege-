@@ -26,6 +26,9 @@ const initialForm: FormData = {
 
 const streams = ["Engineering", "Medical", "MBA", "Law", "Arts & Science", "Commerce", "Design", "Pharmacy", "Other"]
 
+// ✅ Get backend URL from environment variable
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
 export default function CounsellingBooking() {
   const [form, setForm] = useState<FormData>(initialForm)
   const [errors, setErrors] = useState<FormErrors>({})
@@ -45,7 +48,8 @@ export default function CounsellingBooking() {
     if (!validate()) return
     setLoading(true)
     try {
-      const res = await fetch("/api/counselling", {
+      // ✅ Updated: Now calling actual backend
+      const res = await fetch(`${API_URL}/counselling`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -61,9 +65,10 @@ export default function CounsellingBooking() {
         setSuccess({ bookingRef: data.bookingRef })
         setForm(initialForm)
       } else {
-        setErrors({ name: "Submission failed. Please try again." })
+        setErrors({ name: data.message || "Submission failed. Please try again." })
       }
-    } catch {
+    } catch (error) {
+      console.error("Booking error:", error)
       setErrors({ name: "Network error. Please try again." })
     } finally {
       setLoading(false)
