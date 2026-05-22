@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
@@ -35,8 +36,15 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    // Check role and active status
-    const { data: profile } = await supabase
+    // Use service-role client to bypass RLS for profile check
+    // (avoids JWT propagation issues in middleware edge context)
+    const adminClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    )
+
+    const { data: profile } = await adminClient
       .from('profiles')
       .select('role, is_active')
       .eq('id', user.id)
@@ -48,7 +56,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
-    // Set role header for server components
+    // Pass role to server components via headers
     supabaseResponse.headers.set('x-user-role', profile.role)
     supabaseResponse.headers.set('x-user-id', user.id)
   }

@@ -15,10 +15,13 @@ export interface College {
   id: string
   slug: string
   name: string
+  short_name: string | null
   location: string | null
   type: string | null
   established: number | null
   description: string | null
+  affiliation: string | null
+  stream: string | null
   logo_url: string | null
   cover_url: string | null
   website: string | null
@@ -29,6 +32,21 @@ export interface College {
   state: string | null
   naac_grade: string | null
   nirf_rank: number | null
+  courses: string[] | null
+  specializations: string[] | null
+  fees_min: number | null
+  fees_max: number | null
+  avg_placement: number | null
+  highest_pkg: number | null
+  top_recruiters: string[] | null
+  entrance_exams: string[] | null
+  hostel: boolean
+  highlights: string[] | null
+  tags: string[] | null
+  rating: number | null
+  review_count: number | null
+  featured: boolean
+  featured_order: number | null
   status: ContentStatus
   details: Record<string, unknown>
   created_at: string
@@ -60,8 +78,14 @@ export interface Lead {
   phone: string | null
   stream: string | null
   college_interest: string | null
+  course_interest: string | null
   message: string | null
   source: string | null
+  page_url: string | null
+  budget: string | null
+  exam_type: string | null
+  exam_score: string | null
+  career_goal: string | null
   status: string
   assigned_to: string | null
   notes: string | null
@@ -175,6 +199,8 @@ export interface CollegeCourse {
   id: string
   college_id: string
   course_name: string
+  specialization: string | null
+  course_type: string | null   // 'UG' | 'PG' | 'Diploma' | 'PhD' | 'Certificate'
   duration: string | null
   fees_per_year: number | null
   total_fees: number | null
@@ -182,6 +208,7 @@ export interface CollegeCourse {
   eligibility: string | null
   entrance_exam: string | null
   created_at: string
+  updated_at: string | null
 }
 
 // Supabase Database type map

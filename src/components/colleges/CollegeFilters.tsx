@@ -112,7 +112,11 @@ export default function CollegeFilters({ onFiltersChange, className }: CollegeFi
     if (filters.feesMax < 2500000) count++
     setActiveCount(count)
     onFiltersChange?.(filters)
-  }, [filters, onFiltersChange])
+    // NOTE: onFiltersChange intentionally excluded from deps — it's a callback prop.
+    // Including it causes infinite re-renders when parent doesn't memoize it.
+    // The parent (CollegeGrid) passes useState's setFilters which is always stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
 
   const toggleArray = (key: keyof FiltersState, value: string) => {
     setFilters((prev) => {

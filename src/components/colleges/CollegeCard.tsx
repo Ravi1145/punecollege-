@@ -42,9 +42,9 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
       <Link href={`/colleges/${college.slug}`} className="block">
         <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex-shrink-0 flex items-center justify-center overflow-hidden">
-            {college.image ? (
+            {(college.logo ?? college.image) ? (
               <Image
-                src={college.image}
+                src={(college.logo ?? college.image)!}
                 alt={`${college.name} logo`}
                 width={40}
                 height={40}
@@ -111,9 +111,9 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
           <div className="relative z-10 flex items-start gap-3 pr-10">
             {/* Logo badge — shows college logo when available, falls back to shortName text */}
             <div className="shrink-0 w-14 h-14 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden">
-              {college.image ? (
+              {(college.logo ?? college.image) ? (
                 <Image
-                  src={college.image}
+                  src={(college.logo ?? college.image)!}
                   alt={`${college.name} logo`}
                   width={56}
                   height={56}

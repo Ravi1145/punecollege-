@@ -173,12 +173,37 @@ function QACard({ qa }: { qa: typeof QA_DATA[0] }) {
 function AskCard() {
   const [question, setQuestion] = useState("")
   const [college, setCollege] = useState("")
+  const [name, setName] = useState("")
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!question.trim() || !college.trim()) return
-    setSent(true)
+    if (!question.trim() || !name.trim()) return
+    setLoading(true)
+    setError("")
+    try {
+      const res = await fetch("/api/qa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          author_name: name,
+          question,
+          college_slug: college || undefined,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setSent(true)
+      } else {
+        setError(data.error ?? "Failed to submit. Try again.")
+      }
+    } catch {
+      setError("Network error. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (sent) {
@@ -212,6 +237,14 @@ function AskCard() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 flex-1">
         <input
           type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Your name *"
+          required
+          className="w-full px-3 py-2.5 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 outline-none bg-white"
+        />
+        <input
+          type="text"
           value={college}
           onChange={e => setCollege(e.target.value)}
           placeholder="Which college? (e.g. COEP, SIBM…)"
@@ -220,16 +253,19 @@ function AskCard() {
         <textarea
           value={question}
           onChange={e => setQuestion(e.target.value)}
-          placeholder="Your question for alumni…"
+          placeholder="Your question for alumni… *"
           rows={3}
+          required
           className="w-full px-3 py-2.5 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 outline-none bg-white resize-none"
         />
+        {error && <p className="text-xs text-red-300">{error}</p>}
         <button
           type="submit"
-          className="mt-auto flex items-center justify-center gap-2 w-full bg-accent hover:opacity-90 text-white font-bold text-sm py-2.5 rounded-xl transition-opacity"
+          disabled={loading}
+          className="mt-auto flex items-center justify-center gap-2 w-full bg-accent hover:opacity-90 text-white font-bold text-sm py-2.5 rounded-xl transition-opacity disabled:opacity-60"
         >
           <Send className="w-3.5 h-3.5" />
-          Ask Alumni
+          {loading ? "Submitting…" : "Ask Alumni"}
         </button>
       </form>
     </div>

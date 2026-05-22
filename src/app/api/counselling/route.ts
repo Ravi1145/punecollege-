@@ -1,27 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 import { counsellingSchema } from '@/lib/validations'
-import { insertLead, insertBooking } from '@/lib/db'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { sendLeadEmail } from '@/lib/mailer'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const validated = counsellingSchema.parse(body)
+    const referer = req.headers.get('referer') ?? ''
 
-    const leadId = await insertLead({
-      name: validated.name,
-      phone: validated.phone,
-      email: validated.email,
-      stream: validated.stream,
-      exam_score: validated.exam_score,
-      source: 'counselling',
-    })
+    const admin = createAdminClient()
+    const { data, error } = await admin.from('leads').insert({
+      name:       validated.name,
+      phone:      validated.phone,
+      email:      validated.email || null,
+      stream:     validated.stream ?? null,
+      exam_score: validated.exam_score ?? null,
+      source:     'counselling',
+      page_url:   referer || null,
+      message:    [
+        validated.preferred_date ? `Preferred date: ${validated.preferred_date}` : null,
+        validated.preferred_time ? `Preferred time: ${validated.preferred_time}` : null,
+      ].filter(Boolean).join('\n') || null,
+      status: 'new',
+    }).select('id').single()
 
-    const bookingId = await insertBooking({ ...validated, lead_id: leadId })
+    if (error) console.error('[counselling] Supabase insert error:', error.message)
+
+    const ref = data?.id ? `BOOK-${data.id.slice(-6).toUpperCase()}` : `BOOK-${Date.now().toString(36).toUpperCase()}`
+
+    try {
+      await sendLeadEmail({
+        name:      validated.name,
+        phone:     validated.phone,
+        email:     validated.email,
+        stream:    validated.stream,
+        source:    'counselling',
+        page_url:  referer,
+      })
+    } catch (emailErr) {
+      console.error('[counselling] email failed:', emailErr)
+    }
 
     return NextResponse.json({
       success: true,
-      bookingRef: `BOOK-${bookingId.toString().padStart(4, '0')}`,
+      bookingRef: ref,
       message: "Booking confirmed! We'll send you a WhatsApp reminder before your session.",
     })
   } catch (error) {

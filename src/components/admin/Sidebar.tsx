@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 const superAdminLinks = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/colleges', label: 'Colleges', icon: '🏫' },
+  { href: '/admin/courses', label: 'Courses', icon: '📚' },
   { href: '/admin/blogs', label: 'Blogs', icon: '📝' },
   { href: '/admin/leads', label: 'Leads', icon: '👥' },
   { href: '/admin/approvals', label: 'Approvals', icon: '✅' },
@@ -18,6 +19,7 @@ const superAdminLinks = [
 const agentLinks = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/colleges', label: 'Colleges', icon: '🏫' },
+  { href: '/admin/courses', label: 'Courses', icon: '📚' },
   { href: '/admin/blogs', label: 'Blogs', icon: '📝' },
   { href: '/admin/approvals', label: 'My Submissions', icon: '✅' },
 ]

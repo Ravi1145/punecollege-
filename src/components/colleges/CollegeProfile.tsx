@@ -1,6 +1,8 @@
 "use client"
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
+import dynamic from "next/dynamic"
 import {
   MapPin, Phone, Mail, Globe, Award, TrendingUp, Users, BookOpen,
   Star, ChevronRight, MessageSquare, Building2, CheckCircle2,
@@ -10,10 +12,24 @@ import {
 import { College } from "@/types"
 import type { CollegeDetails } from "@/lib/db"
 import { formatCurrency, formatFeesRange, getNaacColor, getTypeColor, cn } from "@/lib/utils"
-import EnquiryForm from "@/components/leads/EnquiryForm"
-import CounsellingBooking from "@/components/leads/CounsellingBooking"
 import CompareButton from "@/components/ui/CompareButton"
-import ReviewSection from "@/components/colleges/ReviewSection"
+
+// Heavy below-fold components — loaded only when needed
+const EnquiryForm = dynamic(() => import("@/components/leads/EnquiryForm"), { ssr: false })
+const CounsellingBooking = dynamic(() => import("@/components/leads/CounsellingBooking"), { ssr: false })
+const ReviewSection = dynamic(() => import("@/components/colleges/ReviewSection"), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-pulse">
+      <div className="h-4 bg-gray-200 rounded w-1/3 mb-4" />
+      <div className="space-y-3">
+        <div className="h-3 bg-gray-100 rounded w-full" />
+        <div className="h-3 bg-gray-100 rounded w-5/6" />
+        <div className="h-3 bg-gray-100 rounded w-4/6" />
+      </div>
+    </div>
+  ),
+})
 
 interface CollegeProfileProps {
   college: College
@@ -83,13 +99,16 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
 
   return (
     <div>
-      <EnquiryForm
-        collegeName={college.name}
-        collegeSlug={college.slug}
-        courses={college.courses}
-        isOpen={enquiryOpen}
-        onClose={() => setEnquiryOpen(false)}
-      />
+      {/* Enquiry modal — only mounted after first open (saves initial JS) */}
+      {enquiryOpen && (
+        <EnquiryForm
+          collegeName={college.name}
+          collegeSlug={college.slug}
+          courses={college.courses}
+          isOpen={enquiryOpen}
+          onClose={() => setEnquiryOpen(false)}
+        />
+      )}
 
       {/* ── Hero Header ─────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] text-white">
@@ -104,11 +123,31 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
           </nav>
 
           <div className="flex items-start gap-5 mb-5">
-            {/* Logo */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/20 backdrop-blur flex-shrink-0 flex items-center justify-center shadow-lg">
-              <span className="text-white font-extrabold text-xs sm:text-sm leading-tight text-center px-1">
-                {college.shortName}
-              </span>
+            {/* Logo — uses next/image for LCP optimisation */}
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/20 backdrop-blur flex-shrink-0 flex items-center justify-center shadow-lg overflow-hidden">
+              {college.logo ? (
+                <Image
+                  src={college.logo}
+                  alt={`${college.shortName} logo`}
+                  fill
+                  sizes="80px"
+                  className="object-contain p-1"
+                  priority
+                />
+              ) : college.image ? (
+                <Image
+                  src={college.image}
+                  alt={`${college.shortName} campus`}
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <span className="text-white font-extrabold text-xs sm:text-sm leading-tight text-center px-1">
+                  {college.shortName}
+                </span>
+              )}
             </div>
 
             <div className="flex-1 min-w-0">

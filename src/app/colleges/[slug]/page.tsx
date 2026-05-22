@@ -40,6 +40,7 @@ function mapDBToCollege(db: DBCollege): College {
     phone:            db.phone ?? '',
     email:            db.email ?? '',
     image:            db.image_url ?? undefined,
+    logo:             db.logo_url ?? undefined,
     stream:           (db.stream as College['stream']) ?? 'Engineering',
   }
 }

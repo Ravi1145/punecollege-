@@ -186,6 +186,7 @@ export interface DBCollege {
   email?: string
   stream?: string
   image_url?: string
+  logo_url?: string
   faqs?: { q: string; a: string }[]
   details?: CollegeDetails
   status?: string
@@ -195,6 +196,50 @@ export interface DBCollege {
   seo_keywords?: string[]
   created_at?: string
   updated_at?: string
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+
+/** Map a raw Supabase colleges row to DBCollege */
+function supabaseRowToDBCollege(row: Record<string, unknown>): DBCollege {
+  return {
+    id:             row.id as number,
+    slug:           row.slug as string,
+    name:           row.name as string,
+    short_name:     row.short_name as string | undefined,
+    type:           row.type as string | undefined,
+    established:    row.established as number | undefined,
+    affiliation:    row.affiliation as string | undefined,
+    naac_grade:     row.naac_grade as string | undefined,
+    nirf_rank:      row.nirf_rank as number | null | undefined,
+    city:           (row.city as string) ?? (row.location as string) ?? '',
+    state:          row.state as string | undefined,
+    address:        row.address as string | undefined,
+    description:    row.description as string | undefined,
+    highlights:     row.highlights as string[] | undefined,
+    tags:           row.tags as string[] | undefined,
+    fees_min:       row.fees_min as number | undefined,
+    fees_max:       row.fees_max as number | undefined,
+    avg_placement:  row.avg_placement as number | undefined,
+    highest_pkg:    row.highest_pkg as number | undefined,
+    top_recruiters: row.top_recruiters as string[] | undefined,
+    entrance_exams: row.entrance_exams as string[] | undefined,
+    courses:        row.courses as string[] | undefined,
+    specializations: row.specializations as string[] | undefined,
+    hostel:         row.hostel as boolean | undefined,
+    rating:         row.rating as number | undefined,
+    review_count:   row.review_count as number | undefined,
+    website:        row.website as string | undefined,
+    phone:          row.phone as string | undefined,
+    email:          row.email as string | undefined,
+    stream:         row.stream as string | undefined,
+    image_url:      (row.cover_url as string | undefined) ?? (row.image_url as string | undefined),
+    logo_url:       (row.logo_url as string | undefined),
+    details:        row.details as CollegeDetails | undefined,
+    status:         row.status as string | undefined,
+    created_at:     row.created_at as string | undefined,
+    updated_at:     row.updated_at as string | undefined,
+  }
 }
 
 // ── COLLEGE FUNCTIONS ─────────────────────────────────────────────────────────
@@ -208,6 +253,34 @@ export async function getAllColleges(filters?: {
   page?: number
   limit?: number
 }): Promise<{ colleges: DBCollege[]; total: number; page: number; totalPages: number }> {
+  // Try Supabase first
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const statusFilter = filters?.status ?? 'published'
+    let query = admin
+      .from('colleges')
+      .select('*')
+      .eq('status', statusFilter)
+      .order('name')
+      .limit(filters?.limit ?? 500)
+    if (filters?.stream) query = query.ilike('stream', filters.stream)
+    if (filters?.city)   query = query.ilike('city', `%${filters.city}%`)
+    if (filters?.search) query = query.or(
+      `name.ilike.%${filters.search}%,short_name.ilike.%${filters.search}%`
+    )
+    const { data, error } = await query
+    if (!error && data && data.length > 0) {
+      const list = (data as Record<string, unknown>[]).map(supabaseRowToDBCollege)
+      const total = list.length
+      const page = filters?.page ?? 1
+      const limit = filters?.limit ?? 500
+      const start = (page - 1) * limit
+      return { colleges: list.slice(start, start + limit), total, page, totalPages: Math.ceil(total / limit) }
+    }
+  } catch { /* fall through to static */ }
+
+  // Fallback: static data
   let list = staticColleges.map<DBCollege>(c => ({
     id:            c.id,
     slug:          c.slug,
@@ -265,19 +338,34 @@ export async function getAllColleges(filters?: {
   const page = filters?.page ?? 1
   const limit = filters?.limit ?? 200
   const start = (page - 1) * limit
-  const paginated = list.slice(start, start + limit)
-
-  return { colleges: paginated, total, page, totalPages: Math.ceil(total / limit) }
+  return { colleges: list.slice(start, start + limit), total, page, totalPages: Math.ceil(total / limit) }
 }
 
 export async function getCollegeById(id: number): Promise<DBCollege | null> {
-  const c = staticColleges.find(c => c.id === id)
-  if (!c) return null
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data } = await admin.from('colleges').select('*').eq('id', id).single()
+    if (data) return supabaseRowToDBCollege(data as Record<string, unknown>)
+  } catch { /* fall through */ }
   const { colleges } = await getAllColleges()
   return colleges.find(x => x.id === id) ?? null
 }
 
 export async function getCollegeBySlug(slug: string): Promise<DBCollege | null> {
+  // Try Supabase first — returns draft/published (public page checks status itself)
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data } = await admin
+      .from('colleges')
+      .select('*')
+      .eq('slug', slug)
+      .single()
+    if (data) return supabaseRowToDBCollege(data as Record<string, unknown>)
+  } catch { /* fall through to static */ }
+
+  // Fallback: static data
   const { colleges } = await getAllColleges()
   return colleges.find(c => c.slug === slug) ?? null
 }

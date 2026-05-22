@@ -1,31 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 import { enquirySchema } from '@/lib/validations'
-import { insertLead, insertEnquiry, getAllEnquiries } from '@/lib/db'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { sendLeadEmail } from '@/lib/mailer'
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const validated = enquirySchema.parse(body)
+    const referer = req.headers.get('referer') ?? ''
 
-    const leadId = await insertLead({
-      name: validated.name,
-      phone: validated.phone,
-      email: validated.email,
+    const admin = createAdminClient()
+    const { data, error } = await admin.from('leads').insert({
+      name:            validated.name,
+      phone:           validated.phone,
+      email:           validated.email || null,
       college_interest: validated.college_name,
-      course_interest: validated.course,
-      source: 'enquiry_form',
-      page_url: req.headers.get('referer') ?? undefined,
-    })
+      course_interest: validated.course ?? null,
+      message:         validated.message ?? null,
+      source:          'enquiry_form',
+      page_url:        referer || null,
+      status:          'new',
+    }).select('id').single()
 
-    const enquiryId = await insertEnquiry({ ...validated, lead_id: leadId })
+    if (error) console.error('[enquiry] Supabase insert error:', error.message)
+
+    const ref = data?.id ? `ENQ-${data.id.slice(-6).toUpperCase()}` : `ENQ-${Date.now().toString(36).toUpperCase()}`
+
+    // Send notification email
+    try {
+      await sendLeadEmail({
+        name:             validated.name,
+        phone:            validated.phone,
+        email:            validated.email,
+        college_interest: validated.college_name,
+        source:           'enquiry_form',
+        page_url:         referer,
+      })
+    } catch (emailErr) {
+      console.error('[enquiry] email failed:', emailErr)
+    }
 
     return NextResponse.json({
       success: true,
-      enquiryId,
-      leadId,
-      message: 'Enquiry received! Our team will WhatsApp you within 2 hours.',
-      bookingRef: `ENQ-${enquiryId.toString().padStart(4, '0')}`,
+      enquiryId: data?.id ?? ref,
+      leadId:    data?.id ?? null,
+      message:   'Enquiry received! Our team will WhatsApp you within 2 hours.',
+      bookingRef: ref,
     })
   } catch (error) {
     if (error instanceof ZodError) {
@@ -41,5 +62,11 @@ export async function GET(req: NextRequest) {
   if (adminKey !== process.env.ADMIN_PASSWORD) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  return NextResponse.json(await getAllEnquiries())
+  const admin = createAdminClient()
+  const { data } = await admin
+    .from('leads')
+    .select('*')
+    .eq('source', 'enquiry_form')
+    .order('created_at', { ascending: false })
+  return NextResponse.json({ leads: data ?? [], total: data?.length ?? 0 })
 }

@@ -12,16 +12,14 @@ import { cn } from "@/lib/utils"
 import dynamic from "next/dynamic"
 const SearchModal = dynamic(() => import("@/components/ui/SearchModal"), { ssr: false })
 
-// ── Mega-menu data ────────────────────────────────────────────
+// ── Mega-menu config (static links only — colleges fetched live) ──
 const streams = [
   {
     label: "Engineering",
     href: "/colleges?stream=Engineering",
+    apiStream: "Engineering",
     icon: "⚙️",
-    colleges: [
-      { name: "COEP — Govt. Engineering", href: "/colleges/coep-college-of-engineering-pune" },
-      { name: "VIT Pune", href: "/colleges/vit-pune-vishwakarma-institute-of-technology" },
-      { name: "PICT", href: "/colleges/pict-pune-institute-of-computer-technology" },
+    staticLinks: [
       { name: "Engineering Colleges Guide 2026 →", href: "/engineering-colleges-pune" },
       { name: "Top 10 Engineering Colleges →", href: "/top-10-engineering-colleges-in-pune" },
       { name: "Placement Rankings 2026 →", href: "/engineering-colleges-pune-placement" },
@@ -42,10 +40,9 @@ const streams = [
   {
     label: "MBA",
     href: "/colleges?stream=MBA",
+    apiStream: "MBA",
     icon: "💼",
-    colleges: [
-      { name: "SIBM Pune", href: "/colleges/sibm-symbiosis-institute-business-management-pune" },
-      { name: "MIT-SOM Pune", href: "/colleges/mit-school-of-management-pune" },
+    staticLinks: [
       { name: "MBA Colleges Guide 2026 →", href: "/mba-colleges-pune" },
       { name: "Top 10 MBA Colleges →", href: "/top-10-mba-colleges-in-pune" },
       { name: "MBA Placement Rankings →", href: "/mba-colleges-pune-placement" },
@@ -67,9 +64,9 @@ const streams = [
   {
     label: "Medical",
     href: "/colleges?stream=Medical",
+    apiStream: "Medical",
     icon: "🏥",
-    colleges: [
-      { name: "BJ Medical College", href: "/colleges/bj-medical-college-pune" },
+    staticLinks: [
       { name: "Medical Colleges Guide 2026 →", href: "/medical-colleges-pune" },
       { name: "All Medical Colleges →", href: "/colleges?stream=Medical" },
     ],
@@ -84,8 +81,10 @@ const streams = [
   {
     label: "Arts & Science",
     href: "/colleges?stream=Arts+%26+Science",
+    apiStream: "Arts & Science",
     icon: "🎓",
-    colleges: [
+    staticLinks: [
+      { name: "Arts & Science Colleges Guide →", href: "/arts-colleges-pune" },
       { name: "All Arts & Science Colleges →", href: "/colleges?stream=Arts+%26+Science" },
     ],
     courses: [
@@ -100,8 +99,10 @@ const streams = [
   {
     label: "Law",
     href: "/colleges?stream=Law",
+    apiStream: "Law",
     icon: "⚖️",
-    colleges: [
+    staticLinks: [
+      { name: "Law Colleges Guide →", href: "/law-colleges-pune" },
       { name: "All Law Colleges →", href: "/colleges?stream=Law" },
     ],
     courses: [
@@ -115,10 +116,12 @@ const streams = [
   },
   {
     label: "Design",
-    href: "/colleges",
+    href: "/design-colleges-pune",
+    apiStream: "Design",
     icon: "🎨",
-    colleges: [
-      { name: "All Design Colleges →", href: "/colleges" },
+    staticLinks: [
+      { name: "Design Colleges Guide →", href: "/design-colleges-pune" },
+      { name: "All Design Colleges →", href: "/design-colleges-pune" },
     ],
     courses: [
       { name: "B.Des — Bachelor of Design", href: "/courses" },
@@ -130,6 +133,8 @@ const streams = [
     ],
   },
 ]
+
+type CollegeLink = { name: string; href: string }
 
 const tools = [
   { label: "College Predictor", href: "/predictor", icon: GraduationCap, desc: "Find colleges by your score", color: "text-orange-600 bg-orange-50" },
@@ -164,6 +169,9 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [scrolled, setScrolled] = useState(false)
+  // Cache fetched colleges per stream: { Engineering: [...], MBA: [...] }
+  const [liveColleges, setLiveColleges] = useState<Record<string, CollegeLink[]>>({})
+  const fetchedStreams = useRef<Set<string>>(new Set())
   const pathname = usePathname()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -185,9 +193,34 @@ export default function Header() {
     return () => { document.body.style.overflow = "" }
   }, [mobileOpen])
 
+  // Fetch top colleges for a stream (once per stream per session)
+  const fetchStreamColleges = async (streamLabel: string, apiStream: string) => {
+    if (fetchedStreams.current.has(streamLabel)) return
+    fetchedStreams.current.add(streamLabel)
+    try {
+      const res = await fetch(`/api/colleges?stream=${encodeURIComponent(apiStream)}&limit=5`)
+      if (!res.ok) return
+      const data = await res.json()
+      const colleges: CollegeLink[] = (data.colleges ?? [])
+        .slice(0, 5)
+        .map((c: { name: string; shortName?: string; slug: string }) => ({
+          name: c.shortName ?? c.name,
+          href: `/colleges/${c.slug}`,
+        }))
+      if (colleges.length > 0) {
+        setLiveColleges(prev => ({ ...prev, [streamLabel]: colleges }))
+      }
+    } catch {
+      // silently ignore — static links still show
+    }
+  }
+
   const openDropdown = (id: string) => {
     if (timerRef.current) clearTimeout(timerRef.current)
     setActiveDropdown(id)
+    // Trigger fetch for stream dropdowns
+    const stream = streams.find(s => s.label === id)
+    if (stream) fetchStreamColleges(stream.label, stream.apiStream)
   }
   const closeDropdown = () => {
     timerRef.current = setTimeout(() => setActiveDropdown(null), 120)
@@ -303,15 +336,36 @@ export default function Header() {
                       className="absolute top-full left-0 mt-0 w-[min(560px,calc(100vw-2rem))] bg-white rounded-b-2xl shadow-2xl border border-gray-100 border-t-2 border-t-orange-500 z-50 p-5"
                     >
                       <div className="grid grid-cols-3 gap-6">
-                        {/* Colleges */}
+                        {/* Colleges — live from DB + static guide links */}
                         <div>
                           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
                             <Building2 className="w-3 h-3" /> Top Colleges
                           </p>
                           <ul className="space-y-1.5">
-                            {stream.colleges.map((c, i) => (
-                              <li key={`${stream.label}-col-${i}`}>
-                                <Link href={c.href} className="text-sm text-gray-700 hover:text-orange-600 transition-colors block py-0.5">
+                            {/* Live colleges from DB */}
+                            {(liveColleges[stream.label] ?? []).map((c, i) => (
+                              <li key={`${stream.label}-live-${i}`}>
+                                <Link href={c.href} className="text-sm font-medium text-gray-800 hover:text-orange-600 transition-colors block py-0.5 truncate">
+                                  {c.name}
+                                </Link>
+                              </li>
+                            ))}
+                            {/* Loading skeleton */}
+                            {!liveColleges[stream.label] && (
+                              <li className="space-y-1.5">
+                                {[1,2,3].map(i => (
+                                  <div key={i} className="h-4 bg-gray-100 rounded animate-pulse w-4/5" />
+                                ))}
+                              </li>
+                            )}
+                            {/* Divider before static links */}
+                            {(liveColleges[stream.label]?.length ?? 0) > 0 && (
+                              <li className="border-t border-gray-100 my-1.5" />
+                            )}
+                            {/* Static guide/ranking links */}
+                            {stream.staticLinks.map((c, i) => (
+                              <li key={`${stream.label}-static-${i}`}>
+                                <Link href={c.href} className="text-sm text-gray-500 hover:text-orange-600 transition-colors block py-0.5">
                                   {c.name}
                                 </Link>
                               </li>
@@ -477,7 +531,11 @@ export default function Header() {
               {streams.map((stream) => (
                 <div key={stream.label} className="border-b border-gray-100">
                   <button
-                    onClick={() => setMobileExpanded(mobileExpanded === stream.label ? null : stream.label)}
+                    onClick={() => {
+                      const next = mobileExpanded === stream.label ? null : stream.label
+                      setMobileExpanded(next)
+                      if (next) fetchStreamColleges(stream.label, stream.apiStream)
+                    }}
                     className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50"
                   >
                     <span className="flex items-center gap-2">{stream.icon} {stream.label}</span>
@@ -486,9 +544,21 @@ export default function Header() {
                   {mobileExpanded === stream.label && (
                     <div className="bg-gray-50 px-4 pb-3 space-y-3">
                       <div>
-                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Colleges</p>
-                        {stream.colleges.map((c, i) => (
-                          <Link key={`mob-${stream.label}-col-${i}`} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-700 hover:text-orange-600">
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Top Colleges</p>
+                        {/* Live colleges */}
+                        {(liveColleges[stream.label] ?? []).map((c, i) => (
+                          <Link key={`mob-live-${i}`} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm font-medium text-gray-800 hover:text-orange-600 truncate">
+                            {c.name}
+                          </Link>
+                        ))}
+                        {!liveColleges[stream.label] && (
+                          <div className="space-y-1.5 my-1">
+                            {[1,2,3].map(i => <div key={i} className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />)}
+                          </div>
+                        )}
+                        {/* Static links */}
+                        {stream.staticLinks.map((c, i) => (
+                          <Link key={`mob-static-${i}`} href={c.href} onClick={() => setMobileOpen(false)} className="block py-1.5 text-sm text-gray-500 hover:text-orange-600">
                             {c.name}
                           </Link>
                         ))}

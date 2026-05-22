@@ -17,20 +17,6 @@ export async function loginAction(formData: FormData) {
     redirect('/admin/login?error=' + encodeURIComponent(error.message))
   }
 
-  // Verify profile exists and is active
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/admin/login?error=Authentication+failed')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, is_active')
-    .eq('id', user.id)
-    .single()
-
-  if (!profile || !profile.is_active) {
-    await supabase.auth.signOut()
-    redirect('/admin/login?error=Account+is+inactive+or+not+found')
-  }
-
+  // Session cookie is set — middleware will validate role + is_active on /admin
   redirect('/admin')
 }

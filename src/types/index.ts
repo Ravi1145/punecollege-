@@ -42,7 +42,8 @@ export interface College {
   website: string
   phone: string
   email: string
-  image?: string
+  image?: string   // cover / banner image
+  logo?: string    // college logo (square)
   stream: "Engineering" | "MBA" | "Medical" | "Arts & Science" | "Management" | "Law" | "Architecture"
   details?: CollegeDetails
   faqs?: { q: string; a: string }[]

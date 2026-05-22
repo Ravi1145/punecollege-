@@ -1,82 +1,72 @@
-﻿"use client"
+"use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Building2 } from "lucide-react"
 
-// ── College data ──────────────────────────────────────────────────────────────
-const COLLEGES = [
-  {
-    slug:     "coep-college-of-engineering-pune",
-    abbr:     "COEP",
-    name:     "COEP",
-    subtitle: "Technological University",
-    color:    "#1E40AF",   // blue
-    bg:       "#EFF6FF",
-  },
-  {
-    slug:     "mit-world-peace-university",
-    abbr:     "MIT",
-    name:     "MIT-WPU",
-    subtitle: "MIT World Peace University",
-    color:    "#B91C1C",   // red
-    bg:       "#FEF2F2",
-  },
-  {
-    slug:     "pict-pune-institute-of-computer-technology",
-    abbr:     "PICT",
-    name:     "PICT",
-    subtitle: "Pune Institute of Computer Technology",
-    color:    "#047857",   // green
-    bg:       "#ECFDF5",
-  },
-  {
-    slug:     "symbiosis-international-university",
-    abbr:     "SIU",
-    name:     "Symbiosis",
-    subtitle: "International (Deemed) University",
-    color:    "#7C3AED",   // purple
-    bg:       "#F5F3FF",
-  },
-  {
-    slug:     "dpu-dr-dy-patil-vidyapeeth",
-    abbr:     "DPU",
-    name:     "DPU",
-    subtitle: "Dr. D.Y. Patil Vidyapeeth",
-    color:    "#B45309",   // amber
-    bg:       "#FFFBEB",
-  },
-  {
-    slug:     "vit-pune-vishwakarma-institute-of-technology",
-    abbr:     "VIT",
-    name:     "VIT Pune",
-    subtitle: "Vishwakarma Institute of Technology",
-    color:    "#0369A1",   // sky
-    bg:       "#F0F9FF",
-  },
-  {
-    slug:     "dy-patil-engineering-college-pune",
-    abbr:     "DYP",
-    name:     "DY Patil",
-    subtitle: "College of Engineering & Technology",
-    color:    "#065F46",   // emerald
-    bg:       "#ECFDF5",
-  },
-  {
-    slug:     "pccoe-pimpri-chinchwad-college-of-engineering",
-    abbr:     "PCCO",
-    name:     "PCCOE",
-    subtitle: "Pimpri Chinchwad College of Engineering",
-    color:    "#9D174D",   // pink
-    bg:       "#FDF2F8",
-  },
+// Deterministic accent colour per college (based on first char of slug)
+const PALETTE = [
+  { color: "#1E40AF", bg: "#EFF6FF" },
+  { color: "#B91C1C", bg: "#FEF2F2" },
+  { color: "#047857", bg: "#ECFDF5" },
+  { color: "#7C3AED", bg: "#F5F3FF" },
+  { color: "#B45309", bg: "#FFFBEB" },
+  { color: "#0369A1", bg: "#F0F9FF" },
+  { color: "#065F46", bg: "#ECFDF5" },
+  { color: "#9D174D", bg: "#FDF2F8" },
+  { color: "#1D4ED8", bg: "#EFF6FF" },
+  { color: "#7E22CE", bg: "#FAF5FF" },
 ]
 
-// Duplicate list for seamless infinite scroll (3× so gap never shows)
-const ITEMS = [...COLLEGES, ...COLLEGES, ...COLLEGES]
+function accentFor(slug: string) {
+  let h = 0
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) & 0xffffffff
+  return PALETTE[Math.abs(h) % PALETTE.length]
+}
 
-// ── Component ─────────────────────────────────────────────────────────────────
+interface MarqueeCollege {
+  slug: string
+  name: string
+  shortName: string
+  logo?: string
+}
+
+// Fallback list shown before fetch completes
+const FALLBACK: MarqueeCollege[] = [
+  { slug: "coep-college-of-engineering-pune",                name: "College of Engineering Pune", shortName: "COEP" },
+  { slug: "mit-wpu-mit-world-peace-university",              name: "MIT World Peace University",        shortName: "MIT-WPU" },
+  { slug: "pict-pune-institute-of-computer-technology",      name: "Pune Institute of Computer Tech",   shortName: "PICT" },
+  { slug: "sibm-symbiosis-institute-business-management-pune", name: "Symbiosis Institute of Business", shortName: "SIBM" },
+  { slug: "vit-pune-vishwakarma-institute-of-technology",    name: "Vishwakarma Institute of Tech",     shortName: "VIT Pune" },
+  { slug: "dy-patil-college-engineering-akurdi-pune",        name: "DY Patil College of Engineering",   shortName: "DY Patil" },
+  { slug: "pccoer-pimpri-chinchwad-college-of-engineering",  name: "Pimpri Chinchwad College of Engg",  shortName: "PCCOE" },
+  { slug: "bj-medical-college-pune",                         name: "BJ Medical College",                shortName: "BJMC" },
+]
 
 export default function CollegeMarquee() {
+  const [colleges, setColleges] = useState<MarqueeCollege[]>(FALLBACK)
+
+  useEffect(() => {
+    fetch("/api/colleges?limit=20")
+      .then((r) => r.json())
+      .then((data) => {
+        const list: MarqueeCollege[] = (data.colleges ?? []).map(
+          (c: { slug: string; name: string; shortName?: string; logo?: string }) => ({
+            slug:      c.slug,
+            name:      c.name,
+            shortName: c.shortName ?? c.name.split(" ").map((w: string) => w[0]).join("").slice(0, 5),
+            logo:      c.logo,
+          })
+        )
+        if (list.length >= 4) setColleges(list)
+      })
+      .catch(() => {/* keep fallback */})
+  }, [])
+
+  // Triple for seamless infinite loop
+  const ITEMS = [...colleges, ...colleges, ...colleges]
+
   return (
     <section className="bg-white py-8 border-b border-gray-100">
       {/* Section title */}
@@ -93,12 +83,11 @@ export default function CollegeMarquee() {
 
       {/* Marquee wrapper */}
       <div className="relative overflow-hidden">
-        {/* Left fade */}
+        {/* Fades */}
         <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        {/* Right fade */}
         <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
-        {/* Scrolling track — pauses on hover via group */}
+        {/* Scrolling track */}
         <div className="group flex gap-4 w-max animate-marquee hover:[animation-play-state:paused]">
           {ITEMS.map((c, i) => (
             <CollegeCard key={`${c.slug}-${i}`} college={c} />
@@ -109,29 +98,44 @@ export default function CollegeMarquee() {
   )
 }
 
-// ── CollegeCard ───────────────────────────────────────────────────────────────
+function CollegeCard({ college }: { college: MarqueeCollege }) {
+  const { color, bg } = accentFor(college.slug)
 
-function CollegeCard({ college }: { college: typeof COLLEGES[0] }) {
   return (
     <Link
       href={`/colleges/${college.slug}`}
       className="group/card flex items-center gap-3 bg-white border border-gray-100 hover:border-gray-200 rounded-2xl px-4 py-3.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 min-w-[210px] cursor-pointer"
     >
-      {/* Logo placeholder — letter avatar */}
+      {/* Logo or letter avatar */}
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-base select-none"
-        style={{ backgroundColor: college.bg, color: college.color }}
+        className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 overflow-hidden"
+        style={{ backgroundColor: bg }}
       >
-        {college.abbr.slice(0, 2)}
+        {college.logo ? (
+          <Image
+            src={college.logo}
+            alt={`${college.shortName} logo`}
+            width={44}
+            height={44}
+            className="w-full h-full object-contain p-1"
+          />
+        ) : (
+          <span
+            className="font-extrabold text-sm select-none leading-none"
+            style={{ color }}
+          >
+            {college.shortName.slice(0, 2).toUpperCase()}
+          </span>
+        )}
       </div>
 
       {/* Text */}
       <div className="min-w-0">
         <p className="text-gray-900 font-bold text-sm truncate group-hover/card:text-[var(--color-accent)] transition-colors">
-          {college.name}
+          {college.shortName}
         </p>
         <p className="text-gray-400 text-[11px] truncate leading-tight mt-0.5">
-          {college.subtitle}
+          {college.name}
         </p>
       </div>
     </Link>

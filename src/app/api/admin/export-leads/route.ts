@@ -19,13 +19,22 @@ export async function GET() {
     .select('*')
     .order('created_at', { ascending: false })
 
+  const headers = [
+    'id', 'name', 'email', 'phone', 'stream',
+    'college_interest', 'course_interest', 'budget',
+    'exam_type', 'exam_score', 'career_goal',
+    'message', 'source', 'page_url', 'status', 'notes', 'created_at',
+  ]
+
   if (!leads || leads.length === 0) {
-    return new NextResponse('id,name,email,phone,stream,college_interest,status,created_at\n', {
-      headers: { 'Content-Type': 'text/csv' },
+    return new NextResponse(headers.join(',') + '\n', {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': `attachment; filename="leads-${new Date().toISOString().slice(0, 10)}.csv"`,
+      },
     })
   }
 
-  const headers = ['id', 'name', 'email', 'phone', 'stream', 'college_interest', 'message', 'status', 'created_at']
   const rows = leads.map((l) =>
     headers
       .map((h) => JSON.stringify(String((l as Record<string, unknown>)[h] ?? '')))
