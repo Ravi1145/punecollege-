@@ -316,6 +316,11 @@ export default function EnquiryForm({ collegeName, collegeSlug, courses, isOpen,
               )}
             </button>
 
+            <p className="text-center text-xs text-gray-400">
+              By submitting, you consent to being contacted by our counsellors about college admissions.{" "}
+              <a href="/privacy" className="underline hover:text-orange-500">Privacy Policy</a>.
+            </p>
+
             {/* Trust Row */}
             <div className="flex items-center justify-center gap-5 text-xs text-gray-400">
               <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Safe &amp; Private</span>

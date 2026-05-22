@@ -1,0 +1,335 @@
+export interface CareerPath {
+  slug: string
+  title: string
+  icon: string
+  tagline: string
+  category: "tech" | "management" | "medical" | "creative" | "law" | "finance"
+  avgSalaryEntry: number   // in LPA
+  avgSalaryMid: number     // 5yr
+  avgSalarySenior: number  // 10yr
+  growth: "High" | "Very High" | "Moderate"
+  demand: "High" | "Very High" | "Moderate"
+  topRoles: string[]
+  topRecruiters: string[]
+  keySkills: string[]
+  courses: Array<{ level: "UG" | "PG"; name: string; duration: string }>
+  puneColeges: Array<{ name: string; slug: string; avgPlacement: number }>
+  roadmap: Array<{ year: string; milestone: string; description: string }>
+  certifications: string[]
+  dayInLife: string
+  pros: string[]
+  cons: string[]
+  relatedPaths: string[]
+}
+
+export const careerPaths: CareerPath[] = [
+  {
+    slug: "software-engineering",
+    title: "Software Engineering",
+    icon: "💻",
+    tagline: "Build the apps, platforms, and systems that power the digital world",
+    category: "tech",
+    avgSalaryEntry: 8,
+    avgSalaryMid: 20,
+    avgSalarySenior: 45,
+    growth: "Very High",
+    demand: "Very High",
+    topRoles: ["Software Engineer", "Full Stack Developer", "Backend Engineer", "DevOps Engineer", "Mobile Developer"],
+    topRecruiters: ["TCS", "Infosys", "Persistent", "Zensar", "Cognizant", "Wipro", "ThoughtWorks", "KPIT"],
+    keySkills: ["Data Structures & Algorithms", "Java / Python / JavaScript", "System Design", "Git", "Cloud (AWS/GCP)", "REST APIs", "SQL"],
+    courses: [
+      { level: "UG", name: "B.Tech Computer Science / CSE", duration: "4 years" },
+      { level: "UG", name: "B.Tech IT / Information Technology", duration: "4 years" },
+      { level: "UG", name: "BCA (Bachelor of Computer Applications)", duration: "3 years" },
+      { level: "PG", name: "M.Tech CSE / Software Engineering", duration: "2 years" },
+      { level: "PG", name: "MCA (Master of Computer Applications)", duration: "2 years" },
+    ],
+    puneColeges: [
+      { name: "COEP Pune", slug: "coep-college-of-engineering-pune", avgPlacement: 1200000 },
+      { name: "PICT Pune", slug: "pict-pune-institute-of-computer-technology", avgPlacement: 1000000 },
+      { name: "VIT Pune", slug: "vit-vishwakarma-institute-of-technology-pune", avgPlacement: 900000 },
+      { name: "MIT-WPU", slug: "mit-wpu-mit-world-peace-university-pune", avgPlacement: 850000 },
+    ],
+    roadmap: [
+      { year: "Year 1–2", milestone: "Foundation", description: "Core programming (C/C++/Python), Data Structures, Maths, Digital Electronics. Start competitive coding on LeetCode." },
+      { year: "Year 3", milestone: "Specialization", description: "Choose a track: Web (React/Node), Backend (Java/Spring), Data (Python/ML), or Mobile (Android/iOS). Build 2–3 real projects." },
+      { year: "Year 4", milestone: "Internship + Placement", description: "Target SDE internship at product company or major IT firm. CGPA 8+ recommended. DSA practice is critical for interviews." },
+      { year: "Year 1–3 (Work)", milestone: "Junior Engineer", description: "Join as SDE-1 or Associate Engineer. Work on live codebases, code reviews, agile teams. Salary: ₹6–14 LPA." },
+      { year: "Year 4–7 (Work)", milestone: "Senior Engineer", description: "Lead features end-to-end, mentor juniors. Salary: ₹18–35 LPA. Consider AWS/GCP certification." },
+      { year: "Year 8+ (Work)", milestone: "Staff / Principal / Architect", description: "Technical leadership, system design, org-wide impact. Salary: ₹40–80+ LPA at top product companies." },
+    ],
+    certifications: ["AWS Certified Developer", "Google Cloud Professional", "Azure Developer Associate", "Kubernetes (CKAD)", "Oracle Java Certified"],
+    dayInLife: "A typical day: morning standup (15 min), then 3–4 hours of deep coding, code reviews, afternoon sprint planning or 1:1s, occasional system design whiteboarding. Remote/hybrid is now standard at most Pune IT companies.",
+    pros: ["Highest salary growth in India", "Remote/hybrid flexibility", "Global demand — easy international switch", "Clear career progression ladder"],
+    cons: ["Interview prep is intense (DSA + system design)", "Fast-moving field — constant upskilling needed", "Can be sedentary without intentional breaks"],
+    relatedPaths: ["data-science-ai", "product-management", "devops-cloud"],
+  },
+  {
+    slug: "data-science-ai",
+    title: "Data Science & AI/ML",
+    icon: "🧠",
+    tagline: "Extract insights from data and build intelligent systems that learn",
+    category: "tech",
+    avgSalaryEntry: 9,
+    avgSalaryMid: 22,
+    avgSalarySenior: 50,
+    growth: "Very High",
+    demand: "Very High",
+    topRoles: ["Data Scientist", "ML Engineer", "AI Researcher", "Data Analyst", "NLP Engineer", "Computer Vision Engineer"],
+    topRecruiters: ["NVIDIA", "Google", "Microsoft", "Persistent Systems", "ThoughtWorks", "KPIT", "TCS Digital"],
+    keySkills: ["Python", "Machine Learning (Scikit-learn, PyTorch, TensorFlow)", "Statistics & Probability", "SQL", "Data Visualization", "Cloud ML (AWS SageMaker / GCP Vertex)", "LLM fine-tuning"],
+    courses: [
+      { level: "UG", name: "B.Tech CSE (AI/ML specialization)", duration: "4 years" },
+      { level: "UG", name: "B.Sc Statistics / Mathematics", duration: "3 years" },
+      { level: "PG", name: "M.Tech AI / Data Science", duration: "2 years" },
+      { level: "PG", name: "MBA Business Analytics", duration: "2 years" },
+    ],
+    puneColeges: [
+      { name: "COEP Pune", slug: "coep-college-of-engineering-pune", avgPlacement: 1200000 },
+      { name: "MIT-WPU", slug: "mit-wpu-mit-world-peace-university-pune", avgPlacement: 850000 },
+      { name: "Vijaybhoomi University", slug: "vijaybhoomi-university-karjat", avgPlacement: 800000 },
+      { name: "Symbiosis (SIBM)", slug: "symbiosis-institute-of-business-management-pune", avgPlacement: 1600000 },
+    ],
+    roadmap: [
+      { year: "Year 1–2", milestone: "Math & Python Foundation", description: "Linear Algebra, Statistics, Probability, Python (NumPy, Pandas). Complete a Kaggle notebook." },
+      { year: "Year 3", milestone: "ML Core", description: "Supervised/unsupervised learning, Neural Networks, NLP basics. Build a real ML project — house price prediction, sentiment analysis." },
+      { year: "Year 4", milestone: "Specialization + Internship", description: "Choose: Computer Vision, NLP, or Tabular ML. Intern at analytics or product company. Kaggle rank helps." },
+      { year: "Year 1–3 (Work)", milestone: "Data Analyst / Jr. DS", description: "Explore data, build dashboards, run A/B tests. Salary: ₹7–15 LPA." },
+      { year: "Year 4–7 (Work)", milestone: "Data Scientist", description: "Own end-to-end ML models in production. Salary: ₹18–35 LPA." },
+      { year: "Year 8+ (Work)", milestone: "Principal DS / ML Lead / AI Director", description: "Define AI strategy, lead teams. Salary: ₹40–90+ LPA at top firms." },
+    ],
+    certifications: ["Google Professional ML Engineer", "AWS Machine Learning Specialty", "IBM Data Science Professional", "Coursera Deep Learning Specialization", "TensorFlow Developer Certificate"],
+    dayInLife: "Morning: data exploration, writing SQL queries. Afternoon: model training, experiment tracking. Regular meetings with product and engineering to align on model deployment. GenAI has added prompt engineering and LLM fine-tuning to the daily toolkit.",
+    pros: ["AI/ML boom makes this one of the fastest-growing fields", "Work on genuinely interesting problems", "Excellent pay at product companies"],
+    cons: ["Math-heavy — requires solid statistics background", "Many roles need advanced degrees for deep research", "Data quality issues consume a LOT of time"],
+    relatedPaths: ["software-engineering", "product-management", "business-analytics"],
+  },
+  {
+    slug: "product-management",
+    title: "Product Management",
+    icon: "🚀",
+    tagline: "Define what gets built, why, and for whom — be the CEO of a product",
+    category: "management",
+    avgSalaryEntry: 12,
+    avgSalaryMid: 28,
+    avgSalarySenior: 60,
+    growth: "High",
+    demand: "High",
+    topRoles: ["Product Manager", "Associate PM", "Senior PM", "Group PM", "VP Product", "Chief Product Officer"],
+    topRecruiters: ["Zomato", "Swiggy", "Razorpay", "Infosys", "Persistent", "BYJU's", "Freshworks", "PwC Digital"],
+    keySkills: ["User Research", "Roadmapping", "PRD Writing", "Data Analysis", "SQL basics", "Agile/Scrum", "Stakeholder Management", "A/B Testing"],
+    courses: [
+      { level: "PG", name: "MBA (IIM / SIBM / SCMHRD)", duration: "2 years" },
+      { level: "UG", name: "B.Tech + relevant internship", duration: "4 years" },
+      { level: "PG", name: "PG Diploma in Product Management", duration: "1 year" },
+    ],
+    puneColeges: [
+      { name: "SIBM Pune", slug: "symbiosis-institute-of-business-management-pune", avgPlacement: 1600000 },
+      { name: "SCMHRD", slug: "symbiosis-centre-for-management-hrm-pune", avgPlacement: 1400000 },
+      { name: "MIT-WPU", slug: "mit-wpu-mit-world-peace-university-pune", avgPlacement: 850000 },
+    ],
+    roadmap: [
+      { year: "Foundation", milestone: "Technical + Business base", description: "Engineering or business degree. Learn to code at least at a conceptual level. Take online PM courses (Reforge, PM School)." },
+      { year: "Entry Role", milestone: "Associate PM / Business Analyst", description: "Start in analytics, consulting, or as APM. Salary: ₹10–18 LPA. Key: build a portfolio of product decisions." },
+      { year: "3–5 years", milestone: "Product Manager", description: "Own a full product area. Salary: ₹20–40 LPA. MBA from top college can fast-track this." },
+      { year: "6–10 years", milestone: "Senior / Group PM", description: "Lead a product group, manage PMs. Salary: ₹40–70 LPA at top startups/MNCs." },
+      { year: "10+ years", milestone: "VP Product / CPO", description: "Define product vision for org. Salary: ₹80 LPA – ₹2 Cr+ at unicorns." },
+    ],
+    certifications: ["AIPMM Certified Product Manager", "Pragmatic Institute PM Certification", "Google PM Certificate", "Scrum Product Owner (CSPO)"],
+    dayInLife: "Morning: prioritizing backlog, sync with engineering. Afternoon: user research calls, metrics deep-dive. Week: stakeholder updates, road map reviews, cross-functional sprint planning. Heavy on meetings but high-impact decisions.",
+    pros: ["High pay, especially at startups", "Intellectual variety — no two days alike", "Direct business impact"],
+    cons: ["Without authority over engineers/designers, relies on influence skills", "Needs technical + business + design knowledge simultaneously", "Competitive entry — most PMs transition from engineering or MBA"],
+    relatedPaths: ["software-engineering", "data-science-ai", "mba-marketing"],
+  },
+  {
+    slug: "mba-marketing",
+    title: "MBA — Marketing & Brand",
+    icon: "📣",
+    tagline: "Build brands, launch campaigns, and drive business growth through marketing",
+    category: "management",
+    avgSalaryEntry: 8,
+    avgSalaryMid: 18,
+    avgSalarySenior: 40,
+    growth: "High",
+    demand: "High",
+    topRoles: ["Brand Manager", "Digital Marketing Manager", "Marketing Analyst", "CMO", "Growth Hacker", "Content Strategist"],
+    topRecruiters: ["HUL", "P&G", "Nestlé", "Zomato", "Flipkart", "Amazon", "Ogilvy", "Publicis"],
+    keySkills: ["Brand Strategy", "Digital Marketing (SEO/SEM/Social)", "Market Research", "Analytics (Google Analytics, SQL)", "Campaign Management", "Consumer Behavior"],
+    courses: [
+      { level: "PG", name: "MBA Marketing (SIBM / SCMHRD / MIT-WPU)", duration: "2 years" },
+      { level: "UG", name: "BBA Marketing", duration: "3 years" },
+      { level: "PG", name: "PGDM Marketing", duration: "2 years" },
+    ],
+    puneColeges: [
+      { name: "SIBM Pune", slug: "symbiosis-institute-of-business-management-pune", avgPlacement: 1600000 },
+      { name: "SCMHRD", slug: "symbiosis-centre-for-management-hrm-pune", avgPlacement: 1400000 },
+      { name: "MIT School of Business", slug: "mit-wpu-mit-world-peace-university-pune", avgPlacement: 850000 },
+    ],
+    roadmap: [
+      { year: "UG + Internships", milestone: "Build marketing foundation", description: "BBA or any UG degree. Do 2–3 marketing internships. Build a digital portfolio (run a blog, manage social)." },
+      { year: "MBA Yr 1", milestone: "Core business + specialization", description: "CAT/SNAP/MAT. Intern in summer with FMCG or startup marketing team." },
+      { year: "MBA Yr 2", milestone: "Placements", description: "Target FMCG giants (HUL, P&G) or tech-marketing at startups. Salary: ₹8–18 LPA." },
+      { year: "3–7 years", milestone: "Brand / Marketing Manager", description: "Own category P&L, manage campaigns. Salary: ₹15–30 LPA." },
+      { year: "8+ years", milestone: "Marketing Director / CMO", description: "Lead entire marketing function. Salary: ₹40 LPA – ₹1 Cr+." },
+    ],
+    certifications: ["Google Digital Marketing Certificate", "HubSpot Marketing Certification", "Meta Blueprint", "CIM (UK) Qualifications"],
+    dayInLife: "Morning: campaign analytics review. Afternoon: agency briefing, creative review, budget tracking. Weekly: brand health tracking, competitive analysis. Fast-paced, creative, and data-driven mix.",
+    pros: ["Creative + analytical combination", "FMCG placements pay extremely well", "Wide range of industries to work in"],
+    cons: ["Initial salary lower than tech", "Heavily dependent on MBA college brand", "Constant proving of ROI to leadership"],
+    relatedPaths: ["product-management", "mba-finance", "mba-hr"],
+  },
+  {
+    slug: "civil-engineering",
+    title: "Civil Engineering",
+    icon: "🏗️",
+    tagline: "Design and build the physical infrastructure that cities run on",
+    category: "tech",
+    avgSalaryEntry: 4,
+    avgSalaryMid: 9,
+    avgSalarySenior: 20,
+    growth: "Moderate",
+    demand: "High",
+    topRoles: ["Site Engineer", "Structural Engineer", "Project Manager", "Urban Planner", "Environmental Engineer", "Geotechnical Engineer"],
+    topRecruiters: ["L&T Construction", "Shapoorji Pallonji", "Tata Projects", "NHAI", "PWD", "Afcons", "DLF"],
+    keySkills: ["AutoCAD / Revit", "Structural Analysis (STAAD Pro / ETABS)", "Project Management", "Survey techniques", "Soil mechanics", "Construction management"],
+    courses: [
+      { level: "UG", name: "B.Tech / BE Civil Engineering", duration: "4 years" },
+      { level: "PG", name: "M.Tech Structural / Geotechnical Engineering", duration: "2 years" },
+      { level: "PG", name: "MBA Construction Management", duration: "2 years" },
+    ],
+    puneColeges: [
+      { name: "COEP Pune", slug: "coep-college-of-engineering-pune", avgPlacement: 1200000 },
+      { name: "MIT-WPU", slug: "mit-wpu-mit-world-peace-university-pune", avgPlacement: 850000 },
+      { name: "Symbiosis Institute of Technology", slug: "symbiosis-institute-of-technology-pune", avgPlacement: 700000 },
+    ],
+    roadmap: [
+      { year: "Year 1–2", milestone: "Core engineering", description: "Maths, Mechanics, Surveying, Fluid Mechanics. Master AutoCAD basics." },
+      { year: "Year 3–4", milestone: "Specialization + site internship", description: "Structural / transportation / environmental focus. Mandatory site internship is gold." },
+      { year: "Graduate", milestone: "Site / Graduate Engineer", description: "₹3.5–6 LPA at construction companies or government PSUs via GATE." },
+      { year: "5–10 years", milestone: "Senior Project Engineer", description: "Lead sub-projects. ₹8–16 LPA. GATE + M.Tech helps for PSU/govt roles." },
+      { year: "10+ years", milestone: "Project Director / Consultant", description: "Large infra projects. ₹18–40 LPA. Startup or consultancy route possible." },
+    ],
+    certifications: ["NICMAR Project Management", "GATE (for PSU/government)", "PMI-PMP", "AutoCAD Certified Professional", "LEED Green Associate"],
+    dayInLife: "On-site days: inspections, measurements, contractor coordination. Office days: design reviews, cost estimation, RFI responses. Weather, material delays, and contractor management are daily realities.",
+    pros: ["Always in demand — India's infra boom is real", "Tangible impact — you literally build things", "Government jobs (NHAI, PWD) are stable and respected"],
+    cons: ["Salary growth slower than tech", "On-site work means physical demands", "Environmental approvals and project delays add stress"],
+    relatedPaths: ["architecture-design", "software-engineering"],
+  },
+  {
+    slug: "mbbs-medicine",
+    title: "MBBS & Medicine",
+    icon: "⚕️",
+    tagline: "Become a doctor — one of the most respected and impactful professions",
+    category: "medical",
+    avgSalaryEntry: 6,
+    avgSalaryMid: 18,
+    avgSalarySenior: 50,
+    growth: "High",
+    demand: "Very High",
+    topRoles: ["General Physician", "Specialist (Cardiologist/Orthopedic/Pediatrician)", "Surgeon", "Medical Researcher", "Hospital Administrator"],
+    topRecruiters: ["Ruby Hall Clinic", "Jehangir Hospital", "Columbia Asia", "Government hospitals (AIIMS, Sassoon)", "Private hospitals nationwide"],
+    keySkills: ["Clinical diagnosis", "Patient communication", "Surgery (specialist)", "Emergency medicine", "Research methodology"],
+    courses: [
+      { level: "UG", name: "MBBS (5.5 years including internship)", duration: "5.5 years" },
+      { level: "PG", name: "MD / MS Specialization", duration: "3 years" },
+      { level: "PG", name: "DNB (National Board)", duration: "3 years" },
+    ],
+    puneColeges: [
+      { name: "BJ Medical College Pune", slug: "bj-government-medical-college-pune", avgPlacement: 800000 },
+      { name: "Armed Forces Medical College", slug: "afmc-armed-forces-medical-college-pune", avgPlacement: 1000000 },
+    ],
+    roadmap: [
+      { year: "Class 11–12", milestone: "NEET Preparation", description: "Physics, Chemistry, Biology at Class 11–12 level. NEET requires 600+ for good government college. Pune has BJ Medical (government) and several private colleges." },
+      { year: "MBBS (Yr 1–2)", milestone: "Pre-clinical", description: "Anatomy, Physiology, Biochemistry — heavy memorization. Foundation for everything clinical." },
+      { year: "MBBS (Yr 3–4)", milestone: "Clinical rotations", description: "Hospital postings begin. Bedside manner, diagnosis, clinical skills develop here." },
+      { year: "MBBS (Yr 5 + Internship)", milestone: "House Surgeon", description: "1-year rotating internship — most practical learning." },
+      { year: "PG entrance (NEET-PG)", milestone: "Specialization", description: "MD/MS in chosen field. Salary during residency: ₹50,000–80,000/month stipend." },
+      { year: "After MD/MS", milestone: "Consultant / Senior Resident", description: "₹15–50 LPA+ depending on specialty, location, private vs govt." },
+    ],
+    certifications: ["USMLE (for USA practice)", "PLAB (for UK)", "DNB (National Board Diploma)", "Fellowship programs (FIACS, FRCS for surgery)"],
+    dayInLife: "Early morning ward rounds, outpatient clinic afternoons, emergency calls. Resident doctors often work 70–80 hours/week during training. Huge responsibility and patient-facing satisfaction.",
+    pros: ["Lifelong job security", "Deep social respect", "Intellectually challenging across all years", "Private practice can be extremely lucrative"],
+    cons: ["12+ years of education before independent practice", "Residency hours are brutal", "NEET competition is fierce — 20 lakh+ candidates for limited seats"],
+    relatedPaths: ["pharmacy", "public-health"],
+  },
+  {
+    slug: "law",
+    title: "Law & Legal Practice",
+    icon: "⚖️",
+    tagline: "Champion justice, structure deals, and navigate the world's most complex systems",
+    category: "law",
+    avgSalaryEntry: 5,
+    avgSalaryMid: 15,
+    avgSalarySenior: 50,
+    growth: "Moderate",
+    demand: "High",
+    topRoles: ["Advocate / Litigator", "Corporate Counsel", "Legal Associate", "Compliance Officer", "Judicial Services", "Arbitrator"],
+    topRecruiters: ["AZB & Partners", "Cyril Amarchand Mangaldas", "Khaitan & Co", "Infosys Legal", "Wipro GRC", "LIC", "SEBI", "Government Law Officers"],
+    keySkills: ["Legal research", "Drafting & documentation", "Argumentation", "Corporate law", "Contract law", "Intellectual property", "GDPR/Data law (emerging)"],
+    courses: [
+      { level: "UG", name: "BA LLB / BBA LLB (5-year integrated)", duration: "5 years" },
+      { level: "UG", name: "LLB (after graduation)", duration: "3 years" },
+      { level: "PG", name: "LLM (Master of Laws)", duration: "1–2 years" },
+    ],
+    puneColeges: [
+      { name: "ILS Law College Pune", slug: "ils-law-college-pune", avgPlacement: 700000 },
+      { name: "Symbiosis Law School", slug: "symbiosis-law-school-pune", avgPlacement: 900000 },
+    ],
+    roadmap: [
+      { year: "Entry (CLAT/SET)", milestone: "Law degree", description: "5-year integrated BA LLB / BBA LLB for after Class 12. CLAT for NLUs. SET/SLAT for Symbiosis Law School." },
+      { year: "Year 3–5", milestone: "Moot courts + internships", description: "Intern at law firms or under senior advocates every vacation. Moot court wins matter for top firm hiring." },
+      { year: "After graduation", milestone: "Junior Associate", description: "₹4–10 LPA at law firm or corporate legal dept. Government jobs via MPSC / State Judicial exams." },
+      { year: "3–8 years", milestone: "Senior Associate / Independent Advocate", description: "₹12–25 LPA at top firms. Build independent practice if litigating." },
+      { year: "10+ years", milestone: "Partner / Senior Advocate / Judge", description: "Partner at Tier-1 firm: ₹50 LPA – ₹1 Cr+. Senior Advocate designation for top litigators." },
+    ],
+    certifications: ["Bar Council of India enrollment (mandatory)", "SEBI Registration (securities law)", "NCLT / Insolvency certification", "International Arbitration courses (CIArb)"],
+    dayInLife: "Litigation: court hearings, drafting pleadings, client meetings. Corporate law: contract review, M&A due diligence, board presentations. Long hours at top firms are common.",
+    pros: ["Very diverse practice areas", "In-house legal is growing rapidly at Indian tech companies", "Judicial services offer stability and prestige"],
+    cons: ["Initial salary lower than tech", "Litigation career takes 7–10 years to build", "High reading/writing workload"],
+    relatedPaths: ["mba-finance", "product-management"],
+  },
+  {
+    slug: "architecture-design",
+    title: "Architecture & Design",
+    icon: "🏛️",
+    tagline: "Shape the built environment — from homes and offices to cities and public spaces",
+    category: "creative",
+    avgSalaryEntry: 4,
+    avgSalaryMid: 10,
+    avgSalarySenior: 25,
+    growth: "Moderate",
+    demand: "Moderate",
+    topRoles: ["Architect", "Interior Designer", "Urban Designer", "Landscape Architect", "BIM Specialist", "Project Architect"],
+    topRecruiters: ["Pune Metro", "MHADA", "HCP Design", "Morphogenesis", "Edifice Consultants", "Schneider Electric (BIM)"],
+    keySkills: ["AutoCAD", "Revit / BIM", "SketchUp", "3DS Max / V-Ray rendering", "Site planning", "Building codes & NBC", "Structural basics"],
+    courses: [
+      { level: "UG", name: "B.Arch (Bachelor of Architecture)", duration: "5 years" },
+      { level: "PG", name: "M.Arch", duration: "2 years" },
+      { level: "PG", name: "M.Des (Urban Design / Interior)", duration: "2 years" },
+    ],
+    puneColeges: [
+      { name: "MAEER's MIT College of Engineering (Architecture)", slug: "mit-college-of-engineering-pune", avgPlacement: 650000 },
+    ],
+    roadmap: [
+      { year: "NATA / JEE Paper 2", milestone: "B.Arch entry", description: "NATA score required. 5-year program — intensive studio work from Year 1." },
+      { year: "Year 2–4", milestone: "Studio + technical skills", description: "Master CAD, Revit, rendering. Intern with architect during summer. Build a strong portfolio." },
+      { year: "Year 5", milestone: "Thesis + CoA registration", description: "Architectural thesis project + Council of Architecture registration after graduation." },
+      { year: "Graduate", milestone: "Junior Architect", description: "₹3–6 LPA. Portfolio quality matters more than college name at small firms." },
+      { year: "5–10 years", milestone: "Project Architect / Associate", description: "₹9–18 LPA. Lead design projects independently." },
+      { year: "10+ years", milestone: "Principal / Own Practice", description: "Run your own studio or join large design firm as Principal. Income highly variable." },
+    ],
+    certifications: ["Council of Architecture (CoA) Registration (mandatory)", "LEED Green Associate", "Autodesk Revit Certification", "RICS (for project/cost management)"],
+    dayInLife: "Studio days: design development, client presentations, site visits. Heavy software use (Revit, AutoCAD). Construction phase: site supervision, contractor coordination. Creative but deadline-driven.",
+    pros: ["Deeply creative and intellectually satisfying", "Tangible legacy — your buildings outlast you", "Sustainable design is a growing niche with premium fees"],
+    cons: ["Lower starting salary vs engineering peers", "5-year program is intense", "Own practice takes 10+ years to build credibly"],
+    relatedPaths: ["civil-engineering", "software-engineering"],
+  },
+]
+
+export function getCareerPath(slug: string): CareerPath | undefined {
+  return careerPaths.find(p => p.slug === slug)
+}
+
+export function getCareerPathsByCategory(category: CareerPath["category"]): CareerPath[] {
+  return careerPaths.filter(p => p.category === category)
+}

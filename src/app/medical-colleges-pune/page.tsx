@@ -25,6 +25,7 @@ export const metadata: Metadata = genMeta({
     "top medical colleges pune neet score",
   ],
 })
+export const revalidate = 300
 
 const colleges = [
   { rank: 1, name: "AFMC – Armed Forces Medical College", type: "Government (Defence)", nirf: 4, naac: "A++", fees: "₹50,000 (total 4.5 yrs)", seats: 130, neet: "650+", slug: "afmc-armed-forces-medical-college-pune", highlight: "NIRF #4 | Nearly Free | Best in India" },
@@ -302,6 +303,26 @@ export default function MedicalCollegesPunePage() {
             </div>
           </div>
         </section>
+
+          {/* Related Guides */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Related Medical College Guides</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+              { label: "MBBS Colleges — NEET Cutoffs & Fees", href: "/mbbs-colleges-pune", icon: "🎓" },
+              { label: "NEET Colleges & Category Cutoffs", href: "/neet-colleges-pune", icon: "📝" },
+              { label: "Top 10 Medical Colleges — Ranked", href: "/top-10-medical-colleges-in-pune", icon: "🏆" },
+              { label: "NAAC A+ Colleges in Pune", href: "/naac-a-plus-colleges-pune", icon: "⭐" },
+              { label: "Pharmacy Colleges in Pune", href: "/pharmacy-colleges-pune", icon: "💊" },
+              { label: "Free Medical Counselling", href: "/counselling", icon: "📞" },
+              ].map(({ label, href, icon }) => (
+                <Link key={href} href={href} className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 hover:border-orange-200 hover:shadow transition-all group">
+                  <span className="text-xl">{icon}</span>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">{label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
 
         {/* CTA */}
         <section className="bg-gradient-to-r from-red-600 to-orange-500 py-10">

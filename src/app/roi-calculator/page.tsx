@@ -272,7 +272,7 @@ export default function ROICalculatorPage() {
           </div>
           <h2 className="text-lg font-bold text-gray-900 mb-3">Best ROI Colleges in Pune 2026</h2>
           <p className="text-sm text-gray-600 leading-relaxed">
-            <strong>For Engineering:</strong> COEP Pune offers the best ROI — government fees of ₹80K/yr vs ₹12 LPA average placement. PICT Pune offers strong ROI for CS/IT (₹1.4–1.9L fees, ₹7.5 LPA avg). <strong>For MBA:</strong> Indira Institute of Management (₹4.2–6.5L total fees, ₹7.2 LPA avg) and MIT-SOM (₹7–11L, ₹12 LPA avg) offer better ROI than SIBM if cost is a priority. <strong>For Medical:</strong> AFMC Pune is unbeatable — near-zero fees, guaranteed government job, and a prestigious career.
+            <strong>For Engineering:</strong> COEP Pune offers the best ROI — government fees of ₹80K/yr vs ₹12 LPA average placement. PICT Pune offers strong ROI for CS/IT (₹1.4–1.9L fees, ₹7.5 LPA avg). <strong>For MBA:</strong> Indira Institute of Management (₹4.2–6.5L total fees, ₹7.2 LPA avg) and MIT-SOM (₹7–11L, ₹12 LPA avg) offer better ROI than SIBM if cost is a priority. <strong>For Medical:</strong> AFMC Pune is unbeatable — near-zero fees, a prestigious armed forces medical career with service obligation, and unmatched national recognition.
           </p>
         </div>
       </div>

@@ -134,7 +134,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: page.title,
     description: page.description,
     keywords: page.keywords,
-    alternates: { canonical: `https://collegepune.in/colleges-in-pune/${slug}` },
+    alternates: { canonical: `https://collegepune.com/colleges-in-pune/${slug}` },
   }
 }
 

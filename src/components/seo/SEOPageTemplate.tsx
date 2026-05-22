@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { ExternalLink, MapPin, Star, TrendingUp, BookOpen, Building2 } from "lucide-react"
 import type { College } from "@/types"
 import type { SEOPage } from "@/data/seoPages"
@@ -128,10 +129,13 @@ function CollegeCard({ college, rank }: { college: College; rank: number }) {
           {rank}
         </div>
         {college.image ? (
-          <img
+          <Image
             src={college.image}
-            alt={college.shortName}
-            className="w-14 h-14 object-contain rounded-lg border bg-white p-1"
+            alt={`${college.name} logo`}
+            width={56}
+            height={56}
+            className="object-contain rounded-lg border bg-white p-1"
+            sizes="56px"
           />
         ) : (
           <div className="w-14 h-14 rounded-lg bg-blue-50 flex items-center justify-center text-blue-700 font-bold text-lg">

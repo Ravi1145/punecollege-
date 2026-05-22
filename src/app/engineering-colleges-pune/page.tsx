@@ -25,6 +25,7 @@ export const metadata: Metadata = genMeta({
     "NAAC A+ engineering colleges pune",
   ],
 })
+export const revalidate = 300
 
 const colleges = [
   { rank: 1, name: "College of Engineering Pune (COEP)", type: "Government", nirf: 49, naac: "A+", fees: "₹80K–₹1.8L/yr", placement: "₹12 LPA avg | ₹45 LPA highest", exam: "MHT-CET / JEE", slug: "coep-college-of-engineering-pune", highlight: "Best Govt. | Lowest Fees" },

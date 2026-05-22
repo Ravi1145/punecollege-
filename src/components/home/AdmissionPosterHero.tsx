@@ -125,7 +125,7 @@ export default function AdmissionPosterHero() {
             { icon: "🏆", label: "TOP COLLEGES IN PUNE" },
             { icon: "👨‍🎓", label: "EXPERT COUNSELLING" },
             { icon: "✅", label: "EASY ADMISSION" },
-            { icon: "👥", label: "100% PLACEMENT ASSISTANCE" },
+            { icon: "👥", label: "FREE PLACEMENT GUIDANCE" },
           ].map((item) => (
             <div key={item.label} className="bg-[#0A1628] text-white rounded-2xl p-4 text-center">
               <div className="text-3xl mb-2">{item.icon}</div>

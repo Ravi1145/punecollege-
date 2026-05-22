@@ -4,7 +4,6 @@ import Script from "next/script"
 import { colleges, getCollegeBySlug } from "@/data/colleges"
 
 export const revalidate = 300 // ISR — re-render every 5 min; on-demand revalidation via admin also busts this
-import { fetchCollegesFromAPI, mapAPICollege, generateSlug } from "@/lib/api"
 import { getCollegeBySlug as getDBCollege, DBCollege, CollegeDetails } from "@/lib/db"
 import CollegeProfile from "@/components/colleges/CollegeProfile"
 import { generateMetadata as genMeta, generateBreadcrumbSchema, generateCollegeSchema, generateFAQSchema } from "@/lib/seo"
@@ -49,12 +48,12 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-// Generate static params: Supabase published + local + external API
+// Generate static params: local static + Express backend published
 export async function generateStaticParams() {
   const localSlugs = colleges.map((c) => ({ slug: c.slug }))
   const slugSet = new Set(localSlugs.map((s) => s.slug))
 
-  // Add Supabase published slugs
+  // Add Express backend published college slugs
   try {
     const { getAllColleges } = await import('@/lib/db')
     const { colleges: dbColleges } = await getAllColleges({ status: 'published', limit: 500 })
@@ -64,19 +63,7 @@ export async function generateStaticParams() {
         slugSet.add(c.slug)
       }
     }
-  } catch { /* ignore */ }
-
-  // Add external API slugs
-  try {
-    const apiRaw = await fetchCollegesFromAPI()
-    for (const c of apiRaw) {
-      const slug = generateSlug(c.name)
-      if (!slugSet.has(slug)) {
-        localSlugs.push({ slug })
-        slugSet.add(slug)
-      }
-    }
-  } catch { /* ignore */ }
+  } catch { /* ignore — backend not running yet */ }
 
   return localSlugs
 }
@@ -99,18 +86,10 @@ async function resolveCollege(slug: string): Promise<{ college: College; details
     // ignore DB errors, fall through
   }
 
-  // 2. Try local hardcoded data
+  // 2. Try local static data
   const local = getCollegeBySlug(slug)
   if (local) return { college: local, details: local.details }
 
-  // 3. Try external API
-  try {
-    const apiRaw = await fetchCollegesFromAPI()
-    const match = apiRaw.find((c) => generateSlug(c.name) === slug)
-    if (match) return { college: mapAPICollege(match, 0) }
-  } catch {
-    // ignore
-  }
   return null
 }
 
@@ -173,6 +152,8 @@ export default async function CollegePage({ params }: Props) {
     image: college.image,
     rating: college.rating,
     reviewCount: college.reviewCount,
+    slug,
+    reviews: college.reviews ?? [],
   })
 
   // Build FAQ schema from details.faqs (DB) or college.faqs (static)

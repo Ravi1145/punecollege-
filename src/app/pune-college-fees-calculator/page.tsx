@@ -192,6 +192,27 @@ export default function PuneCollegeFeesCalculatorPage() {
             </div>
           </div>
 
+          {/* Related Guides */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Related Fees & Admission Guides</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+              { label: "NAAC A+ Colleges in Pune", href: "/naac-a-plus-colleges-pune", icon: "⭐" },
+              { label: "Low Fee Colleges in Pune", href: "/low-fee-colleges-pune", icon: "💰" },
+              { label: "Pune Colleges Fees Guide 2026", href: "/colleges-pune-fees", icon: "📊" },
+              { label: "Top Placement Colleges in Pune", href: "/top-placement-colleges-pune", icon: "💼" },
+              { label: "Placement Comparator Tool", href: "/pune-college-placement-comparator", icon: "📈" },
+              { label: "Engineering vs MBA Comparison", href: "/pune-colleges-comparison-engineering-mba", icon: "⚖️" },
+              { label: "Admission Deadline Tracker 2026", href: "/pune-admission-deadline-tracker-2026", icon: "📅" },
+              ].map(({ label, href, icon }) => (
+                <Link key={href} href={href} className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 hover:border-orange-200 hover:shadow transition-all group">
+                  <span className="text-xl">{icon}</span>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">{label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* CTA */}
           <div className="bg-gradient-to-r from-[#0A1628] to-[#1E3A5F] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-white">

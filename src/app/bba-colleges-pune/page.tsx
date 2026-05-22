@@ -22,6 +22,7 @@ export const metadata: Metadata = genMeta({
     "bba colleges pune 2026",
   ],
 })
+export const revalidate = 300
 
 const colleges = [
   {
@@ -228,6 +229,27 @@ export default function BBACollegesPunePage() {
                   </summary>
                   <p className="text-sm text-gray-600 mt-3 leading-relaxed">{faq.answer}</p>
                 </details>
+              ))}
+            </div>
+          </div>
+
+          {/* Related Guides */}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Related BBA & Commerce Guides</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+              { label: "Arts & Science Colleges in Pune", href: "/arts-colleges-pune", icon: "📚" },
+              { label: "Commerce Colleges in Pune", href: "/commerce-colleges-pune", icon: "📊" },
+              { label: "Science Colleges in Pune", href: "/science-colleges-pune", icon: "🔬" },
+              { label: "BCA Colleges in Pune", href: "/bca-colleges-pune", icon: "💻" },
+              { label: "BSc IT Colleges in Pune", href: "/bsc-it-colleges-pune", icon: "🖥️" },
+              { label: "Law Colleges in Pune", href: "/law-colleges-pune", icon: "⚖️" },
+              { label: "Design Colleges in Pune", href: "/design-colleges-pune", icon: "🎨" },
+              ].map(({ label, href, icon }) => (
+                <Link key={href} href={href} className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 hover:border-orange-200 hover:shadow transition-all group">
+                  <span className="text-xl">{icon}</span>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">{label}</span>
+                </Link>
               ))}
             </div>
           </div>

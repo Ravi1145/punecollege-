@@ -175,13 +175,22 @@ export function generateCollegeSchema(college: {
   image?: string
   rating?: number
   reviewCount?: number
+  slug?: string
+  reviews?: { studentName: string; course: string; year: number; rating: number; title: string; body: string }[]
 }) {
+  const pageUrl = `${BASE_URL}/colleges/${college.slug ?? ''}`
+
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    // CollegeOrUniversity is more specific and better recognised by Google for education rich results
+    "@type": "CollegeOrUniversity",
+    "@id": pageUrl,
     name: college.name,
     description: college.description,
-    image: college.image,
+    image: college.image
+      ? { "@type": "ImageObject", url: college.image, name: college.name }
+      : undefined,
+    logo: `${BASE_URL}/logo.png`,
     address: {
       "@type": "PostalAddress",
       streetAddress: college.address,
@@ -192,9 +201,14 @@ export function generateCollegeSchema(college: {
     },
     telephone: college.phone,
     email: college.email,
-    url: college.website,
+    url: college.website || pageUrl,
+    sameAs: [college.website].filter(Boolean),
     foundingDate: college.established.toString(),
-    areaServed: "Pune",
+    areaServed: {
+      "@type": "City",
+      name: "Pune",
+      sameAs: "https://en.wikipedia.org/wiki/Pune",
+    },
     hasOfferCatalog: college.courses?.length ? {
       "@type": "OfferCatalog",
       name: "Academic Programs",
@@ -206,7 +220,7 @@ export function generateCollegeSchema(college: {
     } : undefined,
   }
 
-  // Add AggregateRating if we have rating data — enables gold star rich snippets in Google
+  // AggregateRating — unlocks gold star rich snippets in Google SERPs
   if (college.rating && college.rating > 0) {
     schema.aggregateRating = {
       "@type": "AggregateRating",
@@ -215,6 +229,23 @@ export function generateCollegeSchema(college: {
       bestRating: "5",
       worstRating: "1",
     }
+  }
+
+  // Individual Review items — Google surfaces these in rich results below the star rating
+  if (college.reviews && college.reviews.length > 0) {
+    schema.review = college.reviews.slice(0, 5).map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.studentName },
+      datePublished: `${r.year}-01-01`,
+      name: r.title,
+      reviewBody: r.body,
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating.toFixed(1),
+        bestRating: "5",
+        worstRating: "1",
+      },
+    }))
   }
 
   return schema
@@ -269,6 +300,62 @@ export function generateLocalBusinessSchema() {
       "@type": "City",
       name: "Pune",
       sameAs: "https://en.wikipedia.org/wiki/Pune",
+    },
+  }
+}
+
+export function generateArticleSchema(article: {
+  title: string
+  description: string
+  author: string
+  datePublished: string   // ISO 8601
+  dateModified?: string
+  url: string             // full path e.g. "/blog/my-slug"
+  imageUrl?: string
+  category?: string
+  tags?: string[]
+  wordCount?: number
+}) {
+  const isoPublished = (() => {
+    try { return new Date(article.datePublished).toISOString() } catch { return new Date().toISOString() }
+  })()
+  const isoModified = article.dateModified
+    ? (() => { try { return new Date(article.dateModified!).toISOString() } catch { return isoPublished } })()
+    : isoPublished
+  const pageUrl = `${BASE_URL}${article.url}`
+
+  return {
+    "@context": "https://schema.org",
+    "@type": ["Article", "BlogPosting"],
+    "@id": pageUrl,
+    mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+    headline: article.title.slice(0, 110),
+    description: article.description,
+    author: { "@type": "Person", name: article.author, url: `${BASE_URL}/blog` },
+    publisher: {
+      "@type": "Organization",
+      name: "CollegePune",
+      url: BASE_URL,
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png`, width: 200, height: 60 },
+    },
+    datePublished: isoPublished,
+    dateModified: isoModified,
+    url: pageUrl,
+    image: {
+      "@type": "ImageObject",
+      url: article.imageUrl ?? `${BASE_URL}/og-image.png`,
+      width: 1200,
+      height: 630,
+    },
+    keywords: article.tags?.join(", "),
+    articleSection: article.category,
+    inLanguage: "en-IN",
+    ...(article.wordCount ? { wordCount: article.wordCount } : {}),
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${BASE_URL}/blog`,
+      name: "CollegePune Blog",
+      publisher: { "@type": "Organization", name: "CollegePune", url: BASE_URL },
     },
   }
 }

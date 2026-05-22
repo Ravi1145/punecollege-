@@ -140,6 +140,7 @@ const tools = [
   { label: "Admission Deadlines", href: "/pune-admission-deadline-tracker-2026", icon: Star, desc: "2026 deadline tracker", color: "text-red-600 bg-red-50" },
   { label: "NIRF Insights", href: "/nirf-insights", icon: Award, desc: "Official rankings & data", color: "text-purple-600 bg-purple-50" },
   { label: "AI College Finder", href: "/ai-finder", icon: Sparkles, desc: "AI-powered matching", color: "text-pink-600 bg-pink-50" },
+  { label: "AI Career Counselor", href: "/ai-counselor", icon: Sparkles, desc: "Chat with Aarav AI", color: "text-orange-600 bg-orange-50" },
   { label: "Free Counselling", href: "/counselling", icon: PhoneCall, desc: "Talk to an expert", color: "text-teal-600 bg-teal-50" },
 ]
 
@@ -148,6 +149,7 @@ const explore = [
   { label: "Cutoffs 2026", href: "/cutoffs", icon: LineChart },
   { label: "Scholarships", href: "/scholarships", icon: Gift },
   { label: "Community Q&A", href: "/qa", icon: MessageCircle },
+  { label: "Career Paths", href: "/career-paths", icon: TrendingUp },
   { label: "Blog & Guides", href: "/blog", icon: BookOpen },
   { label: "Entrance Exams", href: "/exams", icon: Compass },
   { label: "All Courses", href: "/courses", icon: Star },

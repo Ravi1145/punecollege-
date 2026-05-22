@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -31,11 +31,52 @@ const STATS = [
 
 const PILLS = ["COEP", "MIT-WPU", "PICT", "Symbiosis", "DY Patil"]
 
+const TYPEWRITER_WORDS = [
+  "University",
+  "Course",
+  "Career Goal",
+  "Stream",
+  "Budget",
+]
+
+function useTypewriter(words: string[], typingSpeed = 80, deletingSpeed = 50, pauseMs = 1800) {
+  const [displayed, setDisplayed] = useState("")
+  const [wordIndex, setWordIndex] = useState(0)
+  const [phase, setPhase] = useState<"typing" | "pausing" | "deleting">("typing")
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    const word = words[wordIndex]
+
+    if (phase === "typing") {
+      if (displayed.length < word.length) {
+        timeoutRef.current = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), typingSpeed)
+      } else {
+        timeoutRef.current = setTimeout(() => setPhase("pausing"), pauseMs)
+      }
+    } else if (phase === "pausing") {
+      setPhase("deleting")
+    } else {
+      if (displayed.length > 0) {
+        timeoutRef.current = setTimeout(() => setDisplayed(displayed.slice(0, -1)), deletingSpeed)
+      } else {
+        setWordIndex((i) => (i + 1) % words.length)
+        setPhase("typing")
+      }
+    }
+
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }
+  }, [displayed, phase, wordIndex, words, typingSpeed, deletingSpeed, pauseMs])
+
+  return displayed
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function HeroSection() {
   const [query, setQuery] = useState("")
   const router = useRouter()
+  const typewriterText = useTypewriter(TYPEWRITER_WORDS)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,7 +85,7 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative overflow-hidden" style={{ minHeight: "44vh" }}>
+    <section className="relative overflow-hidden" style={{ minHeight: "32vh" }}>
 
       {/* ── Full-width background image ──
           Save your hero photo to:  public/hero-students.jpg
@@ -85,77 +126,78 @@ export default function HeroSection() {
                     border: "2px solid rgba(255,106,0,0.18)", zIndex: 1 }} />
 
       {/* ── Main grid ── */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center">
 
           {/* ════════ LEFT — text content (always visible, no framer-motion opacity) ════════ */}
-          <div className="pt-4 pb-8 lg:pt-10 lg:pb-16">
+          <div className="pt-1 pb-3 lg:pt-4 lg:pb-6">
 
             {/* AI badge */}
             <div
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold mb-5"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold mb-3"
               style={{ border: "1.5px solid color-mix(in srgb, var(--color-accent) 60%, transparent)", color: "var(--color-accent)" }}
             >
               <Sparkles className="w-3.5 h-3.5 shrink-0" />
               India&apos;s AI-Powered College Portal 2026
             </div>
 
-            {/* H1 — includes primary keyword "colleges in pune 2026" */}
+            {/* H1 — word-by-word animated reveal */}
             <h1
-              className="font-extrabold leading-[1.05] tracking-tight mb-1"
-              style={{ fontSize: "clamp(2rem, 3.8vw, 3.2rem)" }}
+              aria-label="Best Colleges in Pune 2026"
+              className="font-extrabold leading-[1.05] tracking-tight mb-1 flex flex-wrap gap-x-2"
+              style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.6rem)" }}
             >
-              <span className="text-accent">Best Colleges in Pune</span>
-              <span className="text-white"> 2026</span>
+              {["Best", "Colleges", "in", "Pune"].map((word, i) => (
+                <motion.span
+                  key={word}
+                  className="text-accent inline-block"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.12, duration: 0.5, ease: EASE }}
+                >
+                  {word}
+                </motion.span>
+              ))}
+              <motion.span
+                className="text-white inline-block"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 4 * 0.12, duration: 0.5, ease: EASE }}
+              >
+                2026
+              </motion.span>
             </h1>
 
-            {/* H2 */}
-            <h2
-              className="text-white font-extrabold leading-[1.1] tracking-tight mb-4"
-              style={{ fontSize: "clamp(1.75rem, 3.3vw, 2.85rem)" }}
+            {/* H2 — static + typewriter */}
+            <motion.h2
+              className="text-white font-extrabold leading-[1.1] tracking-tight mb-2"
+              style={{ fontSize: "clamp(1.35rem, 2.6vw, 2.2rem)" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.65, duration: 0.5, ease: EASE }}
             >
-              Find Your College with AI — Admission Open
-            </h2>
+              Find the Right{" "}
+              <span className="text-accent">
+                {typewriterText}
+                <span className="inline-block w-[2px] h-[1em] bg-accent align-middle ml-0.5 animate-pulse" />
+              </span>
+            </motion.h2>
 
             {/* Subheading */}
-            <p
-              className="leading-relaxed mb-6 max-w-lg"
+            <motion.p
+              className="leading-relaxed mb-2 max-w-lg"
               style={{ color: "rgba(200,218,240,0.92)", fontSize: "0.97rem" }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.82, duration: 0.5, ease: EASE }}
             >
               Compare colleges, fees, placements &amp; get direct admission
               guidance for BTech, MBA, BCA &amp; more.
-            </p>
+            </motion.p>
 
-            {/* Scholarship banner */}
-            <div
-              className="rounded-2xl overflow-hidden mb-6 flex items-center justify-between px-5 py-3.5"
-              style={{
-                background: "linear-gradient(90deg, #FFD000 0%, #FFA500 45%, #FF7A00 100%)",
-                boxShadow: "0 4px 20px rgba(255,160,0,0.30)",
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-3xl select-none" aria-hidden>🎓</span>
-                <div>
-                  <p className="font-bold text-[11px] uppercase tracking-[0.12em]" style={{ color: "#1a0500" }}>
-                    Scholarships Upto
-                  </p>
-                  <p className="font-extrabold leading-none mt-0.5" style={{ color: "#1a0500", fontSize: "1.85rem" }}>
-                    ₹50,000<sup style={{ verticalAlign: "super", fontSize: "0.75rem", fontWeight: 700 }}>*</sup>
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="font-semibold text-sm" style={{ color: "#1a0500" }}>Apply Before</p>
-                  <p className="font-extrabold text-xl leading-tight" style={{ color: "#1a0500" }}>Deadline!</p>
-                </div>
-                <span className="text-3xl select-none" aria-hidden>💰</span>
-              </div>
-            </div>
 
             {/* Search bar */}
-            <form onSubmit={handleSearch} className="mb-4">
+            <form onSubmit={handleSearch} className="mb-3">
               <div
                 className="flex items-center bg-white rounded-2xl overflow-hidden"
                 style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.28)" }}
@@ -178,7 +220,7 @@ export default function HeroSection() {
             </form>
 
             {/* Quick-search pills */}
-            <div className="flex flex-wrap gap-2 mb-7">
+            <div className="flex flex-wrap gap-2 mb-4">
               {PILLS.map(p => (
                 <button
                   key={p}
@@ -205,28 +247,28 @@ export default function HeroSection() {
             </div>
 
             {/* CTA buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <div className="flex flex-row gap-3 mb-3">
               <Link
                 href="/ai-finder"
-                className="flex items-center justify-center gap-2.5 font-bold text-white px-7 py-3.5 rounded-xl text-base transition-all hover:opacity-90 active:scale-95"
+                className="flex-1 flex items-center justify-center gap-2 font-bold text-white px-3 py-2.5 rounded-xl text-sm transition-all hover:opacity-90 active:scale-95 whitespace-nowrap"
                 style={{
                   backgroundColor: "var(--color-accent)",
                   boxShadow: "0 4px 18px color-mix(in srgb, var(--color-accent) 42%, transparent)",
                 }}
               >
-                <GraduationCap className="w-5 h-5" />
-                Find My College
+                <GraduationCap className="w-4 h-4" />
+                Find College
               </Link>
 
               <Link
                 href="/counselling"
-                className="flex items-center justify-center gap-2.5 font-semibold text-white px-7 py-3.5 rounded-xl text-base transition-all active:scale-95"
+                className="flex-1 flex items-center justify-center gap-2 font-semibold text-white px-3 py-2.5 rounded-xl text-sm transition-all active:scale-95 whitespace-nowrap"
                 style={{ border: "1px solid rgba(255,255,255,0.35)", backgroundColor: "rgba(255,255,255,0.05)" }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)")}
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.05)")}
               >
                 <Phone className="w-4 h-4" />
-                Talk to Counselor
+                Talk to Advisor
               </Link>
             </div>
 
@@ -237,41 +279,11 @@ export default function HeroSection() {
             </p>
           </div>
 
-          {/* ════════ RIGHT — floating cards + stats (sit over the student photo) ════════ */}
-          <div className="relative hidden lg:flex flex-col justify-between self-stretch py-10">
-
-            {/* Feature cards */}
-            <div className="flex flex-col gap-3 items-end pr-2">
-              {FEATURE_CARDS.map(({ icon: Icon, label, sub }, i) => (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0.1, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.35 + i * 0.1, duration: 0.45, ease: EASE }}
-                  className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3"
-                  style={{
-                    boxShadow: "0 4px 24px rgba(0,0,0,0.20)",
-                    minWidth: 172,
-                    maxWidth: 200,
-                  }}
-                >
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "#FFF3E0" }}
-                  >
-                    <Icon className="w-[18px] h-[18px] text-accent" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-gray-900 leading-tight">{label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{sub}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
+          {/* ════════ RIGHT — stats bar only ════════ */}
+          <div className="relative hidden lg:flex flex-col justify-end self-stretch py-10">
             {/* Stats bar */}
             <div
-              className="mt-8 rounded-2xl"
+              className="rounded-2xl"
               style={{
                 backgroundColor: "rgba(7,27,59,0.88)",
                 backdropFilter: "blur(12px)",
@@ -301,33 +313,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* ── Bottom trust strip ── */}
-      <div className="relative z-10 mt-6 sm:mt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-wrap items-center justify-center">
-            {[
-              { emoji: "🤝", text: "Shiksha Partner"        },
-              { emoji: "🛡", text: "NAAC Verified Data"     },
-              { emoji: "🏛️", text: "SPPU Listed"            },
-              { emoji: "💰", text: "Accurate Fee Info"      },
-              { emoji: "⭐", text: "50K+ Student Reviews"   },
-              { emoji: "🎧", text: "Free Counseling"        },
-            ].map(({ emoji, text }, i, arr) => (
-              <div
-                key={text}
-                className="flex items-center gap-2 text-sm px-4 sm:px-6 py-1"
-                style={{
-                  color: "rgba(178,200,228,0.85)",
-                  borderRight: i < arr.length - 1 ? "1px solid rgba(255,255,255,0.12)" : "none",
-                }}
-              >
-                <span aria-hidden>{emoji}</span>
-                {text}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </section>
   )
 }

@@ -112,6 +112,10 @@ export default function InlineLeadForm({ context }: InlineLeadFormProps) {
           )}
         </button>
       </form>
+      <p className="text-xs text-gray-400 mt-1 px-0.5">
+        By submitting, you agree to be contacted by our counsellors.{" "}
+        <a href="/privacy" className="underline hover:text-orange-500">Privacy Policy</a>.
+      </p>
     </div>
   )
 }

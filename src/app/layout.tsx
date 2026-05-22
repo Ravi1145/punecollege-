@@ -113,6 +113,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IN" className={`${plusJakarta.variable} ${dmSans.variable} h-full antialiased`}>
+      <head>
+        <meta name="geo.region" content="IN-MH" />
+        <meta name="geo.placename" content="Pune" />
+        <meta name="geo.position" content="18.5204;73.8567" />
+        <meta name="ICBM" content="18.5204, 73.8567" />
+      </head>
       <body className="min-h-full flex flex-col font-dm-sans bg-white">
         <LeadBar />
         <Header />

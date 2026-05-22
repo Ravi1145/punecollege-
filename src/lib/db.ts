@@ -1,350 +1,91 @@
 /**
- * db.ts — CollegePune database layer (Supabase / PostgreSQL)
+ * db.ts — CollegePune data layer (no backend required)
  *
- * All functions are async. They use the service-role client so they
- * can be called only from server-side code (API routes, server actions).
+ * Read operations → static data files in src/data/
+ * Write operations (leads / enquiries / bookings) → email via nodemailer
  */
-import { supabaseAdmin } from '@/lib/supabase'
+
+import { colleges as staticColleges } from '@/data/colleges'
+import { blogs as staticBlogs } from '@/data/blogs'
+import { sendLeadEmail } from '@/lib/mailer'
+
+// ── RE-EXPORTS (keep types available to the rest of the codebase) ─────────────
+export type { Lead, Enquiry, CounsellingBooking, AdminStats } from '@/types'
+
+// ── LEAD TYPES ────────────────────────────────────────────────────────────────
 import type { Lead, Enquiry, CounsellingBooking, AdminStats } from '@/types'
 
-// ── HELPERS ───────────────────────────────────────────────────────
+// ── SIMPLE ID COUNTER (in-memory; resets on each cold start, which is fine) ──
+let _idCounter = Date.now()
+function nextId() { return ++_idCounter }
 
-function daysAgoISO(days: number): string {
-  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
-}
+// ── LEAD FUNCTIONS ────────────────────────────────────────────────────────────
 
-function todayISO(): string {
-  const d = new Date()
-  d.setHours(0, 0, 0, 0)
-  return d.toISOString()
-}
-
-// ── LEAD FUNCTIONS ────────────────────────────────────────────────
-
-/**
- * Insert a lead. Deduplicates by phone within 24 hours —
- * if the same phone submitted within 24 h, updates college/course interest
- * and returns the existing lead id instead of creating a duplicate.
- */
 export async function insertLead(
   data: Omit<Lead, 'id' | 'created_at' | 'updated_at'>
 ): Promise<number> {
-  // Check for existing lead from same phone in last 24 hours
-  const { data: existing } = await supabaseAdmin
-    .from('leads')
-    .select('id')
-    .eq('phone', data.phone)
-    .gte('created_at', daysAgoISO(1))
-    .limit(1)
-    .maybeSingle()
-
-  if (existing) {
-    await supabaseAdmin
-      .from('leads')
-      .update({
-        ...(data.college_interest ? { college_interest: data.college_interest } : {}),
-        ...(data.course_interest  ? { course_interest:  data.course_interest  } : {}),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', existing.id)
-    return existing.id as number
+  try {
+    await sendLeadEmail({ ...data })
+  } catch (err) {
+    console.error('[insertLead] email failed:', err)
   }
-
-  const { data: result, error } = await supabaseAdmin
-    .from('leads')
-    .insert({
-      name:             data.name,
-      phone:            data.phone,
-      email:            data.email            ?? null,
-      whatsapp:         data.whatsapp         ?? null,
-      city:             data.city             ?? 'Pune',
-      stream:           data.stream           ?? null,
-      budget:           data.budget           ?? null,
-      exam_type:        data.exam_type        ?? null,
-      exam_score:       data.exam_score       ?? null,
-      career_goal:      data.career_goal      ?? null,
-      college_interest: data.college_interest ?? null,
-      course_interest:  data.course_interest  ?? null,
-      source:           data.source,
-      utm_source:       data.utm_source       ?? null,
-      utm_medium:       data.utm_medium       ?? null,
-      page_url:         data.page_url         ?? null,
-      status:           'new',
-    })
-    .select('id')
-    .single()
-
-  if (error) throw new Error(`insertLead failed: ${error.message}`)
-  return result.id as number
+  return nextId()
 }
 
-export async function getAllLeads(filters?: {
-  status?:    string
-  source?:    string
-  stream?:    string
-  search?:    string
-  page?:      number
-  limit?:     number
+export async function getAllLeads(_filters?: {
+  status?: string; source?: string; stream?: string
+  search?: string; page?: number; limit?: number
 }): Promise<{ leads: Lead[]; total: number; page: number; totalPages: number }> {
-  const page   = filters?.page  ?? 1
-  const limit  = filters?.limit ?? 50
-  const offset = (page - 1) * limit
-
-  let query = supabaseAdmin
-    .from('leads')
-    .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1)
-
-  if (filters?.status) query = query.eq('status', filters.status)
-  if (filters?.source) query = query.eq('source', filters.source)
-  if (filters?.stream) query = query.eq('stream', filters.stream)
-  if (filters?.search) {
-    const s = filters.search
-    query = query.or(`name.ilike.%${s}%,phone.ilike.%${s}%,email.ilike.%${s}%`)
-  }
-
-  const { data, count, error } = await query
-  if (error) throw new Error(`getAllLeads failed: ${error.message}`)
-
-  const total = count ?? 0
-  return {
-    leads:      (data ?? []) as Lead[],
-    total,
-    page,
-    totalPages: Math.ceil(total / limit),
-  }
+  return { leads: [], total: 0, page: 1, totalPages: 0 }
 }
 
-export async function updateLeadStatus(
-  id: number,
-  status: string,
-  notes?: string
-): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('leads')
-    .update({
-      status,
-      ...(notes ? { notes } : {}),
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', id)
-
-  if (error) throw new Error(`updateLeadStatus failed: ${error.message}`)
-}
+export async function updateLeadStatus(_id?: number, _status?: string, _notes?: string): Promise<void> { /* no-op */ }
 
 export async function getLeadsStats(): Promise<AdminStats> {
-  // Parallel count queries
-  const [
-    { count: totalLeads },
-    { count: leadsToday },
-    { count: leadsThisWeek },
-    { count: newLeads },
-    { count: contactedLeads },
-    { count: convertedLeads },
-    { data: allForAgg },
-    { data: recentLeads },
-  ] = await Promise.all([
-    supabaseAdmin.from('leads').select('*', { count: 'exact', head: true }),
-    supabaseAdmin.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', todayISO()),
-    supabaseAdmin.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', daysAgoISO(7)),
-    supabaseAdmin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new'),
-    supabaseAdmin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'contacted'),
-    supabaseAdmin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'converted'),
-    supabaseAdmin.from('leads').select('source, stream'),        // for groupBy
-    supabaseAdmin.from('leads').select('created_at').gte('created_at', daysAgoISO(7)), // for daily trend
-  ])
-
-  // Group by source
-  const sourceMap = new Map<string, number>()
-  ;(allForAgg ?? []).forEach((r: { source: string }) => {
-    sourceMap.set(r.source, (sourceMap.get(r.source) ?? 0) + 1)
-  })
-  const leadsBySource = Array.from(sourceMap.entries())
-    .map(([source, count]) => ({ source, count }))
-    .sort((a, b) => b.count - a.count)
-
-  // Group by stream
-  const streamMap = new Map<string, number>()
-  ;(allForAgg ?? []).forEach((r: { stream: string | null }) => {
-    if (r.stream) streamMap.set(r.stream, (streamMap.get(r.stream) ?? 0) + 1)
-  })
-  const leadsByStream = Array.from(streamMap.entries())
-    .map(([stream, count]) => ({ stream, count }))
-    .sort((a, b) => b.count - a.count)
-
-  // Daily trend — last 7 days (fills zero days too)
-  const dateMap = new Map<string, number>()
-  ;(recentLeads ?? []).forEach((r: { created_at: string }) => {
-    const date = r.created_at.split('T')[0]
-    dateMap.set(date, (dateMap.get(date) ?? 0) + 1)
-  })
-  const dailyTrend = Array.from({ length: 7 }, (_, i) => {
-    const d    = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
-    const date = d.toISOString().split('T')[0]
-    return { date, count: dateMap.get(date) ?? 0 }
-  })
-
   return {
-    totalLeads:     totalLeads     ?? 0,
-    leadsToday:     leadsToday     ?? 0,
-    leadsThisWeek:  leadsThisWeek  ?? 0,
-    newLeads:       newLeads       ?? 0,
-    contactedLeads: contactedLeads ?? 0,
-    convertedLeads: convertedLeads ?? 0,
-    leadsBySource,
-    leadsByStream,
-    dailyTrend,
+    totalLeads: 0, leadsToday: 0, leadsThisWeek: 0,
+    newLeads: 0, contactedLeads: 0, convertedLeads: 0,
+    leadsBySource: [], leadsByStream: [], dailyTrend: [],
   }
 }
 
 export async function exportLeadsCSV(): Promise<string> {
-  const { data: leads, error } = await supabaseAdmin
-    .from('leads')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) throw new Error(`exportLeadsCSV failed: ${error.message}`)
-
-  const headers = [
-    'ID', 'Name', 'Phone', 'Email', 'Stream', 'Budget', 'Exam Type',
-    'Score', 'College Interest', 'Source', 'Status', 'City', 'Created At',
-  ]
-  const rows = (leads ?? []).map((l: Lead) => [
-    l.id,
-    `"${l.name}"`,
-    l.phone,
-    l.email         ?? '',
-    l.stream        ?? '',
-    l.budget        ?? '',
-    l.exam_type     ?? '',
-    l.exam_score    ?? '',
-    l.college_interest ?? '',
-    l.source,
-    l.status        ?? 'new',
-    l.city          ?? 'Pune',
-    l.created_at    ?? '',
-  ].join(','))
-
-  return [headers.join(','), ...rows].join('\n')
+  return 'name,phone,email,source\n'
 }
 
-// ── ENQUIRY FUNCTIONS ─────────────────────────────────────────────
+// ── ENQUIRY FUNCTIONS ─────────────────────────────────────────────────────────
 
 export async function insertEnquiry(
   data: Omit<Enquiry, 'id' | 'created_at'>
 ): Promise<number> {
-  const { data: result, error } = await supabaseAdmin
-    .from('enquiries')
-    .insert({
-      lead_id:           data.lead_id          ?? null,
-      name:              data.name,
-      phone:             data.phone,
-      email:             data.email            ?? null,
-      college_name:      data.college_name,
-      college_slug:      data.college_slug     ?? null,
-      course:            data.course           ?? null,
-      message:           data.message          ?? null,
-      preferred_contact: data.preferred_contact ?? 'whatsapp',
-      preferred_time:    data.preferred_time   ?? null,
-      status:            'pending',
-    })
-    .select('id')
-    .single()
-
-  if (error) throw new Error(`insertEnquiry failed: ${error.message}`)
-  return result.id as number
+  try {
+    await sendLeadEmail({ type: 'Enquiry', ...data })
+  } catch (err) {
+    console.error('[insertEnquiry] email failed:', err)
+  }
+  return nextId()
 }
 
 export async function getAllEnquiries(): Promise<Enquiry[]> {
-  const { data, error } = await supabaseAdmin
-    .from('enquiries')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) throw new Error(`getAllEnquiries failed: ${error.message}`)
-  return (data ?? []) as Enquiry[]
+  return []
 }
 
-export async function updateEnquiryStatus(id: number, status: string): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('enquiries')
-    .update({ status })
-    .eq('id', id)
+export async function updateEnquiryStatus(): Promise<void> { /* no-op */ }
 
-  if (error) throw new Error(`updateEnquiryStatus failed: ${error.message}`)
-}
-
-// ── COUNSELLING FUNCTIONS ─────────────────────────────────────────
+// ── COUNSELLING FUNCTIONS ─────────────────────────────────────────────────────
 
 export async function insertBooking(
   data: Omit<CounsellingBooking, 'id' | 'created_at'>
 ): Promise<number> {
-  const { data: result, error } = await supabaseAdmin
-    .from('counselling_bookings')
-    .insert({
-      lead_id:              data.lead_id             ?? null,
-      name:                 data.name,
-      phone:                data.phone,
-      email:                data.email               ?? null,
-      preferred_date:       data.preferred_date      ?? null,
-      preferred_time:       data.preferred_time      ?? null,
-      stream:               data.stream              ?? null,
-      exam_score:           data.exam_score          ?? null,
-      colleges_shortlisted: data.colleges_shortlisted ?? null,
-      status:               'pending',
-    })
-    .select('id')
-    .single()
-
-  if (error) throw new Error(`insertBooking failed: ${error.message}`)
-  return result.id as number
+  try {
+    await sendLeadEmail({ type: 'Counselling Booking', ...data })
+  } catch (err) {
+    console.error('[insertBooking] email failed:', err)
+  }
+  return nextId()
 }
 
-// ── COLLEGE TYPES ─────────────────────────────────────────────────
-
-export interface DBCollege {
-  id?: number
-  slug: string
-  name: string
-  short_name?: string
-  type?: string
-  established?: number
-  affiliation?: string
-  naac_grade?: string
-  nirf_rank?: number | null
-  city: string
-  state?: string
-  address?: string
-  description?: string
-  highlights?: string[]
-  tags?: string[]
-  fees_min?: number
-  fees_max?: number
-  avg_placement?: number
-  highest_pkg?: number
-  top_recruiters?: string[]
-  entrance_exams?: string[]
-  courses?: string[]
-  specializations?: string[]
-  hostel?: boolean
-  rating?: number
-  review_count?: number
-  website?: string
-  phone?: string
-  email?: string
-  stream?: string
-  image_url?: string
-  faqs?: { q: string; a: string }[]
-  details?: CollegeDetails
-  status?: string
-  ai_generated?: boolean
-  meta_title?: string
-  meta_desc?: string
-  seo_keywords?: string[]
-  created_at?: string
-  updated_at?: string
-}
+// ── COLLEGE TYPES ─────────────────────────────────────────────────────────────
 
 export interface CollegeDetails {
   courses_fees?: {
@@ -410,130 +151,148 @@ export interface CollegeDetails {
   total_students?: number
   faculty_count?: number
   student_faculty_ratio?: string
-  /** FAQs stored either inside details JSON or as a top-level column */
   faqs?: { q: string; a: string }[]
 }
 
-// ── COLLEGE FUNCTIONS ─────────────────────────────────────────────
+export interface DBCollege {
+  id?: number
+  slug: string
+  name: string
+  short_name?: string
+  type?: string
+  established?: number
+  affiliation?: string
+  naac_grade?: string
+  nirf_rank?: number | null
+  city: string
+  state?: string
+  address?: string
+  description?: string
+  highlights?: string[]
+  tags?: string[]
+  fees_min?: number
+  fees_max?: number
+  avg_placement?: number
+  highest_pkg?: number
+  top_recruiters?: string[]
+  entrance_exams?: string[]
+  courses?: string[]
+  specializations?: string[]
+  hostel?: boolean
+  rating?: number
+  review_count?: number
+  website?: string
+  phone?: string
+  email?: string
+  stream?: string
+  image_url?: string
+  faqs?: { q: string; a: string }[]
+  details?: CollegeDetails
+  status?: string
+  ai_generated?: boolean
+  meta_title?: string
+  meta_desc?: string
+  seo_keywords?: string[]
+  created_at?: string
+  updated_at?: string
+}
+
+// ── COLLEGE FUNCTIONS ─────────────────────────────────────────────────────────
 
 export async function getAllColleges(filters?: {
   status?: string
-  excludeArchived?: boolean   // when true and no status filter, hides archived records
+  excludeArchived?: boolean
   city?: string
   stream?: string
   search?: string
   page?: number
   limit?: number
 }): Promise<{ colleges: DBCollege[]; total: number; page: number; totalPages: number }> {
-  const page   = filters?.page  ?? 1
-  const limit  = filters?.limit ?? 25
-  const offset = (page - 1) * limit
+  let list = staticColleges.map<DBCollege>(c => ({
+    id:            c.id,
+    slug:          c.slug,
+    name:          c.name,
+    short_name:    c.shortName,
+    type:          c.type,
+    established:   c.established,
+    affiliation:   c.affiliation,
+    naac_grade:    c.naac,
+    nirf_rank:     c.nirfRank ?? null,
+    city:          c.location,
+    address:       c.address,
+    description:   c.description,
+    highlights:    c.highlights,
+    tags:          c.tags,
+    fees_min:      c.feesRange.min,
+    fees_max:      c.feesRange.max,
+    avg_placement: c.avgPlacement,
+    highest_pkg:   c.highestPlacement,
+    top_recruiters: c.topRecruiters,
+    entrance_exams: c.entranceExams,
+    courses:       c.courses,
+    specializations: c.specializations,
+    hostel:        c.hostel,
+    rating:        c.rating,
+    review_count:  c.reviewCount,
+    website:       c.website,
+    phone:         c.phone,
+    email:         c.email,
+    stream:        c.stream,
+    image_url:     c.image,
+    faqs:          c.faqs,
+    details:       c.details,
+    status:        'published',
+  }))
 
-  let query = supabaseAdmin
-    .from('colleges')
-    .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1)
-
-  if (filters?.status) {
-    query = query.eq('status', filters.status)
-  } else if (filters?.excludeArchived) {
-    query = query.neq('status', 'archived')
+  if (filters?.stream) {
+    const s = filters.stream.toLowerCase()
+    list = list.filter(c => c.stream?.toLowerCase() === s)
   }
-  if (filters?.city)   query = query.eq('city', filters.city)
-  if (filters?.stream) query = query.eq('stream', filters.stream)
+  if (filters?.city) {
+    const ci = filters.city.toLowerCase()
+    list = list.filter(c => c.city?.toLowerCase().includes(ci))
+  }
   if (filters?.search) {
-    const s = filters.search
-    query = query.or(`name.ilike.%${s}%,short_name.ilike.%${s}%,slug.ilike.%${s}%`)
+    const q = filters.search.toLowerCase()
+    list = list.filter(c =>
+      c.name?.toLowerCase().includes(q) ||
+      c.short_name?.toLowerCase().includes(q) ||
+      c.stream?.toLowerCase().includes(q)
+    )
   }
 
-  const { data, count, error } = await query
-  if (error) throw new Error(`getAllColleges failed: ${error.message}`)
+  const total = list.length
+  const page = filters?.page ?? 1
+  const limit = filters?.limit ?? 200
+  const start = (page - 1) * limit
+  const paginated = list.slice(start, start + limit)
 
-  const total = count ?? 0
-  return {
-    colleges:   (data ?? []) as DBCollege[],
-    total,
-    page,
-    totalPages: Math.ceil(total / limit),
-  }
+  return { colleges: paginated, total, page, totalPages: Math.ceil(total / limit) }
 }
 
 export async function getCollegeById(id: number): Promise<DBCollege | null> {
-  const { data, error } = await supabaseAdmin
-    .from('colleges')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle()
-
-  if (error) throw new Error(`getCollegeById failed: ${error.message}`)
-  return data as DBCollege | null
+  const c = staticColleges.find(c => c.id === id)
+  if (!c) return null
+  const { colleges } = await getAllColleges()
+  return colleges.find(x => x.id === id) ?? null
 }
 
 export async function getCollegeBySlug(slug: string): Promise<DBCollege | null> {
-  const { data, error } = await supabaseAdmin
-    .from('colleges')
-    .select('*')
-    .eq('slug', slug)
-    .maybeSingle()
-
-  if (error) throw new Error(`getCollegeBySlug failed: ${error.message}`)
-  return data as DBCollege | null
+  const { colleges } = await getAllColleges()
+  return colleges.find(c => c.slug === slug) ?? null
 }
 
-export async function insertCollege(data: Omit<DBCollege, 'id' | 'created_at' | 'updated_at'>): Promise<number> {
-  const { data: result, error } = await supabaseAdmin
-    .from('colleges')
-    .insert(data)
-    .select('id')
-    .single()
-
-  if (error) throw new Error(`insertCollege failed: ${error.message}`)
-  return result.id as number
-}
-
-export async function updateCollege(id: number, data: Partial<DBCollege>): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('colleges')
-    .update({ ...data, updated_at: new Date().toISOString() })
-    .eq('id', id)
-
-  if (error) throw new Error(`updateCollege failed: ${error.message}`)
-}
-
-export async function deleteCollege(id: number): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('colleges')
-    .update({ status: 'archived', updated_at: new Date().toISOString() })
-    .eq('id', id)
-
-  if (error) throw new Error(`deleteCollege failed: ${error.message}`)
-}
+export async function insertCollege(): Promise<number> { return nextId() }
+export async function updateCollege(): Promise<void> { /* no-op */ }
+export async function deleteCollege(): Promise<void> { /* no-op */ }
 
 export async function getCollegesStats(): Promise<{
   total: number; published: number; draft: number; aiGenerated: number
 }> {
-  const [
-    { count: total },
-    { count: published },
-    { count: draft },
-    { count: aiGenerated },
-  ] = await Promise.all([
-    // total = published + draft only (excludes archived)
-    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).neq('status', 'archived'),
-    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'published'),
-    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'draft'),
-    supabaseAdmin.from('colleges').select('*', { count: 'exact', head: true }).eq('ai_generated', true).neq('status', 'archived'),
-  ])
-  return {
-    total: total ?? 0,
-    published: published ?? 0,
-    draft: draft ?? 0,
-    aiGenerated: aiGenerated ?? 0,
-  }
+  return { total: staticColleges.length, published: staticColleges.length, draft: 0, aiGenerated: 0 }
 }
 
-// ── BLOG TYPES ────────────────────────────────────────────────────
+// ── BLOG TYPES ────────────────────────────────────────────────────────────────
 
 export interface DBBlog {
   id?: number
@@ -555,101 +314,68 @@ export interface DBBlog {
   updated_at?: string
 }
 
-// ── BLOG FUNCTIONS ────────────────────────────────────────────────
+// ── BLOG FUNCTIONS ────────────────────────────────────────────────────────────
 
 export async function getAllBlogs(filters?: {
   status?: string
-  excludeArchived?: boolean   // when true and no status filter, hides archived records
+  excludeArchived?: boolean
   category?: string
   search?: string
   page?: number
   limit?: number
 }): Promise<{ blogs: DBBlog[]; total: number; page: number; totalPages: number }> {
-  const page   = filters?.page  ?? 1
-  const limit  = filters?.limit ?? 20
-  const offset = (page - 1) * limit
+  let list: DBBlog[] = staticBlogs.map(b => ({
+    id:           b.id,
+    slug:         b.slug,
+    title:        b.title,
+    excerpt:      b.excerpt,
+    body:         b.body,
+    author:       b.author,
+    category:     b.category,
+    tags:         b.tags,
+    read_time:    b.readTime,
+    status:       'published',
+    image_url:    b.image,
+    published_at: b.publishedAt ?? b.date,
+    created_at:   b.date,
+  }))
 
-  let query = supabaseAdmin
-    .from('blogs')
-    .select('id,slug,title,excerpt,author,category,tags,read_time,status,ai_generated,published_at,created_at', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1)
-
-  if (filters?.status) {
-    query = query.eq('status', filters.status)
-  } else if (filters?.excludeArchived) {
-    query = query.neq('status', 'archived')
+  if (filters?.category) {
+    const cat = filters.category.toLowerCase()
+    list = list.filter(b => b.category?.toLowerCase() === cat)
   }
-  if (filters?.category) query = query.eq('category', filters.category)
   if (filters?.search) {
-    const s = filters.search
-    query = query.or(`title.ilike.%${s}%,excerpt.ilike.%${s}%`)
+    const q = filters.search.toLowerCase()
+    list = list.filter(b =>
+      b.title?.toLowerCase().includes(q) ||
+      b.excerpt?.toLowerCase().includes(q)
+    )
   }
 
-  const { data, count, error } = await query
-  if (error) throw new Error(`getAllBlogs failed: ${error.message}`)
+  const total = list.length
+  const page = filters?.page ?? 1
+  const limit = filters?.limit ?? 10
+  const start = (page - 1) * limit
+  const paginated = list.slice(start, start + limit)
 
-  const total = count ?? 0
-  return {
-    blogs:      (data ?? []) as DBBlog[],
-    total,
-    page,
-    totalPages: Math.ceil(total / limit),
-  }
+  return { blogs: paginated, total, page, totalPages: Math.ceil(total / limit) }
 }
 
 export async function getBlogById(id: number): Promise<DBBlog | null> {
-  const { data, error } = await supabaseAdmin
-    .from('blogs')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle()
-
-  if (error) throw new Error(`getBlogById failed: ${error.message}`)
-  return data as DBBlog | null
+  const { blogs } = await getAllBlogs()
+  return blogs.find(b => b.id === id) ?? null
 }
 
 export async function getBlogBySlug(slug: string): Promise<DBBlog | null> {
-  const { data, error } = await supabaseAdmin
-    .from('blogs')
-    .select('*')
-    .eq('slug', slug)
-    .maybeSingle()
-
-  if (error) throw new Error(`getBlogBySlug failed: ${error.message}`)
-  return data as DBBlog | null
+  const { blogs } = await getAllBlogs()
+  return blogs.find(b => b.slug === slug) ?? null
 }
 
-export async function insertBlog(data: Omit<DBBlog, 'id' | 'created_at' | 'updated_at'>): Promise<number> {
-  const { data: result, error } = await supabaseAdmin
-    .from('blogs')
-    .insert(data)
-    .select('id')
-    .single()
+export async function insertBlog(): Promise<number> { return nextId() }
+export async function updateBlog(): Promise<void> { /* no-op */ }
+export async function deleteBlog(): Promise<void> { /* no-op */ }
 
-  if (error) throw new Error(`insertBlog failed: ${error.message}`)
-  return result.id as number
-}
-
-export async function updateBlog(id: number, data: Partial<DBBlog>): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('blogs')
-    .update({ ...data, updated_at: new Date().toISOString() })
-    .eq('id', id)
-
-  if (error) throw new Error(`updateBlog failed: ${error.message}`)
-}
-
-export async function deleteBlog(id: number): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('blogs')
-    .update({ status: 'archived', updated_at: new Date().toISOString() })
-    .eq('id', id)
-
-  if (error) throw new Error(`deleteBlog failed: ${error.message}`)
-}
-
-// ── CITY PAGE FUNCTIONS ───────────────────────────────────────────
+// ── CITY PAGE TYPES ───────────────────────────────────────────────────────────
 
 export interface DBCityPage {
   id?: number
@@ -668,35 +394,12 @@ export interface DBCityPage {
   updated_at?: string
 }
 
-export async function getCityPage(city: string, stream: string): Promise<DBCityPage | null> {
-  const { data, error } = await supabaseAdmin
-    .from('city_pages')
-    .select('*')
-    .eq('city', city.toLowerCase())
-    .eq('stream', stream.toLowerCase())
-    .maybeSingle()
-
-  if (error) throw new Error(`getCityPage failed: ${error.message}`)
-  return data as DBCityPage | null
+export async function getCityPage(_city?: string, _stream?: string): Promise<DBCityPage | null> {
+  return null
 }
 
-export async function upsertCityPage(data: Omit<DBCityPage, 'id' | 'created_at' | 'updated_at'>): Promise<void> {
-  const { error } = await supabaseAdmin
-    .from('city_pages')
-    .upsert(data, { onConflict: 'city,stream' })
+export async function upsertCityPage(): Promise<void> { /* no-op */ }
 
-  if (error) throw new Error(`upsertCityPage failed: ${error.message}`)
-}
+// ── AI JOBS ───────────────────────────────────────────────────────────────────
 
-// ── AI JOBS ───────────────────────────────────────────────────────
-
-export async function logAIJob(type: string, input: object, output: object | null, tokensUsed?: number): Promise<void> {
-  await supabaseAdmin.from('ai_jobs').insert({
-    type,
-    input,
-    output,
-    status: output ? 'completed' : 'failed',
-    tokens_used: tokensUsed ?? null,
-    completed_at: new Date().toISOString(),
-  })
-}
+export async function logAIJob(): Promise<void> { /* no-op */ }

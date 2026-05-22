@@ -233,7 +233,10 @@ export default function CounsellingBooking() {
                     <>Book Free Session 📅</>
                   )}
                 </button>
-                <p className="text-center text-xs text-gray-400">No spam. 100% free. Cancel anytime.</p>
+                <p className="text-center text-xs text-gray-400">
+                  By submitting, you consent to being contacted by our counsellors.{" "}
+                  <a href="/privacy" className="underline hover:text-orange-500">Privacy Policy</a>. No spam. Free service.
+                </p>
               </form>
             )}
           </div>

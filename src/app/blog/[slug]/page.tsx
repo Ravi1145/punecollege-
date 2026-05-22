@@ -133,19 +133,64 @@ export default async function BlogPostPage({ params }: Props) {
     { name: post.title.slice(0, 60), url: `/blog/${slug}` },
   ])
 
+  // Ensure ISO 8601 dates — required for Google Article rich results
+  const rawDate = post.published_at ?? post.date ?? new Date().toISOString()
+  const isoDate = (() => {
+    try { return new Date(rawDate).toISOString() } catch { return new Date().toISOString() }
+  })()
+
+  // Estimate word count from body (plain text or HTML)
+  const wordCount = post.body
+    .replace(/<[^>]*>/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean).length
+
   const blogPostingSchema = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
+    // Article is the parent type — broader eligibility for Google rich results
+    "@type": ["Article", "BlogPosting"],
+    "@id": `${BASE_URL}/blog/${slug}`,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${BASE_URL}/blog/${slug}`,
+    },
+    headline: post.title.slice(0, 110), // Google truncates at 110 chars
     description: post.excerpt,
-    author: { "@type": "Person", name: post.author },
-    datePublished: post.published_at ?? post.date,
-    dateModified: post.published_at ?? post.date,
-    publisher: { "@type": "Organization", name: "CollegePune", url: BASE_URL },
+    author: {
+      "@type": "Person",
+      name: post.author,
+      url: `${BASE_URL}/blog`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "CollegePune",
+      url: BASE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${BASE_URL}/logo.png`,
+        width: 200,
+        height: 60,
+      },
+    },
+    datePublished: isoDate,
+    dateModified: isoDate,
     url: `${BASE_URL}/blog/${slug}`,
+    image: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}/og-image.png`,
+      width: 1200,
+      height: 630,
+    },
     keywords: post.tags.join(", "),
     articleSection: post.category,
     inLanguage: "en-IN",
+    wordCount,
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${BASE_URL}/blog`,
+      name: "CollegePune Blog",
+      publisher: { "@type": "Organization", name: "CollegePune", url: BASE_URL },
+    },
   }
 
   // Detect if body is HTML or plain text

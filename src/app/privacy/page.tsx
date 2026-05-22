@@ -40,7 +40,7 @@ export default function PrivacyPage() {
     {
       title: "4. Data Storage and Security",
       content: [
-        "Your data is stored on Supabase (PostgreSQL) servers hosted in secure cloud environments with industry-standard encryption.",
+        "Your data is stored on secure cloud servers hosted in ISO 27001-compliant data centres with industry-standard encryption (AES-256 at rest, TLS 1.2+ in transit).",
         "We implement appropriate technical and organisational measures to protect personal data from unauthorised access, alteration, disclosure, or destruction.",
         "We retain lead and enquiry data for a maximum of 3 years unless otherwise required by law.",
       ],
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
     {
       title: "7. Third-Party Services",
       content: [
-        "CollegePune uses the following third-party services which have their own privacy policies: Google Analytics (usage tracking), Supabase (database hosting), Anthropic Claude AI (college recommendations), Vercel (hosting).",
+        "CollegePune uses the following third-party services which have their own privacy policies: Google Analytics (usage tracking), Anthropic Claude AI (college recommendations), Vercel (hosting).",
         "External links to college websites are provided for your convenience. We are not responsible for the privacy practices of those websites.",
       ],
     },
@@ -87,7 +87,23 @@ export default function PrivacyPage() {
       ],
     },
     {
-      title: "10. Contact Us",
+      title: "10. Grievance Officer (IT Rules 2011)",
+      content: [
+        "In accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules 2021, the following Grievance Officer has been appointed:",
+        "**Name**: Grievance Officer, CollegePune | **Email**: grievance@collegepune.com | **Address**: Undri, Pune, Maharashtra 411060",
+        "Complaints or concerns regarding the processing of your personal data will be acknowledged within 48 hours and resolved within 30 days of receipt.",
+      ],
+    },
+    {
+      title: "11. Consent and Your Rights under DPDP Act 2023",
+      content: [
+        "By submitting any enquiry or lead form on CollegePune, you provide free, specific, informed, and unambiguous consent for us to process your personal data as described in this policy.",
+        "Under the Digital Personal Data Protection Act 2023, you have the right to: (a) access information about your data; (b) correct inaccurate data; (c) erase your data ('right to be forgotten'); (d) nominate a representative for your data rights; (e) grievance redressal.",
+        "To exercise any of these rights, email: grievance@collegepune.com. We will respond within 30 days.",
+      ],
+    },
+    {
+      title: "12. Contact Us",
       content: [
         "For any privacy-related questions, concerns, or requests: Email: support@collegepune.com | Phone: +91 77538 31118 | Address: Undri, Pune, Maharashtra 411060.",
       ],

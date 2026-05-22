@@ -25,6 +25,7 @@ export const metadata: Metadata = genMeta({
     "pgdm colleges pune 2026",
   ],
 })
+export const revalidate = 300
 
 const colleges = [
   { rank: 1, name: "SIBM Pune – Symbiosis Institute of Business Management", type: "Deemed", nirf: 13, naac: "A+", fees: "₹16L–₹22L total", placement: "₹28 LPA avg | ₹65 LPA highest", exam: "SNAP 2026 (60+ %ile)", slug: "sibm-symbiosis-institute-business-management-pune", highlight: "NIRF #13 | McKinsey, BCG Recruiters" },

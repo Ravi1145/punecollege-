@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import { supabaseAdmin } from "@/lib/supabase"
 import { blogs as staticBlogs } from "@/data/blogs"
 
 export const revalidate = 3600 // ISR — revalidate every hour
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export interface NewsItem {
   id:           string
@@ -27,32 +28,26 @@ function blogsAsNews(limit: number): NewsItem[] {
   }))
 }
 
+// GET /api/news
+// TODO: Connect to Express API — endpoint: GET /api/news
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const limit    = Math.min(parseInt(searchParams.get("limit") ?? "10"), 50)
   const category = searchParams.get("category") ?? undefined
-  const approved = searchParams.get("approved") !== "false" // default true
 
   try {
-    let query = supabaseAdmin
-      .from("news_cache")
-      .select("id, title, url, source, category, published_at, summary")
-      .order("published_at", { ascending: false })
-      .limit(limit)
+    const qs = new URLSearchParams({ limit: String(limit) })
+    if (category) qs.set("category", category)
 
-    if (approved) query = query.eq("approved", true)
-    if (category) query = query.eq("category", category)
+    const res = await fetch(`${API_BASE_URL}/api/news?${qs.toString()}`, {
+      next: { revalidate: 3600 },
+    })
 
-    const { data, error } = await query
-
-    if (error || !data || data.length === 0) {
-      // Fall back to blogs-as-news
-      const fallback = blogsAsNews(limit)
-      return NextResponse.json({ items: fallback, source: "static" })
-    }
-
-    return NextResponse.json({ items: data as NewsItem[], source: "db" })
+    if (!res.ok) throw new Error("Express API unavailable")
+    const data = await res.json()
+    return NextResponse.json({ items: data.items ?? [], source: "api" })
   } catch {
+    // Fall back to static blogs as news items
     const fallback = blogsAsNews(limit)
     return NextResponse.json({ items: fallback, source: "static" })
   }

@@ -4,6 +4,7 @@ import Link from "next/link"
 import HeroSection from "@/components/home/HeroSection"
 import CollegeMarquee from "@/components/home/CollegeMarquee"
 import FeaturedColleges from "@/components/home/FeaturedColleges"
+import FeaturedCourses from "@/components/home/FeaturedCourses"
 import RankingTables from "@/components/home/RankingTables"
 import AIRecommender from "@/components/ai/AIRecommender"
 import ExamCalendar from "@/components/home/ExamCalendar"
@@ -16,7 +17,7 @@ import AlumniQASection from "@/components/home/AlumniQASection"
 import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema, generateLocalBusinessSchema } from "@/lib/seo"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Colleges in Pune 2026 | Rankings, Fees & Placements | CollegePune",
+  title: "Best Colleges in Pune 2026 | CollegePune",
   description: "Find the best engineering, MBA, medical and arts colleges in Pune 2026. Compare COEP (NIRF #49), SIBM (NIRF #13), AFMC (NIRF #4) and 25+ colleges by fees (₹15K–25L/yr), placements (₹12–65 LPA), NAAC grade & reviews. Free AI counselor.",
   path: "/",
   keywords: [
@@ -107,41 +108,7 @@ export default function HomePage() {
 
         <FeaturedColleges />
 
-        {/* Cutoff Predictor Teaser */}
-        <section className="py-14 bg-surface">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-xl mx-auto">
-              <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
-                ⚡ 30-Second Check
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
-                Know Your Chances<br />in 30 Seconds
-              </h2>
-              <p className="text-gray-500 text-sm mb-5">
-                Enter your MHT-CET percentile, JEE rank, NEET score, or CAT percentile. We&apos;ll show you which Pune colleges are within reach — based on real 2020–2026 cutoff data.
-              </p>
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
-                <div className="grid grid-cols-2 gap-2.5">
-                  {[
-                    { label: "MHT-CET", sub: "Percentile", href: "/cutoffs/mht-cet/coep-college-of-engineering-pune" },
-                    { label: "JEE Main",  sub: "Percentile", href: "/cutoffs/jee/coep-college-of-engineering-pune" },
-                    { label: "NEET",      sub: "Score",      href: "/cutoffs/neet/afmc-armed-forces-medical-college-pune" },
-                    { label: "SNAP",      sub: "Percentile", href: "/cutoffs/snap/sibm-symbiosis-institute-business-management-pune" },
-                  ].map(({ label, sub, href }) => (
-                    <a key={label} href={href} className="flex flex-col p-3 rounded-xl border border-gray-100 hover:border-orange-300 hover:bg-orange-50 transition-colors">
-                      <span className="font-bold text-sm text-gray-900">{label}</span>
-                      <span className="text-xs text-gray-400">{sub} cutoffs</span>
-                    </a>
-                  ))}
-                </div>
-                <a href="/predictor" className="flex items-center justify-center gap-2 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-sm transition-colors">
-                  Open Full Predictor →
-                </a>
-                <p className="text-[11px] text-center text-gray-400">Based on CET Cell Maharashtra data 2020–2026 · Free</p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <FeaturedCourses />
 
         <RankingTables />
         <section className="py-16 bg-[#0A1628]">
@@ -150,6 +117,7 @@ export default function HomePage() {
           </div>
         </section>
         <ExamCalendar />
+
         <HomepageNewsSection />
 
         {/* Tools Hub */}

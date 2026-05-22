@@ -1,6 +1,7 @@
 ﻿"use client"
 import * as Accordion from "@radix-ui/react-accordion"
-import { ChevronDown, HelpCircle } from "lucide-react"
+import { useState } from "react"
+import { ChevronDown, HelpCircle, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const faqs = [
@@ -54,7 +55,12 @@ const faqs = [
   }
 ]
 
+const INITIAL_COUNT = 5
+
 export default function FAQSection() {
+  const [showAll, setShowAll] = useState(false)
+  const visible = showAll ? faqs : faqs.slice(0, INITIAL_COUNT)
+
   return (
     <section className="py-16 bg-surface">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,7 +78,7 @@ export default function FAQSection() {
         </div>
 
         <Accordion.Root type="single" collapsible className="space-y-3">
-          {faqs.map((faq, i) => (
+          {visible.map((faq, i) => (
             <Accordion.Item
               key={i}
               value={`item-${i}`}
@@ -90,6 +96,17 @@ export default function FAQSection() {
             </Accordion.Item>
           ))}
         </Accordion.Root>
+
+        {!showAll && (
+          <div className="text-center mt-6">
+            <button
+              onClick={() => setShowAll(true)}
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+            >
+              View More FAQs <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { generateMetadata as genMeta, generateBreadcrumbSchema, generateFAQSchema } from "@/lib/seo"
 import InlineLeadForm from "@/components/leads/InlineLeadForm"
 import ScholarshipSubscribe from "@/components/leads/ScholarshipSubscribe"
+import ScholarshipFinder from "@/components/scholarships/ScholarshipFinder"
 
 export const metadata: Metadata = genMeta({
   title: "Scholarships for Pune College Students 2026 | MahaDBT, NSP, Merit",
@@ -221,6 +222,22 @@ export default function ScholarshipsPage() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+          {/* AI Scholarship Finder */}
+          <div className="bg-white rounded-2xl border border-orange-100 shadow-sm overflow-hidden">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🤖</span>
+                <div>
+                  <h2 className="font-extrabold text-white text-lg leading-tight">AI Scholarship Finder</h2>
+                  <p className="text-orange-100 text-xs">Tell us about yourself — get your personalized scholarship matches in seconds</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              <ScholarshipFinder />
+            </div>
+          </div>
 
           {/* WhatsApp alert banner */}
           <div className="bg-green-50 border border-green-100 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">

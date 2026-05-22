@@ -7,8 +7,9 @@ export const metadata: Metadata = {
   title: "Colleges in Pune 2026 — Complete List, Fees & Rankings",
   description:
     "Explore all colleges in Pune 2026. Filter by stream (Engineering, MBA, Medical, Law), type (Government, Private, Deemed), entrance exam, fees, and location. NAAC and NIRF ranked.",
-  alternates: { canonical: "https://collegepune.in/colleges-in-pune" },
+  alternates: { canonical: "https://collegepune.com/colleges-in-pune" },
 }
+export const revalidate = 300
 
 const categories = [
   {

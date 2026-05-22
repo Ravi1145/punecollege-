@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { MapPin, TrendingUp, Heart, IndianRupee, Star } from "lucide-react"
 import { College } from "@/types"
 import CompareButton from "@/components/ui/CompareButton"
 import { formatFeesRange, formatCurrency, getNaacColor, getTypeColor, cn } from "@/lib/utils"
+
+const COLLEGE_BANNER = "https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=75"
 
 const SHORTLIST_KEY = "shortlisted_colleges"
 
@@ -38,8 +41,19 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
     return (
       <Link href={`/colleges/${college.slug}`} className="block">
         <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex-shrink-0 flex items-center justify-center">
-            <span className="text-[9px] font-bold text-white leading-tight text-center px-0.5">{college.shortName}</span>
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex-shrink-0 flex items-center justify-center overflow-hidden">
+            {college.image ? (
+              <Image
+                src={college.image}
+                alt={`${college.name} logo`}
+                width={40}
+                height={40}
+                className="object-contain p-0.5 bg-white rounded-lg"
+                sizes="40px"
+              />
+            ) : (
+              <span className="text-[9px] font-bold text-white leading-tight text-center px-0.5">{college.shortName}</span>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-orange-600 transition-colors">
@@ -71,19 +85,22 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
     <Link href={`/colleges/${college.slug}`} className="block group h-full">
       <article className="bg-white rounded-2xl border border-gray-100 hover:border-orange-400 hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full">
 
-        {/* ── Dark navy header ── */}
+        {/* ── Header with campus image as background ── */}
         <div
-          className="relative p-4 pb-3"
-          style={{ background: "linear-gradient(135deg, #0A1628 0%, #0d1f3c 60%, #1E3A5F 100%)" }}
+          className="relative p-4 pb-3 overflow-hidden"
+          style={{ backgroundImage: `url(${COLLEGE_BANNER})`, backgroundSize: "cover", backgroundPosition: "center" }}
         >
+          {/* semi-transparent overlay — image visible, text still readable */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628]/60 via-[#0A1628]/55 to-[#0A1628]/70" />
+
           {/* Heart button */}
           <button
             onClick={toggleShortlist}
             className={cn(
-              "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all z-10",
+              "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all z-20",
               isShortlisted
                 ? "bg-red-500 text-white shadow-lg"
-                : "bg-white/10 text-white/60 hover:bg-white/20 hover:text-white"
+                : "bg-white/15 text-white/70 hover:bg-white/25 hover:text-white"
             )}
             aria-label={isShortlisted ? "Remove from shortlist" : "Add to shortlist"}
           >
@@ -91,28 +108,44 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
           </button>
 
           {/* Abbreviation badge + name row */}
-          <div className="flex items-start gap-3 pr-10">
-            {/* Badge */}
-            <div className="shrink-0 w-14 h-14 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
-              <span className="text-white font-extrabold text-[11px] leading-tight text-center px-1 break-all">
-                {college.shortName}
-              </span>
+          <div className="relative z-10 flex items-start gap-3 pr-10">
+            {/* Logo badge — shows college logo when available, falls back to shortName text */}
+            <div className="shrink-0 w-14 h-14 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden">
+              {college.image ? (
+                <Image
+                  src={college.image}
+                  alt={`${college.name} logo`}
+                  width={56}
+                  height={56}
+                  className="object-contain p-1"
+                  sizes="56px"
+                />
+              ) : (
+                <span className="text-[#0A1628] font-extrabold text-[10px] leading-tight text-center px-1 break-all">
+                  {college.shortName}
+                </span>
+              )}
             </div>
 
             {/* Name + location */}
             <div className="flex-1 min-w-0 pt-0.5">
-              <h3 className="text-white font-bold text-sm leading-snug line-clamp-2 group-hover:text-orange-300 transition-colors">
+              <h3
+                className="text-white font-bold text-sm leading-snug line-clamp-2 group-hover:text-orange-300 transition-colors"
+                style={{ textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}
+              >
                 {college.name}
               </h3>
               <div className="flex items-center gap-1 mt-1.5">
-                <MapPin className="w-3 h-3 text-gray-400 shrink-0" />
-                <span className="text-xs text-gray-400 truncate">{college.location}</span>
+                <MapPin className="w-3 h-3 text-orange-300 shrink-0" />
+                <span className="text-xs text-white/90 truncate" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.7)" }}>
+                  {college.location}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Badge row */}
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="relative z-10 flex flex-wrap gap-1.5 mt-3">
             <span className={cn("text-xs px-2.5 py-0.5 rounded-full font-bold", getNaacColor(college.naac))}>
               NAAC {college.naac}
             </span>

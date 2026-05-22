@@ -25,16 +25,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/terms`,                    lastModified: new Date(), changeFrequency: "yearly",  priority: 0.3 },
   ]
 
-  // Stream filter pages
-  const streams = ["Engineering", "MBA", "Medical", "Arts & Science", "Law", "Architecture"]
-  const streamPages: MetadataRoute.Sitemap = streams.map((s) => ({
-    url: `${BASE_URL}/colleges?stream=${encodeURIComponent(s)}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }))
+  // (stream filter query-string URLs removed — Google ignores ?param URLs in sitemaps;
+  //  each stream has its own canonical landing page already listed in seoPages)
 
-  // All 103 college detail pages
+  // All college detail pages (auto-generated from static data)
   const collegePages: MetadataRoute.Sitemap = colleges.map((c) => ({
     url: `${BASE_URL}/colleges/${c.slug}`,
     lastModified: new Date(),
@@ -106,6 +100,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/news`,                                      lastModified: new Date(), changeFrequency: "daily",   priority: 0.85 },
     { url: `${BASE_URL}/qa`,                                        lastModified: new Date(), changeFrequency: "weekly",  priority: 0.8 },
     { url: `${BASE_URL}/ask`,                                       lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    // ScholarPath AI features
+    { url: `${BASE_URL}/ai-counselor`,                              lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/career-paths`,                              lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // Engineering deep-dives
+    { url: `${BASE_URL}/top-engineering-colleges-pune`,             lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/btech-colleges-pune`,                       lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/computer-engineering-colleges-pune`,        lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mechanical-engineering-colleges-pune`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // MBA deep-dives
+    { url: `${BASE_URL}/best-mba-colleges-pune`,                    lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/pgdm-colleges-pune`,                        lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // Medical
+    { url: `${BASE_URL}/mbbs-colleges-pune`,                        lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/neet-colleges-pune`,                        lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // NAAC & rankings
+    { url: `${BASE_URL}/naac-a-plus-colleges-pune`,                 lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/top-placement-colleges-pune`,               lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // Fees
+    { url: `${BASE_URL}/low-fee-colleges-pune`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/colleges-pune-fees`,                        lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // Entrance exam clusters
+    { url: `${BASE_URL}/mht-cet-colleges-pune`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/jee-colleges-pune`,                         lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/cat-colleges-pune`,                         lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // Streams
+    { url: `${BASE_URL}/science-colleges-pune`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/commerce-colleges-pune`,                    lastModified: new Date(), changeFrequency: "monthly", priority: 0.85 },
+    // Area-specific
+    { url: `${BASE_URL}/colleges-kothrud-pune`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/colleges-hadapsar-pune`,                    lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/colleges-wakad-pune`,                       lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   ]
 
   // Cutoff pages — one per [exam, college] pair
@@ -119,6 +144,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }))
 
+  // Career path detail pages
+  const { careerPaths } = await import("@/data/careerPaths")
+  const careerPathPages: MetadataRoute.Sitemap = careerPaths.map(p => ({
+    url: `${BASE_URL}/career-paths/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }))
+
   const alumniPages: MetadataRoute.Sitemap = [
     "alumni", "alumni/rahul-sharma-coep-2023", "alumni/priya-desai-sibm-2022",
     "alumni/aditya-kulkarni-pict-2023", "alumni/sneha-patil-afmc-2021",
@@ -130,5 +164,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticPages, ...seoPages, ...streamPages, ...collegePages, ...blogPages, ...cutoffIndexPage, ...cutoffPages, ...alumniPages]
+  return [...staticPages, ...seoPages, ...collegePages, ...blogPages, ...cutoffIndexPage, ...cutoffPages, ...careerPathPages, ...alumniPages]
 }

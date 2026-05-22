@@ -2,13 +2,15 @@
 import { useState, useEffect, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import { colleges as localColleges } from "@/data/colleges"
-import { fetchCollegesFromAPI, mapAPICollege } from "@/lib/api"
 import { College } from "@/types"
 import CollegeCard from "./CollegeCard"
 import CollegeFilters from "./CollegeFilters"
 import { SlidersHorizontal, Grid3X3, List, ArrowUpDown, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import InlineLeadForm from "@/components/leads/InlineLeadForm"
+import FilterTabs from "@/components/ui/FilterTabs"
+
+const STREAM_TABS = ["All", "Engineering", "MBA", "Medical", "Law", "Architecture", "Design", "Commerce", "Arts & Science"]
 
 type SortOption = "rating" | "fees_low" | "fees_high" | "placement" | "nirf"
 
@@ -16,6 +18,7 @@ export default function CollegeGrid() {
   const searchParams = useSearchParams()
   const [allColleges, setAllColleges] = useState<College[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeStream, setActiveStream] = useState("All")
   const [sortBy, setSortBy] = useState<SortOption>("rating")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [filters, setFilters] = useState({
@@ -32,38 +35,27 @@ export default function CollegeGrid() {
 
   const searchQuery = searchParams.get("search") || ""
 
-  // ── Fetch from Supabase + external API, supplement with local ──
+  // ── Fetch from Express backend API, supplement with local static data ──
   useEffect(() => {
     let cancelled = false
     async function load() {
       setLoading(true)
       try {
-        // Fetch Supabase published colleges + external API in parallel
-        const [supabaseRes, apiRaw] = await Promise.all([
-          fetch('/api/colleges').then(r => r.ok ? r.json() : { colleges: [] }).catch(() => ({ colleges: [] })),
-          fetchCollegesFromAPI().catch(() => []),
-        ])
+        const backendRes = await fetch('/api/colleges')
+          .then(r => r.ok ? r.json() : { colleges: [] })
+          .catch(() => ({ colleges: [] }))
 
-        const supabaseColleges: College[] = supabaseRes.colleges ?? []
-        const apiMapped = apiRaw.map((c: Parameters<typeof mapAPICollege>[0], i: number) => mapAPICollege(c, i))
+        const backendColleges: College[] = backendRes.colleges ?? []
+        const backendNameSet = new Set(backendColleges.map((c) => c.name.toLowerCase().trim()))
+        const backendSlugSet = new Set(backendColleges.map((c) => c.slug))
 
-        // Build a name set from Supabase + API (Supabase takes priority)
-        const supabaseNameSet = new Set(supabaseColleges.map((c) => c.name.toLowerCase().trim()))
-        const supabaseSlugSet = new Set(supabaseColleges.map((c) => c.slug))
-
-        // Add API colleges not already in Supabase
-        const apiOnly = apiMapped.filter(
-          (c: College) => !supabaseNameSet.has(c.name.toLowerCase().trim()) && !supabaseSlugSet.has(c.slug)
-        )
-
-        // Add local colleges not in Supabase or API
-        const combinedNameSet = new Set([...supabaseNameSet, ...apiOnly.map((c: College) => c.name.toLowerCase().trim())])
+        // Add local static colleges not already returned by the backend
         const localOnly = localColleges.filter(
-          (c) => !combinedNameSet.has(c.name.toLowerCase().trim())
+          (c) => !backendNameSet.has(c.name.toLowerCase().trim()) && !backendSlugSet.has(c.slug)
         )
 
         if (!cancelled) {
-          setAllColleges([...supabaseColleges, ...apiOnly, ...localOnly])
+          setAllColleges([...backendColleges, ...localOnly])
         }
       } catch {
         if (!cancelled) setAllColleges(localColleges)
@@ -90,7 +82,9 @@ export default function CollegeGrid() {
       )
     }
 
-    if (filters.streams.length) {
+    if (activeStream !== "All") {
+      result = result.filter((c) => c.stream === activeStream)
+    } else if (filters.streams.length) {
       result = result.filter((c) => filters.streams.includes(c.stream))
     }
     if (filters.types.length) {
@@ -139,7 +133,7 @@ export default function CollegeGrid() {
     }
 
     return result
-  }, [allColleges, filters, sortBy, searchQuery])
+  }, [allColleges, filters, activeStream, sortBy, searchQuery])
 
   // ── Loading skeleton ──────────────────────────────────────
   if (loading) {
@@ -170,6 +164,12 @@ export default function CollegeGrid() {
           <p className="text-gray-500 mt-1">{filteredColleges.length} colleges found</p>
         </div>
       )}
+
+      {/* Stream tab filter */}
+      <div className="bg-white rounded-2xl border border-gray-100 px-5 py-4 mb-6">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Filter by Stream</p>
+        <FilterTabs tabs={STREAM_TABS} active={activeStream} onChange={setActiveStream} />
+      </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Filters Sidebar */}
