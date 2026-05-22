@@ -52,6 +52,8 @@ const sourceLabel: Record<string, string> = {
   counselling:  'Counselling',
   lead_magnet:  'Lead Magnet',
   inline_form:  'Inline',
+  news_alert:   'Alert',
+  lead_bar:     'Top Bar',
   website:      'Website',
 }
 
@@ -147,7 +149,7 @@ export default async function AdminLeadsPage({
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Lead', 'Contact', 'Interest', 'Source', 'Notes', 'Status', 'Date'].map((h) => (
+                  {['#', 'Lead', 'Contact', 'Interest', 'Source', 'Notes', 'Status', 'Date'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
                       {h}
                     </th>
@@ -155,9 +157,14 @@ export default async function AdminLeadsPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {leads.map((lead: Lead) => (
+                {leads.map((lead: Lead, idx: number) => (
                   <>
                     <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                      {/* # */}
+                      <td className="px-4 py-3 text-xs text-gray-400 font-mono w-10 whitespace-nowrap">
+                        {leads.length - idx}
+                      </td>
+
                       {/* Name / Email */}
                       <td className="px-4 py-3">
                         <Link href={`/admin/leads?${new URLSearchParams({ ...(status ? { status } : {}), ...(q ? { q } : {}), expand: expand === lead.id ? '' : lead.id }).toString()}`}
@@ -220,7 +227,7 @@ export default async function AdminLeadsPage({
                     {/* Expanded detail row */}
                     {expand === lead.id && (
                       <tr key={`${lead.id}-detail`} className="bg-blue-50 border-b border-blue-100">
-                        <td colSpan={7} className="px-5 py-4">
+                        <td colSpan={8} className="px-5 py-4">
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                             {lead.exam_type && (
                               <div><span className="text-gray-500 block">Exam</span><span className="font-medium">{lead.exam_type}</span></div>

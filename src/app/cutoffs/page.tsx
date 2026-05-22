@@ -5,8 +5,8 @@ import { generateMetadata as genMeta, generateBreadcrumbSchema, generateFAQSchem
 import { cutoffsData, examLabels, streamLabels } from "@/data/cutoffs"
 
 export const metadata: Metadata = genMeta({
-  title: "MHT-CET JEE NEET Cutoffs for Pune Colleges 2026 | CollegePune",
-  description: "Year-wise cutoffs (2020–2026) for top Pune colleges. MHT-CET, JEE Main, NEET, SNAP, CAT cutoffs for COEP, PICT, VIT, SIBM, AFMC, BJ Medical. Check your admission chances.",
+  title: "Pune College Cutoffs 2026 | MHT-CET, JEE, NEET, SNAP | CollegePune",
+  description: "Year-wise cutoffs 2020–2026 for top Pune colleges. MHT-CET, JEE Main, NEET, SNAP, CAT cutoffs for COEP, PICT, SIBM, AFMC, BJ Medical. Check your admission chances free.",
   path: "/cutoffs",
   keywords: [
     "mht-cet cutoff 2026 pune colleges",

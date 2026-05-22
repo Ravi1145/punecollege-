@@ -186,7 +186,7 @@ export default async function AdminCoursesPage({
                             View
                           </Link>
                         )}
-                        <DeleteButton action={async () => { await deleteCourseAction(course.id) }} />
+                        <DeleteButton action={deleteCourseAction.bind(null, course.id) as unknown as () => Promise<void>} />
                       </div>
                     </td>
                   </tr>

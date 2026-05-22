@@ -20,7 +20,7 @@ export function generateMetadata({
   const canonicalUrl = `${BASE_URL}${path}`
 
   return {
-    title,
+    title: { absolute: title },
     description,
     keywords: [
       "colleges in pune",

@@ -7,8 +7,8 @@ import CollegeGrid from "@/components/colleges/CollegeGrid"
 import { colleges } from "@/data/colleges"
 
 export const metadata: Metadata = genMeta({
-  title: "All Colleges in Pune 2026 — Fees, Rankings & Reviews",
-  description: "Browse and compare 103+ colleges in Pune. Filter by stream (Engineering, MBA, Medical), fees, NAAC grade, and location. Government, private & deemed colleges with real placement data.",
+  title: "Colleges in Pune 2026 | Fees, Rankings & Reviews | CollegePune",
+  description: "Browse 103+ colleges in Pune 2026. Filter by stream, fees, NAAC grade & location. Engineering, MBA, Medical — government, private & deemed colleges with real placement data.",
   path: "/colleges",
   keywords: [
     "colleges in pune", "engineering colleges pune", "mba colleges pune",

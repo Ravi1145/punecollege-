@@ -52,11 +52,10 @@ export default function LeadBar() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name:    "Lead Bar",
           phone,
-          source: "lead_bar",
-          utm_source: new URLSearchParams(window.location.search).get("utm_source") || "organic",
-          utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "none",
-          utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "none",
+          source:  "lead_bar",
+          message: "Admission 2026 guide request via top bar",
         }),
       })
       setSubmitted(true)

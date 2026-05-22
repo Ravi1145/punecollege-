@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       exam_score:      validated.exam_score ?? null,
       career_goal:     validated.career_goal ?? null,
       source:          validated.source ?? 'website',
+      message:         validated.message ?? null,
       page_url:        referer || null,
       status:          'new',
     })

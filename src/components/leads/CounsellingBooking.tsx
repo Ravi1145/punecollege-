@@ -26,9 +26,6 @@ const initialForm: FormData = {
 
 const streams = ["Engineering", "Medical", "MBA", "Law", "Arts & Science", "Commerce", "Design", "Pharmacy", "Other"]
 
-// ✅ Get backend URL from environment variable
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
 export default function CounsellingBooking() {
   const [form, setForm] = useState<FormData>(initialForm)
   const [errors, setErrors] = useState<FormErrors>({})
@@ -48,8 +45,7 @@ export default function CounsellingBooking() {
     if (!validate()) return
     setLoading(true)
     try {
-      // ✅ Direct call to backend API
-      const res = await fetch(`${API_URL}/counselling`, {
+      const res = await fetch("/api/counselling", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

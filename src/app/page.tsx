@@ -17,8 +17,8 @@ import AlumniQASection from "@/components/home/AlumniQASection"
 import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema, generateLocalBusinessSchema } from "@/lib/seo"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Colleges in Pune 2026 | CollegePune",
-  description: "Find the best engineering, MBA, medical and arts colleges in Pune 2026. Compare COEP (NIRF #49), SIBM (NIRF #13), AFMC (NIRF #4) and 25+ colleges by fees (₹15K–25L/yr), placements (₹12–65 LPA), NAAC grade & reviews. Free AI counselor.",
+  title: "Best Colleges in Pune 2026 | Rankings, Fees & Reviews | CollegePune",
+  description: "Compare 100+ colleges in Pune — COEP (NIRF #49), SIBM (NIRF #13), AFMC (NIRF #4). Fees ₹15K–25L/yr, placements up to ₹65 LPA. Free AI counsellor for 2026 admissions.",
   path: "/",
   keywords: [
     "colleges in pune 2026",

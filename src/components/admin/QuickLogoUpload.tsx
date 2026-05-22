@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   collegeId: string
@@ -16,6 +17,7 @@ export default function QuickLogoUpload({ collegeId, collegeName, currentLogo }:
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -42,6 +44,7 @@ export default function QuickLogoUpload({ collegeId, collegeName, currentLogo }:
 
       setLogo(upJson.url)
       setSaved(true)
+      router.refresh()  // refresh admin table to show updated logo thumbnail
     } catch {
       setError('Network error — try again')
     } finally {
@@ -59,7 +62,7 @@ export default function QuickLogoUpload({ collegeId, collegeName, currentLogo }:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ logo_url: null }),
       })
-      if (res.ok) { setLogo(''); setSaved(true) }
+      if (res.ok) { setLogo(''); setSaved(true); router.refresh() }
       else setError('Could not remove logo')
     } catch {
       setError('Network error')

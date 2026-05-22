@@ -9,8 +9,8 @@ import { Clock, ArrowRight, Rss } from "lucide-react"
 export const revalidate = 300 // ISR — refresh every 5 min
 
 export const metadata: Metadata = genMeta({
-  title: "Pune College Blog — Guides, Tips & Admission Advice 2026",
-  description: "Expert guides on Pune college admissions, MHT-CET preparation, MBA fees, NEET cutoffs, and career planning. Read the latest articles from CollegePune.",
+  title: "Pune College Blog 2026 | Admission Guides & Tips | CollegePune",
+  description: "Expert articles on Pune college admissions 2026 — MHT-CET prep, MBA fees, NEET cutoffs, SNAP strategy & career planning. Latest guides from CollegePune experts.",
   path: "/blog",
   keywords: ["pune college guides", "mht-cet preparation", "mba admission pune", "best colleges pune blog"],
 })

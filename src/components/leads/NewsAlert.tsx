@@ -27,13 +27,12 @@ export default function NewsAlert({ examName = "MHT-CET 2026", source = "news_al
     setLoading(true)
     try {
       const sp = new URLSearchParams(window.location.search)
-      const res = await fetch("/api/leads", {
+      const res = await fetch("/api/alert-subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           phone,
-          source,
-          message:      `${examName} merit list alert`,
+          exam_name:    examName,
           utm_source:   sp.get("utm_source")   || "organic",
           utm_medium:   sp.get("utm_medium")   || "none",
           utm_campaign: sp.get("utm_campaign") || "news_alert",

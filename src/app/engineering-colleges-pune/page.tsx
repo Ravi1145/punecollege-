@@ -7,8 +7,8 @@ import { getCutoff } from "@/data/cutoffs"
 import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Engineering Colleges Pune 2026 | Fees & Rankings",
-  description: "List of top 12 engineering colleges in Pune 2026 with NIRF ranks, NAAC grades, annual fees (₹80K–₹4.8L), and average placements (₹5–12 LPA). Compare COEP, PICT, VIT Pune, SIT Pune & more.",
+  title: "Best Engineering Colleges in Pune 2026 | Fees, NIRF & Cutoffs | CollegePune",
+  description: "Top 12 engineering colleges in Pune 2026 — COEP, PICT, VIT Pune, SIT. Fees ₹80K–₹4.8L/yr, MHT-CET cutoffs, NAAC grades & placements ₹5–12 LPA. Compare & apply free.",
   path: "/engineering-colleges-pune",
   keywords: [
     "engineering colleges in pune",

@@ -57,13 +57,11 @@ export default function ExitPopup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          phone:        cleaned,
-          source:       "exit_popup",
+          name:   "Exit Popup Lead",
+          phone:  cleaned,
+          source: "exit_popup",
           stream,
-          utm_source:   sp.get("utm_source")   || "organic",
-          utm_medium:   sp.get("utm_medium")   || "none",
-          utm_campaign: sp.get("utm_campaign") || "none",
-          utm_content:  sp.get("utm_content")  || "none",
+          message: "MHT-CET 2026 Cutoff PDF request via exit popup",
         }),
       })
       setDone(true)

@@ -7,8 +7,8 @@ import ScholarshipSubscribe from "@/components/leads/ScholarshipSubscribe"
 import ScholarshipFinder from "@/components/scholarships/ScholarshipFinder"
 
 export const metadata: Metadata = genMeta({
-  title: "Scholarships for Pune College Students 2026 | MahaDBT, NSP, Merit",
-  description: "Complete guide to scholarships for Pune college students 2026. MahaDBT, NSP, EBC, OBC, Merit scholarships — eligibility, amount, deadline & application links. Get alerts on WhatsApp.",
+  title: "Scholarships for Pune Students 2026 | MahaDBT & NSP Guide | CollegePune",
+  description: "Scholarships for Pune college students 2026 — MahaDBT, NSP, EBC, OBC & merit. Eligibility, amounts, deadlines & direct application links. Get WhatsApp alerts free.",
   path: "/scholarships",
   keywords: [
     "scholarships for pune college students 2026",

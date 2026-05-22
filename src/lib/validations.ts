@@ -16,7 +16,9 @@ export const leadSchema = z.object({
   source: z.enum([
     'enquiry_form', 'college_page', 'exit_popup', 'ai_gate',
     'predictor', 'shortlist', 'counselling', 'lead_magnet', 'inline_form',
+    'news_alert', 'lead_bar',
   ]),
+  message: z.string().max(500).optional(),
   page_url: z.string().optional(),
 })
 

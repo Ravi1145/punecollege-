@@ -3,8 +3,8 @@ import { generateMetadata as genMeta } from "@/lib/seo"
 import AIComparison from "@/components/ai/AIComparison"
 
 export const metadata: Metadata = genMeta({
-  title: "Compare Colleges in Pune — AI Comparison Tool 2026",
-  description: "Compare any two Pune colleges side-by-side using our AI comparison tool. Analyze academics, fees, placements, campus, and faculty to make the right college choice.",
+  title: "Compare Colleges in Pune 2026 | AI Side-by-Side Tool | CollegePune",
+  description: "Compare any two Pune colleges side-by-side with AI — fees, placements, NAAC grade, campus & faculty. Make the right 2026 admission decision in minutes.",
   path: "/compare",
   keywords: ["compare colleges pune", "college comparison pune", "coep vs pict", "sibm vs mit-som"],
 })

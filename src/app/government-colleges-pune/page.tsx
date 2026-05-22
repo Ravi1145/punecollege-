@@ -5,8 +5,8 @@ import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchem
 import { Award, BookOpen, TrendingUp, Users, ShieldCheck } from "lucide-react"
 
 export const metadata: Metadata = genMeta({
-  title: "Best Government Colleges in Pune 2026 | Fees from ₹8K, NIRF Rankings & Admission",
-  description: "Top govt colleges in Pune 2026: COEP (NIRF #49, ₹80K/yr), AFMC (NIRF #4, free MBBS), BJ Medical (NIRF #18). Fees ₹8K–₹1.8L/yr. CAP/NEET/MHT-CET cutoffs. Compare free.",
+  title: "Best Government Colleges in Pune 2026 | Low Fees & NIRF | CollegePune",
+  description: "Top government colleges in Pune 2026 — COEP (NIRF #49), AFMC (NIRF #4), BJ Medical (NIRF #18). Fees ₹8K–₹1.8L/yr. CAP/NEET/MHT-CET cutoffs. Compare free.",
   path: "/government-colleges-pune",
   keywords: [
     "government colleges in pune 2026",

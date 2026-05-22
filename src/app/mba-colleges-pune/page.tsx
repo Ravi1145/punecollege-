@@ -7,8 +7,8 @@ import { getCutoff } from "@/data/cutoffs"
 import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
 
 export const metadata: Metadata = genMeta({
-  title: "Best MBA Colleges in Pune 2026 | Fees, SNAP/CAT Cutoff & Placements",
-  description: "Top 10 MBA colleges in Pune 2026 with NIRF ranks, SNAP/CAT cutoffs, annual fees (₹4.2L–₹22L), and average placements (₹7–28 LPA). Compare SIBM Pune, MIT-SOM, BIMM, Indira Institute & more.",
+  title: "Top MBA Colleges in Pune 2026 | Fees & SNAP Cutoff | CollegePune",
+  description: "Best 10 MBA colleges in Pune 2026 — SIBM (NIRF #13, ₹22L), MIT-SOM, BIMM. SNAP/CAT cutoffs, fees ₹4.2L–₹22L, placements ₹7–28 LPA. Compare & check eligibility free.",
   path: "/mba-colleges-pune",
   keywords: [
     "best mba college in pune",

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
@@ -30,6 +31,17 @@ export async function PATCH(
       .eq('id', id)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    // Fetch slug to bust the ISR cache on the college's public page
+    const { data: slugRow } = await admin
+      .from('colleges')
+      .select('slug')
+      .eq('id', id)
+      .single()
+
+    if (slugRow?.slug) revalidatePath(`/colleges/${slugRow.slug}`)
+    revalidatePath('/colleges')  // listing page also shows logos in cards
+
     return NextResponse.json({ ok: true, logo_url })
   } catch (err) {
     console.error('[PATCH /api/admin/colleges/[id]/logo]', err)

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
@@ -43,6 +44,19 @@ export async function PATCH(
       .eq('id', id)
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+    // Fetch slug so we can bust the individual college page cache
+    const { data: slugRow } = await admin
+      .from('colleges')
+      .select('slug')
+      .eq('id', id)
+      .single()
+
+    // Bust ISR caches immediately
+    revalidatePath('/')                                          // homepage (FeaturedColleges)
+    revalidatePath('/colleges')                                  // colleges listing
+    if (slugRow?.slug) revalidatePath(`/colleges/${slugRow.slug}`) // individual college page
+
     return NextResponse.json({ ok: true, featured, featured_order })
   } catch (err) {
     console.error('[PATCH /api/admin/colleges/[id]/featured]', err)
