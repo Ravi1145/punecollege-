@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
-import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema, generateItemListSchema } from "@/lib/seo"
 import { CheckCircle, MapPin, ExternalLink, BookOpen } from "lucide-react"
 
 export const revalidate = 300
@@ -193,11 +193,19 @@ export default function Top10MedicalCollegesPage() {
     { name: "Top 10 Medical Colleges", url: "/top-10-medical-colleges-in-pune" },
   ])
   const faqSchema = generateFAQSchema(faqData)
+  const itemListSchema = generateItemListSchema(
+    colleges.map((c) => ({
+      name: c.name,
+      url: `/colleges/${c.slug}`,
+      description: `${c.type} | NAAC ${c.naac}${c.nirf ? ` | NIRF #${c.nirf}` : ""} | Fees ${c.fees} | NEET ${c.neetCutoff}`,
+    }))
+  )
 
   return (
     <>
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
 
       <main className="min-h-screen bg-white">
         {/* Hero */}

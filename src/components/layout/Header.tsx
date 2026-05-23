@@ -242,10 +242,12 @@ export default function Header() {
             <Link href="/" className="flex items-center flex-shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logo.svg"
+                src="/logo.png"
                 alt="CollegePune — Best Colleges in Pune"
                 height={56}
+                width={210}
                 className="h-16 sm:h-20 lg:h-20 w-auto"
+                fetchPriority="high"
               />
             </Link>
 
@@ -508,7 +510,7 @@ export default function Header() {
             <div className="flex items-center justify-between p-4 bg-[#0A1628]">
               <Link href="/" onClick={() => setMobileOpen(false)}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.svg" alt="CollegePune" height={40} className="h-16 sm:h-20 w-auto" />
+                <img src="/logo.png" alt="CollegePune" height={40} width={150} className="h-16 sm:h-20 w-auto" />
               </Link>
               <button onClick={() => setMobileOpen(false)} className="text-white/70 hover:text-white p-1">
                 <X className="w-5 h-5" />

@@ -1,16 +1,30 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { X, Gift, ArrowRight, CheckCircle } from "lucide-react"
+import { X, GraduationCap, ArrowRight, CheckCircle } from "lucide-react"
 
 const SESSION_KEY = "exit_popup_shown"
 
+const COURSES = [
+  { value: "BTech",  label: "B.Tech / Engineering" },
+  { value: "MBA",    label: "MBA / PGDM" },
+  { value: "MBBS",   label: "MBBS / Medical" },
+  { value: "BBA",    label: "BBA / Management" },
+  { value: "BArch",  label: "B.Arch / Architecture" },
+  { value: "BSc",    label: "B.Sc / Science" },
+  { value: "BCom",   label: "B.Com / Commerce" },
+  { value: "Law",    label: "LLB / Law" },
+  { value: "Other",  label: "Other Course" },
+]
+
 export default function ExitPopup() {
-  const [visible, setVisible] = useState(false)
-  const [phone, setPhone] = useState("")
+  const [visible, setVisible]       = useState(false)
+  const [name, setName]             = useState("")
+  const [phone, setPhone]           = useState("")
+  const [stream, setStream]         = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const [done, setDone] = useState(false)
-  const [error, setError] = useState("")
+  const [done, setDone]             = useState(false)
+  const [error, setError]           = useState("")
 
   const show = useCallback(() => {
     if (sessionStorage.getItem(SESSION_KEY)) return
@@ -42,32 +56,40 @@ export default function ExitPopup() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const cleaned = phone.replace(/\D/g, "")
-    if (cleaned.length !== 10) {
+    const cleanedPhone = phone.replace(/\D/g, "")
+
+    if (name.trim().length < 2) {
+      setError("Enter your name (at least 2 characters)")
+      return
+    }
+    if (cleanedPhone.length !== 10) {
       setError("Enter a valid 10-digit mobile number")
       return
     }
+    if (!stream) {
+      setError("Please select a course you're interested in")
+      return
+    }
+
     setError("")
     setSubmitting(true)
     try {
-      // Get stream from URL if available
-      const sp     = new URLSearchParams(window.location.search)
-      const stream = sp.get("stream") ?? ""
-      await fetch("/api/leads", {
+      const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name:   "Exit Popup Lead",
-          phone:  cleaned,
-          source: "exit_popup",
+          name:    name.trim(),
+          phone:   cleanedPhone,
           stream,
-          message: "MHT-CET 2026 Cutoff PDF request via exit popup",
+          source:  "exit_popup",
+          message: "Free counselling request via exit popup",
         }),
       })
+      if (!res.ok) throw new Error("Server error")
       setDone(true)
-      setTimeout(() => setVisible(false), 3500)
+      setTimeout(() => setVisible(false), 4000)
     } catch {
-      setError("Something went wrong. Try again.")
+      setError("Something went wrong. Please try again.")
     } finally {
       setSubmitting(false)
     }
@@ -79,7 +101,7 @@ export default function ExitPopup() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Get free MHT-CET cutoff PDF"
+      aria-label="Get free college counselling"
       className="fixed inset-0 z-[500] flex items-center justify-center p-4"
     >
       {/* Backdrop */}
@@ -106,33 +128,34 @@ export default function ExitPopup() {
           {done ? (
             <div className="text-center py-4">
               <CheckCircle className="w-14 h-14 text-green-500 mx-auto mb-4" />
-              <h2 className="text-xl font-extrabold text-gray-900 mb-2">Check WhatsApp! 🎉</h2>
+              <h2 className="text-xl font-extrabold text-gray-900 mb-2">We&apos;ll call you soon! 🎉</h2>
               <p className="text-gray-500 text-sm">
-                We&apos;ve sent you the MHT-CET 2026 Cutoff PDF on WhatsApp. Good luck with your admission!
+                Our counsellor will contact you within 2 hours with personalised college recommendations. Good luck!
               </p>
             </div>
           ) : (
             <>
               {/* Icon */}
               <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-5">
-                <Gift className="w-7 h-7 text-orange-500" />
+                <GraduationCap className="w-7 h-7 text-orange-500" />
               </div>
 
               {/* Copy */}
               <h2 className="text-2xl font-extrabold text-gray-900 mb-2 leading-tight">
-                Wait! Get MHT-CET 2026<br />
-                <span className="text-orange-500">Cutoff PDF Free</span> on WhatsApp
+                Wait! Get{" "}
+                <span className="text-orange-500">Free Counselling</span>
+                {" "}for Pune Colleges
               </h2>
-              <p className="text-gray-500 text-sm mb-6">
-                Category-wise cutoffs for COEP, PICT, VIT, MIT-WPU & 10 more colleges — updated for 2026.
+              <p className="text-gray-500 text-sm mb-5">
+                Tell us your details and our expert counsellor will call you with the best college options, fees, and admission tips.
               </p>
 
               {/* Bullets */}
               <ul className="space-y-1.5 mb-6">
                 {[
-                  "Open / OBC / SC / ST cutoffs 2020–2026",
-                  "CAP Round 1, 2 & 3 data",
-                  "Top 12 Pune engineering colleges",
+                  "Personalised college shortlist based on your score",
+                  "Fees, cutoffs & placement data for 2026",
+                  "Expert guidance — completely free",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="w-4 h-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 text-xs font-bold">✓</span>
@@ -143,33 +166,60 @@ export default function ExitPopup() {
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-3">
+                {/* Name */}
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your full name"
+                  maxLength={50}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none text-gray-900 text-sm transition-colors"
+                  required
+                />
+
+                {/* Phone */}
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-medium">+91</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-medium select-none">+91</span>
                   <input
                     type="tel"
                     inputMode="numeric"
                     maxLength={10}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                    placeholder="Enter WhatsApp number"
+                    placeholder="Mobile number"
                     className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none text-gray-900 text-sm transition-colors"
                     required
                   />
                 </div>
+
+                {/* Course */}
+                <select
+                  value={stream}
+                  onChange={(e) => setStream(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 outline-none text-sm transition-colors bg-white text-gray-900"
+                  required
+                >
+                  <option value="" disabled>Select course interest</option>
+                  {COURSES.map((c) => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </select>
+
                 {error && <p className="text-red-500 text-xs">{error}</p>}
+
                 <button
                   type="submit"
                   disabled={submitting}
                   className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
                 >
-                  {submitting ? "Sending…" : (
-                    <>Send PDF on WhatsApp <ArrowRight className="w-4 h-4" /></>
+                  {submitting ? "Submitting…" : (
+                    <>Get Free Counselling <ArrowRight className="w-4 h-4" /></>
                   )}
                 </button>
               </form>
 
               <p className="text-center text-[11px] text-gray-400 mt-3">
-                Free forever · No spam · Unsubscribe anytime
+                Free · No spam · Our counsellor calls within 2 hours
               </p>
             </>
           )}

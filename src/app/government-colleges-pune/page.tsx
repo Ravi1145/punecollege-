@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
-import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema, generateItemListSchema } from "@/lib/seo"
 import { Award, BookOpen, TrendingUp, Users, ShieldCheck } from "lucide-react"
 
 export const metadata: Metadata = genMeta({
@@ -107,11 +107,26 @@ const breadcrumb = [
 
 export const revalidate = 86400
 
+// ItemList schema — flat list of all profiled government colleges for AI + rich results
+const govCollegesItemList = generateItemListSchema([
+  { name: "College of Engineering Pune (COEP)", url: "/colleges/coep-college-of-engineering-pune", description: "Best government engineering college in Pune, NIRF #49, NAAC A+" },
+  { name: "Army Institute of Technology (AIT)", url: "/colleges/army-institute-of-technology-pune", description: "Defence-backed government engineering college" },
+  { name: "Armed Forces Medical College (AFMC)", url: "/colleges/afmc-armed-forces-medical-college-pune", description: "NIRF #4 medical college, near-zero fees for defence students" },
+  { name: "BJ Government Medical College (BJMC)", url: "/colleges/bj-medical-college-pune", description: "NIRF #18, best government MBBS college in Pune" },
+  { name: "Fergusson College", url: "/colleges/fergusson-college-pune", description: "NAAC A+, best government arts college in Pune, est. 1885" },
+  { name: "SP College (Sir Parashurambhau)", url: "/colleges/sp-college-pune-sir-parashurambhau-college", description: "NAAC A+, top government science college Pune" },
+  { name: "BMCC (Brihan Maharashtra College of Commerce)", url: "/colleges/bmcc-brihan-maharashtra-college-of-commerce-pune", description: "Cheapest BCom in Pune, government-aided" },
+  { name: "ILS Law College", url: "/colleges/ils-law-college-pune", description: "Most prestigious government law college, est. 1924" },
+  { name: "PUMBA (Pune University MBA)", url: "/colleges/pumba-pune-university-mba", description: "Cheapest MBA in Pune, government, CAT 80+ percentile" },
+  { name: "IISER Pune", url: "/colleges/iiser-pune-indian-institute-science-education-research", description: "National research institute, BS-MS dual degree" },
+])
+
 export default function GovernmentCollegesPune() {
   return (
     <>
       <Script id="schema-faq" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFAQSchema(faqs)) }} />
       <Script id="schema-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumb)) }} />
+      <Script id="schema-itemlist" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(govCollegesItemList) }} />
 
       <div className="min-h-screen bg-surface">
         {/* Hero */}

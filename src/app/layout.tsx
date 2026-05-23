@@ -73,15 +73,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
     ],
-    shortcut: "/favicon.svg",
+    shortcut: "/icons/icon-192.png",
   },
   manifest: "/manifest.json",
   // NOTE: canonical is NOT set at root layout level — every page sets its own
@@ -114,19 +112,39 @@ export default function RootLayout({
   return (
     <html lang="en-IN" className={`${plusJakarta.variable} ${dmSans.variable} h-full antialiased`}>
       <head>
-        {/* Google Tag Manager */}
+        {/* Google Tag Manager — loads GA4 (G-8WS0ZBG1VD) via GTM; no separate gtag/js needed */}
         <script dangerouslySetInnerHTML={{ __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-P8MN7G8X');` }} />
-        {/* Google Analytics 4 */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8WS0ZBG1VD" />
-        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-8WS0ZBG1VD');` }} />
+        {/* Geo tags */}
         <meta name="geo.region" content="IN-MH" />
         <meta name="geo.placename" content="Pune" />
         <meta name="geo.position" content="18.5204;73.8567" />
         <meta name="ICBM" content="18.5204, 73.8567" />
+
+        {/* AIO / GEO — AI Overview + Generative Engine Optimization */}
+        {/* These help AI models (ChatGPT, Claude, Perplexity, Gemini) understand site context */}
+        <meta name="subject" content="College Education in Pune, Maharashtra, India" />
+        <meta name="topic" content="Higher Education, College Admissions, Entrance Exams" />
+        <meta name="classification" content="Education" />
+        <meta name="category" content="Education, Colleges, Pune, Maharashtra" />
+        <meta name="coverage" content="Pune, Maharashtra, India" />
+        <meta name="target" content="Students, Parents seeking college admission in Pune" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="MobileOptimized" content="320" />
+        <meta name="abstract" content="CollegePune profiles 108+ colleges in Pune — engineering, MBA, medical, law, design. Compare fees ₹8K–₹22L/yr, NIRF ranks, NAAC grades, 2026 cutoffs, and placement data. Free AI counsellor." />
+        <meta name="pagename" content="CollegePune — Best Colleges in Pune 2026" />
+        <meta name="identifier-URL" content="https://collegepune.com" />
+        <meta name="revisit-after" content="3 days" />
+        <meta name="language" content="English, Hindi, Marathi" />
+        <meta name="content-language" content="en-IN" />
+
+        {/* AI content discovery links */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt — AI context for language models" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLMs Full — Comprehensive AI reference" />
+        <link rel="alternate" type="application/json" href="/api/ai-context" title="Structured JSON context for AI agents" />
       </head>
       <body className="min-h-full flex flex-col font-dm-sans bg-white">
         {/* Google Tag Manager (noscript) */}

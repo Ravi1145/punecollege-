@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Script from "next/script"
+import Link from "next/link"
 import { colleges, getCollegeBySlug } from "@/data/colleges"
 
 export const revalidate = 300 // ISR — re-render every 5 min; on-demand revalidation via admin also busts this
@@ -158,10 +159,32 @@ export default async function CollegePage({ params }: Props) {
   })
 
   // Build FAQ schema from details.faqs (DB) or college.faqs (static)
-  const rawFaqs = details?.faqs ?? (college as unknown as { faqs?: { q: string; a: string }[] }).faqs ?? []
+  const rawFaqs = Array.isArray(details?.faqs) ? details!.faqs :
+                  Array.isArray((college as any).faqs) ? (college as any).faqs :
+                  []
   const faqSchema = rawFaqs.length > 0
     ? generateFAQSchema(rawFaqs.map((f: { q: string; a: string }) => ({ question: f.q, answer: f.a })))
     : null
+
+  // Similar colleges — same stream, exclude current, pick up to 4
+  const similarColleges = colleges
+    .filter((c) => c.stream === college.stream && c.slug !== slug)
+    .sort((a, b) => (b.nirfRank ? 1 : 0) - (a.nirfRank ? 1 : 0))
+    .slice(0, 4)
+
+  // Stream hub URL mapping
+  const streamHubMap: Record<string, string> = {
+    Engineering:  "/engineering-colleges-pune",
+    MBA:          "/mba-colleges-pune",
+    Medical:      "/medical-colleges-pune",
+    Law:          "/law-colleges-pune",
+    Design:       "/design-colleges-pune",
+    Arts:         "/arts-colleges-pune",
+    Science:      "/science-colleges-pune",
+    Commerce:     "/commerce-colleges-pune",
+    Pharmacy:     "/pharmacy-colleges-pune",
+  }
+  const streamHub = streamHubMap[college.stream] ?? "/colleges"
 
   return (
     <>
@@ -172,6 +195,41 @@ export default async function CollegePage({ params }: Props) {
       )}
       <div className="bg-surface min-h-screen">
         <CollegeProfile college={college} details={details} />
+
+        {/* Similar Colleges — server-rendered for SEO link equity */}
+        {similarColleges.length > 0 && (
+          <section className="bg-white border-t py-10 px-4">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-lg font-bold text-gray-900">
+                  Similar {college.stream} Colleges in Pune
+                </h2>
+                <Link href={streamHub} className="text-sm text-orange-600 hover:text-orange-700 font-semibold">
+                  View all →
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {similarColleges.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/colleges/${c.slug}`}
+                    className="group bg-gray-50 hover:bg-orange-50 rounded-xl p-4 border border-gray-100 hover:border-orange-200 transition-all"
+                  >
+                    <p className="text-sm font-semibold text-gray-900 group-hover:text-orange-600 leading-snug line-clamp-2">
+                      {c.shortName}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">{c.type}</p>
+                    {c.naac && (
+                      <span className="inline-block mt-2 text-xs bg-white border border-gray-200 text-gray-600 px-2 py-0.5 rounded-full">
+                        NAAC {c.naac}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </>
   )

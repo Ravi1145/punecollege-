@@ -1,8 +1,10 @@
 import { MetadataRoute } from "next"
 import { colleges } from "@/data/colleges"
-import { getAllBlogs } from "@/lib/db"
 import { blogs as staticBlogs } from "@/data/blogs"
+import { exams } from "@/data/exams"
+import { courses } from "@/data/courses"
 import { getAllCutoffParams } from "@/data/cutoffs"
+import { createClient } from "@supabase/supabase-js"
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com"
 
@@ -36,11 +38,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }))
 
-  // Blog pages — DB first, fall back to static
+  // Blog pages — Supabase first, fall back to static
   let blogSlugs: string[] = []
   try {
-    const { blogs: dbBlogs } = await getAllBlogs({ status: "published", limit: 500 })
-    blogSlugs = dbBlogs.map((b) => b.slug)
+    const adminClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    )
+    const { data, error } = await adminClient
+      .from("blogs")
+      .select("slug")
+      .eq("status", "published")
+      .order("updated_at", { ascending: false })
+      .limit(500)
+    if (error || !data?.length) throw new Error("empty")
+    blogSlugs = data.map((b: { slug: string }) => b.slug)
   } catch {
     blogSlugs = staticBlogs.map((b) => b.slug)
   }
@@ -48,7 +61,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${BASE_URL}/blog/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
-    priority: 0.7,
+    priority: 0.75,
   }))
 
   // SEO landing pages — guides, rankings, tools
@@ -144,6 +157,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.85,
   }))
 
+  // Exam detail pages
+  const examPages: MetadataRoute.Sitemap = exams.map((e) => ({
+    url: `${BASE_URL}/exams/${e.name.toLowerCase().replace(/\s+/g, "-")}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }))
+
+  // Course detail pages
+  const courseDetailPages: MetadataRoute.Sitemap = courses.map((c) => ({
+    url: `${BASE_URL}/courses/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }))
+
   // Career path detail pages
   const { careerPaths } = await import("@/data/careerPaths")
   const careerPathPages: MetadataRoute.Sitemap = careerPaths.map(p => ({
@@ -164,5 +193,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticPages, ...seoPages, ...collegePages, ...blogPages, ...cutoffIndexPage, ...cutoffPages, ...careerPathPages, ...alumniPages]
+  return [
+    ...staticPages,
+    ...seoPages,
+    ...collegePages,
+    ...blogPages,
+    ...cutoffIndexPage,
+    ...cutoffPages,
+    ...examPages,
+    ...courseDetailPages,
+    ...careerPathPages,
+    ...alumniPages,
+  ]
 }

@@ -99,12 +99,12 @@ export default function RankingTables() {
         </div>
 
         <Tabs.Root defaultValue="engineering">
-          <Tabs.List className="flex gap-1 bg-gray-100 p-1 rounded-2xl mb-8 w-full sm:w-fit overflow-x-auto">
+          <Tabs.List className="flex gap-1 bg-gray-100 p-1 rounded-2xl mb-6 sm:mb-8 w-full overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {tabs.map((tab) => (
               <Tabs.Trigger
                 key={tab.id}
                 value={tab.id}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 transition-all data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium text-gray-600 transition-all data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm whitespace-nowrap"
               >
                 {tab.label}
               </Tabs.Trigger>

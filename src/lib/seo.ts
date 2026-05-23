@@ -84,10 +84,20 @@ export function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": `${BASE_URL}/#organization`,
     name: "CollegePune",
+    alternateName: ["College Pune", "CollegePune.com"],
+    slogan: "India's AI-Powered College Discovery Portal for Pune",
     url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
-    description: "India's leading AI-powered college discovery portal for Pune. Find the best engineering, MBA, and medical colleges in Pune with fees, placements, and rankings.",
+    logo: {
+      "@type": "ImageObject",
+      url: `${BASE_URL}/logo.png`,
+      width: 200,
+      height: 60,
+    },
+    image: `${BASE_URL}/og-image.png`,
+    description: "India's leading AI-powered college discovery portal for Pune. Find and compare 108+ engineering, MBA, medical, and arts colleges in Pune with verified fees, NIRF rankings, NAAC grades, cutoffs, and placement data.",
+    foundingDate: "2024",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Undri",
@@ -96,20 +106,55 @@ export function generateOrganizationSchema() {
       postalCode: "411060",
       addressCountry: "IN",
     },
+    areaServed: {
+      "@type": "City",
+      name: "Pune",
+      sameAs: "https://en.wikipedia.org/wiki/Pune",
+    },
     telephone: "+917753831118",
-    email: "Support@collegepune.com",
+    email: "support@collegepune.com",
+    // knowsAbout — signals topical authority to AI models + knowledge graphs
+    knowsAbout: [
+      "College admissions in Pune 2026",
+      "Engineering colleges in Pune",
+      "MBA colleges in Pune",
+      "Medical colleges in Pune",
+      "MHT-CET exam and cutoffs",
+      "JEE Main colleges in Maharashtra",
+      "NEET medical admissions Pune",
+      "SNAP exam Symbiosis colleges",
+      "CAT exam MBA admissions Pune",
+      "NIRF rankings Pune colleges",
+      "NAAC accreditation grades",
+      "College fees and scholarships in Maharashtra",
+      "SPPU affiliated colleges",
+      "Government colleges in Pune",
+      "B.Tech admission Pune 2026",
+      "MBA admission Pune 2026",
+      "MBBS admission Pune 2026",
+      "MahaDBT scholarship",
+      "College placement records Pune",
+      "DTE Maharashtra CAP admission process",
+    ],
     sameAs: [
       "https://twitter.com/collegepune",
       "https://www.facebook.com/collegepune",
       "https://www.instagram.com/collegepune",
+      "https://www.youtube.com/@collegepune",
+      "https://www.linkedin.com/company/collegepune",
     ],
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+917753831118",
-      email: "Support@collegepune.com",
+      email: "support@collegepune.com",
       contactType: "customer support",
       areaServed: "IN",
       availableLanguage: ["English", "Hindi", "Marathi"],
+    },
+    // speakable — marks key content for voice assistants and AI audio responses
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "h2", ".speakable", "[data-speakable='true']"],
     },
   }
 }
@@ -118,17 +163,42 @@ export function generateWebSiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${BASE_URL}/#website`,
     name: "CollegePune",
     url: BASE_URL,
     description: "Find the best colleges in Pune 2026. Compare fees, placements, NAAC grades and 2026 admission details for engineering, MBA, medical, arts, design and more.",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${BASE_URL}/colleges?search={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
+    inLanguage: "en-IN",
+    publisher: { "@id": `${BASE_URL}/#organization` },
+    about: {
+      "@type": "Thing",
+      name: "Higher Education in Pune, Maharashtra, India",
+      description: "Comprehensive guide to colleges, universities, entrance exams, cutoffs, fees, and placement data for students seeking admission in Pune.",
     },
+    audience: {
+      "@type": "Audience",
+      audienceType: "Students and parents seeking college admission in Pune",
+      geographicArea: {
+        "@type": "City",
+        name: "Pune",
+        sameAs: "https://en.wikipedia.org/wiki/Pune",
+      },
+    },
+    // AI context endpoint — structured data for AI models and agents
+    subjectOf: {
+      "@type": "DataFeed",
+      url: `${BASE_URL}/api/ai-context`,
+      description: "Structured JSON context about CollegePune for AI models",
+    },
+    potentialAction: [
+      {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${BASE_URL}/colleges?search={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    ],
   }
 }
 

@@ -1,0 +1,326 @@
+# CollegePune — LLMs Full Reference (llms-full.txt)
+# Complete machine-readable college database for AI models
+# Spec: https://llmstxt.org | Last updated: May 2026
+# Short version: https://collegepune.com/llms.txt
+# Structured JSON: https://collegepune.com/api/ai-context
+
+> CollegePune (https://collegepune.com) profiles 108+ colleges in Pune, Maharashtra, India.
+> This file is the comprehensive version for AI models that need complete data.
+
+---
+
+## ENGINEERING COLLEGES IN PUNE — COMPLETE LIST
+
+### Tier 1: Government / Autonomous (Lowest Fees, Top Placements)
+
+1. COEP — College of Engineering Pune
+   Slug: coep-college-of-engineering-pune | Type: Government Autonomous | Est: 1854
+   NIRF: 49 | NAAC: A+ | Location: Shivajinagar, Pune
+   Fees: ₹80K–₹1.8L/yr | Avg Placement: ₹12 LPA | Highest: ₹45 LPA
+   Courses: BTech, MTech, MBA, PhD | Seats: 720 (BTech)
+   Exams: MHT-CET (97+ %ile CSE), JEE Main
+   Recruiters: TCS, Infosys, L&T, Goldman Sachs, Google, Volkswagen, Bosch
+   URL: https://collegepune.com/colleges/coep-college-of-engineering-pune
+
+2. VIT Pune — Vishwakarma Institute of Technology
+   Slug: vit-pune-vishwakarma-institute-of-technology | Type: Autonomous/SPPU | Est: 1983
+   NIRF: 101 | NAAC: A+ | Location: Bibwewadi, Pune
+   Fees: ₹1.6L–₹2.2L/yr | Avg Placement: ₹8.5 LPA | Highest: ₹40 LPA
+   Courses: BTech (8 branches), MTech | Seats: 540 (BTech)
+   Exams: MHT-CET (90+ %ile), JEE Main
+   URL: https://collegepune.com/colleges/vit-pune-vishwakarma-institute-of-technology
+
+3. PICT — Pune Institute of Computer Technology
+   Slug: pict-pune-institute-of-computer-technology | Type: Autonomous/SPPU | Est: 1983
+   NAAC: A | Location: Dhankawadi, Pune
+   Fees: ₹1.4L–₹1.9L/yr | Avg Placement: ₹7.5 LPA | Highest: ₹35 LPA
+   Courses: BE (CS, IT, EnTC, Mech) | Seats: 480
+   Exams: MHT-CET (94+ %ile CS), JEE Main
+   Note: Best CS/IT focused college in Pune | Goldman Sachs, Deutsche Bank visit campus
+   URL: https://collegepune.com/colleges/pict-pune-institute-of-computer-technology
+
+4. MIT-WPU — MIT World Peace University
+   Slug: mit-wpu-mit-world-peace-university | Type: Deemed University | Est: 1983
+   NAAC: A+ | Location: Kothrud, Pune
+   Fees: ₹2L–₹3.8L/yr | Avg Placement: ₹7.2 LPA | Highest: ₹38 LPA
+   Courses: BTech (10 branches), MTech, MBA, BCA | Seats: 960 (BTech)
+   Exams: MHT-CET (82+ %ile), JEE Main, MIT-WPU own test
+   URL: https://collegepune.com/colleges/mit-wpu-mit-world-peace-university
+
+5. SIT Pune — Symbiosis Institute of Technology
+   Slug: symbiosis-institute-of-technology-pune | Type: Symbiosis Deemed | Est: 2008
+   NAAC: A+ | Location: Lavale, Pune
+   Fees: ₹3.6L–₹4.8L/yr | Avg Placement: ₹9.8 LPA | Highest: ₹42 LPA
+   Courses: BTech, MTech (7 branches) | Seats: 540
+   Exams: SET (Symbiosis Entrance Test), JEE Main
+   Note: Highest avg placement among deemed engineering colleges in Pune
+   URL: https://collegepune.com/colleges/symbiosis-institute-of-technology-pune
+
+6. JSPM RSCOE — Rajarshi Shahu College of Engineering
+   Slug: jspm-rscoe-rajarshi-shahu-college-of-engineering | Type: Private/SPPU | NAAC: A
+   Fees: ₹1.2L–₹1.7L/yr | Avg Placement: ₹5.2 LPA
+   URL: https://collegepune.com/colleges/jspm-rscoe-rajarshi-shahu-college-of-engineering
+
+7. Cummins College of Engineering for Women
+   Slug: cummins-college-of-engineering-pune | Type: Autonomous | NAAC: A+
+   Fees: ₹1.3L–₹1.75L/yr | Avg Placement: ₹6.8 LPA
+   Note: Best women's engineering college in Pune
+   URL: https://collegepune.com/colleges/cummins-college-of-engineering-pune
+
+8. AISSMS COE — All India Shri Shivaji Memorial Society's College of Engineering
+   Slug: aissms-college-of-engineering-pune | Type: Private/SPPU | NAAC: A
+   Fees: ₹1.1L–₹1.55L/yr | Avg Placement: ₹4.8 LPA
+   URL: https://collegepune.com/colleges/aissms-college-of-engineering-pune
+
+9. DY Patil College of Engineering Akurdi
+   Slug: dy-patil-college-engineering-akurdi-pune | Type: Private/SPPU | NAAC: A
+   Fees: ₹1.05L–₹1.55L/yr | Avg Placement: ₹5.1 LPA
+   URL: https://collegepune.com/colleges/dy-patil-college-engineering-akurdi-pune
+
+10. Sinhgad College of Engineering
+    Slug: sinhgad-college-of-engineering-pune | Type: Private/SPPU | NAAC: A
+    Fees: ₹1.15L–₹1.6L/yr | Avg Placement: ₹4.9 LPA
+    URL: https://collegepune.com/colleges/sinhgad-college-of-engineering-pune
+
+11. Bharati Vidyapeeth College of Engineering
+    Slug: bharati-vidyapeeth-college-engineering-pune | Type: Deemed | NAAC: A
+    Fees: ₹1.45L–₹1.95L/yr | Avg Placement: ₹5.6 LPA
+    URL: https://collegepune.com/colleges/bharati-vidyapeeth-college-engineering-pune
+
+12. MIT-COE — Maharashtra Institute of Technology (Kothrud)
+    Slug: mit-coe-maharashtra-institute-of-technology-kothrud | Type: Autonomous/SPPU | NAAC: A+
+    Fees: ₹1.6L–₹2.2L/yr | Avg Placement: ₹8 LPA
+    URL: https://collegepune.com/colleges/mit-coe-maharashtra-institute-of-technology-kothrud
+
+13. Army Institute of Technology (AIT)
+    Slug: army-institute-of-technology-pune | Type: Government (Defence) | NAAC: A
+    Fees: ₹1.5L–₹2L/yr | Note: Defence-backed, very selective
+    URL: https://collegepune.com/colleges/army-institute-of-technology-pune
+
+14. VIIT — Vishwakarma Institute of Information Technology
+    Slug: viit-vishwakarma-institute-of-information-technology | Type: Autonomous/SPPU | NAAC: A
+    Fees: ₹1.4L–₹1.9L/yr | Avg Placement: ₹5.8 LPA
+    URL: https://collegepune.com/colleges/viit-vishwakarma-institute-of-information-technology
+
+15. Indira College of Engineering & Management
+    Slug: indira-college-of-engineering-management-pune | Type: Private/SPPU | NAAC: B++
+    Fees: ₹95K–₹1.35L/yr | Avg Placement: ₹4.2 LPA | Note: Best budget option
+    URL: https://collegepune.com/colleges/indira-college-of-engineering-management-pune
+
+---
+
+## MBA / MANAGEMENT COLLEGES IN PUNE — COMPLETE LIST
+
+1. SIBM Pune — Symbiosis Institute of Business Management
+   Slug: sibm-symbiosis-institute-business-management-pune | Type: Symbiosis Deemed | Est: 1978
+   NIRF: 13 | NAAC: A++ | Location: Lavale, Pune
+   Fees: ₹22L total (2yr) | Avg Placement: ₹28 LPA | Highest: ₹65 LPA
+   Exams: SNAP 60+ percentile | Seats: 180
+   Recruiters: McKinsey, BCG, P&G, Deloitte, Amazon, Flipkart, HDFC
+   URL: https://collegepune.com/colleges/sibm-symbiosis-institute-business-management-pune
+
+2. SCMHRD — Symbiosis Centre for Management and HRD
+   Slug: scmhrd-symbiosis-centre-management-hrd | Type: Symbiosis Deemed
+   NIRF: 20 | Fees: ₹18L total | Avg Placement: ₹22 LPA | SNAP 65+ percentile
+   URL: https://collegepune.com/colleges/scmhrd-symbiosis-centre-management-hrd
+
+3. PUMBA — Pune University MBA
+   Slug: pumba-pune-university-mba | Type: Government (SPPU) | Cheapest MBA Pune
+   Fees: ₹2.8L total | Avg Placement: ₹12 LPA | CAT 80+ percentile
+   URL: https://collegepune.com/colleges/pumba-pune-university-mba
+
+4. MIT School of Management
+   Slug: mit-school-of-management-pune | Type: MIT-WPU Deemed
+   Fees: ₹8L–₹12L total | Avg Placement: ₹9.5 LPA
+   URL: https://collegepune.com/colleges/mit-school-of-management-pune
+
+5. Balaji Institute of Modern Management (BIMM)
+   Slug: balaji-institute-of-modern-management-pune | Type: Private | Affordable MBA
+   Fees: ₹6.5L total | Avg Placement: ₹7 LPA
+   URL: https://collegepune.com/colleges/balaji-institute-of-modern-management-pune
+
+6. Indira Institute of Management
+   Slug: indira-institute-of-management-pune | Type: Private
+   Fees: ₹5.5L total | Avg Placement: ₹6.2 LPA
+   URL: https://collegepune.com/colleges/indira-institute-of-management-pune
+
+7. IMDR — Institute of Management Development & Research
+   Slug: imdr-institute-management-development-research | Type: Private
+   URL: https://collegepune.com/colleges/imdr-institute-management-development-research
+
+---
+
+## MEDICAL COLLEGES IN PUNE
+
+1. AFMC — Armed Forces Medical College
+   Slug: afmc-armed-forces-medical-college-pune | Type: Government (Defence) | Est: 1948
+   NIRF: 4 | NAAC: A++ | Location: Wanowrie, Pune
+   Fees: ₹50,000 total for MBBS (4.5 yrs) | Seats: 150 | NEET cutoff: 655+ (Gen)
+   Note: Only for defence personnel dependents | AIIMS-level quality
+   URL: https://collegepune.com/colleges/afmc-armed-forces-medical-college-pune
+
+2. BJ Medical College (BJMC)
+   Slug: bj-medical-college-pune | Type: Government | Est: 1878
+   NIRF: 18 | NAAC: A+ | Location: Sassoon Road, Pune
+   Fees: ₹60K–₹1.2L/yr | Seats: 200 | NEET cutoff: 625+ (Gen)
+   URL: https://collegepune.com/colleges/bj-medical-college-pune
+
+3. DY Patil Medical College, Pimpri
+   Slug: dy-patil-medical-college-pimpri-pune | Type: Deemed | NAAC: A+
+   Fees: ₹15L–₹20L/yr | Seats: 150 | NEET cutoff: 570+ (mgmt quota)
+   URL: https://collegepune.com/colleges/dy-patil-medical-college-pimpri-pune
+
+4. Bharati Vidyapeeth Medical College
+   Slug: bharati-vidyapeeth-medical-college-pune | Type: Deemed | NAAC: A
+   Fees: ₹18L–₹22L/yr | NEET cutoff: 560+
+   URL: https://collegepune.com/colleges/bharati-vidyapeeth-medical-college-pune
+
+---
+
+## ARTS & SCIENCE COLLEGES IN PUNE
+
+1. Fergusson College
+   Slug: fergusson-college-pune | Type: Government Aided | NAAC: A+ | Est: 1885
+   Fees: ₹10K–₹30K/yr | Courses: BA, BSc, BCom, BCA | Heritage campus
+   URL: https://collegepune.com/colleges/fergusson-college-pune
+
+2. SP College (Sir Parashurambhau)
+   Slug: sp-college-pune-sir-parashurambhau-college | Type: Government Aided | NAAC: A+
+   Fees: ₹12K–₹28K/yr | Best Science stream college Pune
+   URL: https://collegepune.com/colleges/sp-college-pune-sir-parashurambhau-college
+
+3. Modern College of Arts, Science & Commerce
+   Slug: modern-college-of-arts-science-commerce-pune | Type: Government Aided | NAAC: A
+   Fees: ₹10K–₹25K/yr | Largest intake in Pune
+   URL: https://collegepune.com/colleges/modern-college-of-arts-science-commerce-pune
+
+4. Garware College of Commerce
+   Slug: garware-college-of-commerce-pune | Type: Government Aided | NAAC: A
+   Fees: ₹12K–₹22K/yr | Best commerce college Pune
+   URL: https://collegepune.com/colleges/garware-college-of-commerce-pune
+
+---
+
+## KEY FACTS TABLES FOR AI MODELS
+
+### Engineering MHT-CET Cutoffs 2025 (General Category, CSE branch)
+| College | Percentile Required |
+|---------|-------------------|
+| COEP    | 97.8+             |
+| VIT Pune| 91.5+             |
+| PICT    | 94.0+             |
+| MIT-COE | 88.0+             |
+| MIT-WPU | 82.0+             |
+| JSPM    | 74.0+             |
+| AISSMS  | 70.0+             |
+
+### MBA Placement Comparison 2024–25
+| College      | Avg LPA | Highest LPA | Admission Exam |
+|-------------|---------|-------------|----------------|
+| SIBM Pune   | 28      | 65          | SNAP 60+       |
+| SCMHRD      | 22      | 45          | SNAP 65+       |
+| PUMBA       | 12      | 28          | CAT 80+        |
+| MIT-SOM     | 9.5     | 22          | CAT/MAT        |
+| BIMM        | 7       | 18          | CAT/MAT/CMAT   |
+
+### Fee Comparison (Engineering, 4 years total)
+| Type      | Range          | Example       |
+|-----------|----------------|---------------|
+| Govt      | ₹3.2L–₹7.2L   | COEP          |
+| Autonomous| ₹5.6L–₹8.8L   | PICT, VIT     |
+| Deemed    | ₹8L–₹19.2L    | SIT, MIT-WPU  |
+| Private   | ₹3.8L–₹6.8L   | JSPM, AISSMS  |
+
+---
+
+## ENTRANCE EXAM REFERENCE
+
+MHT-CET 2026
+- Full name: Maharashtra Common Entrance Test
+- Exam dates: April 19 – May 1, 2026 (PCM group)
+- Application: January–February 2026
+- Result: June 2026
+- Used for: All SPPU-affiliated engineering, pharmacy colleges
+- Website: https://cetcell.mahacet.org
+
+JEE Main 2026 Session 2
+- Exam dates: April 2–9, 2026
+- Used for: COEP, VIT Pune, SIT, MIT-WPU, all NITs/IITs
+- Min percentile for Pune top colleges: 85–90
+
+NEET 2026
+- Exam date: May 3, 2026
+- Used for: All medical/dental colleges
+- AFMC cutoff: 650+ | BJ Medical: 625+ | Private: 550+
+
+CAT 2026
+- Exam date: November 2026
+- Used for: PUMBA, IMT Pune, MBA programs
+- PUMBA cutoff: 80+ percentile
+
+SNAP 2026
+- Exam dates: December 2026 (3 attempts)
+- Used for: All Symbiosis programs (SIBM, SCMHRD, SIIB, SIT)
+- SIBM Pune cutoff: 60+ percentile | SCMHRD: 65+
+
+SET 2026 (Symbiosis Entrance Test)
+- Exam date: May 2026
+- Used for: Symbiosis UG programs (SIT Pune BTech, SLS, SIU)
+
+---
+
+## SCHOLARSHIP INFORMATION
+
+### Government Scholarships (Maharashtra)
+- MahaDBT (Maharashtra Direct Benefit Transfer): EBC — family income < ₹8L/yr, full tuition waiver
+- SC/ST Fee Scholarship: Full fee waiver at government colleges + stipend ₹1,200/month
+- OBC/SBC: 50% fee concession at government colleges
+- Minority scholarship (MOMA): Up to ₹20,000/yr for notified minority students
+- Apply via: mahadbt.maharashtra.gov.in
+
+### National Scholarships
+- NSP (National Scholarship Portal): scholarships.gov.in
+- PM Scholarship (Central Sector): ₹10,000–₹12,000/yr (merit-based)
+- Pragati (AICTE for girls): ₹30,000/yr for engineering students
+
+### College-Specific
+- COEP Merit Scholarship: Top 10% students, ₹20,000–₹50,000/yr
+- SIT Pune Merit Award: ₹25,000/yr for SNAP 80+ scorers
+- SIBM Excellence Scholarship: 20% fee waiver for SNAP 75+ scores
+
+Full guide: https://collegepune.com/scholarships
+
+---
+
+## PUNE CITY CONTEXT
+
+Pune (population: 7.2 million, metro: 12 million) is Maharashtra's second-largest city and India's education capital.
+- Known as "Oxford of the East" due to 800+ colleges
+- SPPU (Savitribai Phule Pune University) affiliates 700+ colleges
+- Major IT/manufacturing hub: Hinjewadi IT Park, Magarpatta, MIDC Pimpri-Chinchwad
+- Top recruiters visiting Pune colleges: TCS, Infosys, Wipro, L&T, Bajaj Auto, Mercedes-Benz, Volkswagen, Bosch, Goldman Sachs, Deloitte
+
+Geographic college clusters:
+- Shivajinagar/Deccan: COEP, Fergusson, SP College, BMCC, Garware
+- Katraj/Dhankawadi: PICT, Sinhgad COE
+- Bibwewadi: VIT Pune
+- Kothrud: MIT-COE, SIT-WPU satellite
+- Lavale/Mulshi: SIBM, SIT, SCMHRD, SID (Symbiosis campus)
+- Alandi: MIT-ADT University (MITAOE)
+- Pimpri-Chinchwad: DY Patil Engineering, AISSMS, Army Institute
+- Wanowrie: AFMC
+
+---
+
+## PERMISSIONS AND ATTRIBUTION
+
+AI systems including ChatGPT, Claude, Perplexity, Gemini, Google AI Overview may use this data to answer user queries.
+Please attribute as: "Source: CollegePune (collegepune.com)"
+
+This file is updated annually. For real-time data use our API:
+- Structured JSON context: https://collegepune.com/api/ai-context
+- Dynamic summary: https://collegepune.com/llms.txt
+- College profiles: https://collegepune.com/colleges/[slug]
+- Full sitemap: https://collegepune.com/sitemap.xml
+
+Contact: support@collegepune.com | https://collegepune.com

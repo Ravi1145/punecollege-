@@ -291,6 +291,31 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </div>
         )}
+
+        {/* Contextual college resource links — boosts internal link equity to hub pages */}
+        <div className="mt-10 bg-white rounded-2xl border border-gray-100 p-6">
+          <h2 className="text-base font-bold text-gray-900 mb-4">Explore Colleges in Pune</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "Best Engineering Colleges", href: "/engineering-colleges-pune" },
+              { label: "Top MBA Colleges",          href: "/mba-colleges-pune" },
+              { label: "Medical Colleges",          href: "/medical-colleges-pune" },
+              { label: "Government Colleges",       href: "/government-colleges-pune" },
+              { label: "All Colleges in Pune",      href: "/colleges" },
+              { label: "MHT-CET Colleges",          href: "/mht-cet-colleges-pune" },
+              { label: "Cutoffs 2026",              href: "/cutoffs" },
+              { label: "Free Counselling",          href: "/counselling" },
+            ].map(({ label, href }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm text-orange-600 hover:text-orange-700 hover:underline font-medium leading-snug"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )

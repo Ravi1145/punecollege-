@@ -279,9 +279,8 @@ export default function HeroSection() {
             </p>
           </div>
 
-          {/* ════════ RIGHT — stats bar only ════════ */}
+          {/* ════════ RIGHT — stats bar (desktop only) ════════ */}
           <div className="relative hidden lg:flex flex-col justify-end self-stretch py-10">
-            {/* Stats bar */}
             <div
               className="rounded-2xl"
               style={{
@@ -297,9 +296,7 @@ export default function HeroSection() {
                   <div key={label} className="flex items-center gap-2">
                     <Icon className="w-5 h-5 shrink-0" style={{ color: "rgba(255,255,255,0.42)" }} />
                     <div>
-                      <p className="font-extrabold text-base leading-none text-accent">
-                        {value}
-                      </p>
+                      <p className="font-extrabold text-base leading-none text-accent">{value}</p>
                       <p className="leading-tight mt-0.5" style={{ color: "rgba(178,200,228,0.82)", fontSize: "0.62rem" }}>
                         {label}
                       </p>
@@ -311,6 +308,19 @@ export default function HeroSection() {
           </div>
 
         </div>
+
+        {/* ════ Mobile stats strip (hidden on lg — shown in desktop right col) ════ */}
+        <div className="lg:hidden grid grid-cols-4 gap-1 pb-3 pt-1">
+          {STATS.map(({ icon: Icon, value, label }) => (
+            <div key={label} className="flex flex-col items-center text-center gap-0.5">
+              <p className="font-extrabold text-sm leading-none text-accent">{value}</p>
+              <p className="leading-tight" style={{ color: "rgba(178,200,228,0.82)", fontSize: "0.6rem" }}>
+                {label}
+              </p>
+            </div>
+          ))}
+        </div>
+
       </div>
 
     </section>

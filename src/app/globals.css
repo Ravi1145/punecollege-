@@ -49,7 +49,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animate-marquee {
-  animation: marquee 28s linear infinite;
+  animation: marquee 20s linear infinite;   /* faster on mobile (cards narrower) */
+}
+
+@media (min-width: 768px) {
+  .animate-marquee {
+    animation-duration: 28s;               /* original speed on desktop */
+  }
 }
 
 /* ── News sidebar auto-scroll ── */
@@ -59,7 +65,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animate-news-scroll {
-  animation: newsScroll 30s linear infinite;
+  animation: newsScroll 22s linear infinite;
+}
+
+@media (min-width: 768px) {
+  .animate-news-scroll {
+    animation-duration: 30s;
+  }
 }
 
 /* ── Guides horizontal scroll ── */
@@ -69,11 +81,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .animate-guides-scroll {
-  animation: guidesScroll 40s linear infinite;
+  animation: guidesScroll 28s linear infinite;
+}
+
+@media (min-width: 768px) {
+  .animate-guides-scroll {
+    animation-duration: 40s;
+  }
 }
 
 .guides-pause-on-hover:hover .animate-guides-scroll {
   animation-play-state: paused;
+}
+
+/* ── Prevent horizontal overflow site-wide ── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* ── Existing animations ── */

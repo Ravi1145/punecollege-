@@ -124,20 +124,20 @@ export default function QuickExploreSection() {
               View All <span>→</span>
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
             {categories.map((cat) => (
               <Link
                 key={cat.href}
                 href={cat.href}
-                className={`group flex items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-200 ${cat.bg} ${cat.border} ${cat.hoverBorder} hover:shadow-md hover:-translate-y-0.5`}
+                className={`group flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-2xl border-2 transition-all duration-200 ${cat.bg} ${cat.border} ${cat.hoverBorder} hover:shadow-md hover:-translate-y-0.5`}
               >
-                <div className={`w-12 h-12 rounded-xl ${cat.iconBg} flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl ${cat.iconBg} flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 group-hover:scale-110 transition-transform`}>
                   {cat.icon}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-gray-900 leading-tight">{cat.label}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{cat.sub}</p>
-                  <span className={`mt-1 inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.badgeColor}`}>
+                  <p className="text-xs sm:text-sm font-bold text-gray-900 leading-tight">{cat.label}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 hidden sm:block">{cat.sub}</p>
+                  <span className={`mt-1 inline-block text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full ${cat.badgeColor}`}>
                     {cat.badge}
                   </span>
                 </div>

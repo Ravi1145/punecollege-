@@ -1,19 +1,24 @@
 ﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
+import dynamic from "next/dynamic"
+
+// ── Critical above-fold sections (server-render immediately) ──────────────────
 import HeroSection from "@/components/home/HeroSection"
 import CollegeMarquee from "@/components/home/CollegeMarquee"
 import FeaturedColleges from "@/components/home/FeaturedColleges"
-import FeaturedCourses from "@/components/home/FeaturedCourses"
-import RankingTables from "@/components/home/RankingTables"
-import AIRecommender from "@/components/ai/AIRecommender"
-import ExamCalendar from "@/components/home/ExamCalendar"
-import FAQSection from "@/components/home/FAQSection"
-import GuidesScrollSection from "@/components/home/GuidesScrollSection"
-import TestimonialsSection from "@/components/home/TestimonialsSection"
 import QuickExploreSection from "@/components/home/QuickExploreSection"
-import HomepageNewsSection from "@/components/home/HomepageNewsSection"
-import AlumniQASection from "@/components/home/AlumniQASection"
+
+// ── Below-fold sections (lazy load — don't block initial paint) ───────────────
+const FeaturedCourses    = dynamic(() => import("@/components/home/FeaturedCourses"))
+const RankingTables      = dynamic(() => import("@/components/home/RankingTables"))
+const AIRecommender      = dynamic(() => import("@/components/ai/AIRecommender"))
+const ExamCalendar       = dynamic(() => import("@/components/home/ExamCalendar"))
+const HomepageNewsSection = dynamic(() => import("@/components/home/HomepageNewsSection"))
+const TestimonialsSection = dynamic(() => import("@/components/home/TestimonialsSection"))
+const AlumniQASection    = dynamic(() => import("@/components/home/AlumniQASection"))
+const FAQSection         = dynamic(() => import("@/components/home/FAQSection"))
+const GuidesScrollSection = dynamic(() => import("@/components/home/GuidesScrollSection"))
 import { generateMetadata as genMeta, generateOrganizationSchema, generateWebSiteSchema, generateFAQSchema, generateLocalBusinessSchema } from "@/lib/seo"
 
 export const metadata: Metadata = genMeta({
@@ -104,8 +109,7 @@ export default function HomePage() {
         {/* Browse by Stream */}
         <QuickExploreSection />
 
-        {/* Cutoff Predictor Teaser moved below FeaturedColleges */}
-
+        {/* Featured Colleges — after stream section */}
         <FeaturedColleges />
 
         <FeaturedCourses />
@@ -127,7 +131,7 @@ export default function HomePage() {
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Free Tools for Smarter College Decisions</h2>
               <p className="text-gray-500 mt-2 text-sm">Everything you need to plan your college journey — all free, all in one place.</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
               {[
                 { href: "/predictor", icon: "🎯", label: "College Predictor", desc: "Find your best-fit colleges by exam score", bg: "bg-orange-50 hover:bg-orange-100 border-orange-100" },
                 { href: "/compare", icon: "⚖️", label: "Compare Colleges", desc: "Side-by-side fees & placement comparison", bg: "bg-blue-50 hover:bg-blue-100 border-blue-100" },
@@ -136,10 +140,10 @@ export default function HomePage() {
                 { href: "/ai-finder", icon: "🤖", label: "AI College Finder", desc: "Chat with AI to find your ideal college", bg: "bg-pink-50 hover:bg-pink-100 border-pink-100" },
                 { href: "/counselling", icon: "📞", label: "Free Counselling", desc: "Talk to an expert — free 15-min session", bg: "bg-teal-50 hover:bg-teal-100 border-teal-100" },
               ].map(({ href, icon, label, desc, bg }) => (
-                <Link key={href} href={href} className={`flex flex-col items-center text-center p-4 rounded-2xl border transition-colors ${bg}`}>
-                  <span className="text-3xl mb-2">{icon}</span>
-                  <p className="text-xs font-bold text-gray-900 mb-1">{label}</p>
-                  <p className="text-[11px] text-gray-500 hidden sm:block">{desc}</p>
+                <Link key={href} href={href} className={`flex flex-col items-center text-center p-2 sm:p-4 rounded-2xl border transition-colors ${bg}`}>
+                  <span className="text-2xl sm:text-3xl mb-1 sm:mb-2">{icon}</span>
+                  <p className="text-[10px] sm:text-xs font-bold text-gray-900 mb-1 leading-tight">{label}</p>
+                  <p className="text-[10px] text-gray-500 hidden sm:block">{desc}</p>
                 </Link>
               ))}
             </div>

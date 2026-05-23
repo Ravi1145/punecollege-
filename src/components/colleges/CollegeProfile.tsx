@@ -53,11 +53,11 @@ const TABS = [
 function SectionCard({ title, icon: Icon, children }: { title: string; icon?: React.ElementType; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-50">
+      <div className="flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-50">
         {Icon && <Icon className="w-4 h-4 text-orange-500 flex-shrink-0" />}
-        <h2 className="font-bold text-gray-900 text-base">{title}</h2>
+        <h2 className="font-bold text-gray-900 text-sm sm:text-base">{title}</h2>
       </div>
-      <div className="p-6">{children}</div>
+      <div className="p-4 sm:p-6">{children}</div>
     </div>
   )
 }
@@ -189,11 +189,11 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
               </div>
             </div>
 
-            {/* CTA buttons - desktop */}
-            <div className="hidden sm:flex flex-col gap-2 flex-shrink-0">
+            {/* CTA buttons */}
+            <div className="flex flex-col gap-2 flex-shrink-0">
               <button
                 onClick={() => setEnquiryOpen(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-colors whitespace-nowrap"
               >
                 Enquire Now
               </button>
@@ -202,7 +202,7 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
                   href={college.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/10 hover:bg-white/20 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors text-center"
+                  className="bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl transition-colors text-center hidden sm:block"
                 >
                   Official Website
                 </a>
@@ -226,13 +226,13 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
           </div>
 
           {/* Tab Bar */}
-          <div className="flex gap-0 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 sm:mx-0 sm:px-0 border-t border-white/10 mt-2">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                  "flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   activeTab === tab.id
                     ? "border-orange-400 text-orange-400"
                     : "border-transparent text-blue-300 hover:text-white"
