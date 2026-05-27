@@ -16,15 +16,74 @@ async function requireAdmin() {
 
 /** Builds a Claude prompt from the college's existing DB fields */
 function buildPrompt(college: Record<string, unknown>): string {
-  const courses  = (college.courses  as string[] | null) ?? []
-  const exams    = (college.entrance_exams as string[] | null) ?? []
-  const recrts   = (college.top_recruiters as string[] | null) ?? []
-  const highs    = (college.highlights as string[] | null) ?? []
+  const courses = (college.courses  as string[] | null) ?? []
+  const exams   = (college.entrance_exams as string[] | null) ?? []
+  const recrts  = (college.top_recruiters as string[] | null) ?? []
+  const highs   = (college.highlights as string[] | null) ?? []
 
-  const feesMin  = college.fees_min  ? `₹${Math.round((college.fees_min  as number) / 1000)}K` : 'Not specified'
-  const feesMax  = college.fees_max  ? `₹${Math.round((college.fees_max  as number) / 1000)}K` : 'Not specified'
-  const avgPkg   = college.avg_placement ? `₹${((college.avg_placement as number) / 100000).toFixed(1)}L` : 'Not specified'
-  const hiPkg    = college.highest_pkg  ? `₹${((college.highest_pkg  as number) / 100000).toFixed(1)}L` : 'Not specified'
+  const feesMin = college.fees_min  ? `₹${Math.round((college.fees_min  as number) / 1000)}K` : 'Not specified'
+  const feesMax = college.fees_max  ? `₹${Math.round((college.fees_max  as number) / 1000)}K` : 'Not specified'
+  const avgPkg  = college.avg_placement ? `₹${((college.avg_placement as number) / 100000).toFixed(1)}L` : 'Not specified'
+  const hiPkg   = college.highest_pkg  ? `₹${((college.highest_pkg  as number) / 100000).toFixed(1)}L` : 'Not specified'
+  const nirf    = college.nirf_rank != null ? String(college.nirf_rank) : 'null'
+
+  const jsonTemplate = `{
+  "courses_fees": [
+    {
+      "program": "Course full name",
+      "duration": "4 years",
+      "eligibility": "10+2 PCM, minimum 50% marks",
+      "selection": "MHT-CET / JEE Main merit + CAP counselling",
+      "fees_per_year": 120000,
+      "total_fees": 480000,
+      "seats": 60
+    }
+  ],
+  "admission_process": [
+    { "step": 1, "title": "Step title", "description": "Detailed step description mentioning the college and relevant exam" }
+  ],
+  "placements": {
+    "year": "2025",
+    "stats": [
+      { "program": "B.Tech", "avg_package": ${college.avg_placement ?? 800000}, "highest_package": ${college.highest_pkg ?? 2000000}, "placement_pct": 85, "companies_visited": ${Math.max(recrts.length, 40)} }
+    ],
+    "sector_wise": [
+      { "sector": "IT & Software", "percentage": 55 },
+      { "sector": "Core Engineering", "percentage": 20 },
+      { "sector": "Management & Consulting", "percentage": 15 },
+      { "sector": "Others", "percentage": 10 }
+    ]
+  },
+  "scholarships": [
+    { "name": "Scholarship name", "eligibility": "Who can apply", "amount": "Benefit amount/percentage", "provider": "Providing organisation" }
+  ],
+  "facilities": [
+    { "name": "Facility name", "description": "1-2 sentence description" }
+  ],
+  "faqs": [
+    { "q": "Question?", "a": "Answer." }
+  ],
+  "alumni": [
+    { "name": "Full Name", "designation": "Job Title, Company Name", "batch": "2018" }
+  ],
+  "hostel_info": {
+    "available": ${college.hostel ? 'true' : 'false'},
+    "notes": "${college.hostel ? 'On-campus hostel available for boys and girls with 24-hour security and meals' : 'No on-campus hostel; PG accommodations available nearby'}",
+    "boys_hostels": ${college.hostel ? '1' : '0'},
+    "girls_hostels": ${college.hostel ? '1' : '0'},
+    "fees_per_year": ${college.hostel ? '96000' : '0'}
+  },
+  "cutoffs": [
+    { "year": "2024", "exam": "MHT-CET", "program": "Course name", "general": "Percentile value", "obc": "Percentile value", "sc": "Percentile value", "st": "Percentile value" }
+  ],
+  "rankings": [
+    { "agency": "NIRF", "year": "2024", "rank": ${nirf}, "category": "${college.stream ?? 'Engineering'}" }
+  ],
+  "campus_area": "XX acres",
+  "total_students": 3000,
+  "faculty_count": 120,
+  "student_faculty_ratio": "15:1"
+}`
 
   return `You are an expert content writer for an Indian education portal. Generate accurate, detailed college profile data for "${college.name}" located in Pune, Maharashtra.
 
@@ -47,67 +106,28 @@ COLLEGE DATA:
 - Highlights: ${highs.join('; ') || 'Not specified'}
 - Description: ${college.description ?? ''}
 
-Generate a JSON object (no markdown, no code block, raw JSON only) with this exact structure:
+Generate a JSON object (no markdown, no code block, raw JSON only) matching this EXACT structure:
 
-{
-  "courses_fees": [
-    {
-      "course": "Course full name",
-      "duration": "4 years",
-      "eligibility": "10+2 PCM, minimum 50% marks",
-      "selection": "MHT-CET / JEE Main merit + CAP counselling",
-      "fees_per_year": 120000
-    }
-  ],
-  "admission_process": [
-    { "step": 1, "title": "Step title", "description": "Detailed step description mentioning the college and relevant exam" }
-  ],
-  "placements": {
-    "avg_package": "${avgPkg}",
-    "highest_package": "${hiPkg}",
-    "placement_rate": "85%",
-    "companies_visited": ${Math.max(recrts.length, 40)},
-    "sector_wise": [
-      { "sector": "IT & Software", "percentage": 55 },
-      { "sector": "Core Engineering", "percentage": 20 },
-      { "sector": "Management & Consulting", "percentage": 15 },
-      { "sector": "Others", "percentage": 10 }
-    ]
-  },
-  "scholarships": [
-    { "name": "Scholarship name", "eligibility": "Who can apply", "amount": "Benefit amount/percentage", "provider": "Providing organisation" }
-  ],
-  "facilities": [
-    { "name": "Facility name", "description": "1-2 sentence description" }
-  ],
-  "faqs": [
-    { "q": "Question?", "a": "Answer." }
-  ],
-  "hostel_info": {
-    "available": ${college.hostel ? 'true' : 'false'},
-    "boys": ${college.hostel ? '"On-campus hostel for boys with 24-hour security and meals"' : '"No on-campus hostel; PG accommodations available nearby"'},
-    "girls": ${college.hostel ? '"Separate on-campus hostel for girls with warden and CCTV"' : '"No on-campus hostel; ladies PG accommodations available nearby"'},
-    "monthly_cost": ${college.hostel ? '"₹8,000 – ₹12,000 per month including meals"' : 'null'}
-  },
-  "cutoffs": [
-    { "year": 2024, "exam": "MHT-CET", "branch": "Course name", "general": "Percentile/rank", "obc": "Percentile/rank", "sc": "Percentile/rank", "st": "Percentile/rank" }
-  ],
-  "rankings": [
-    { "agency": "NIRF", "year": 2024, "rank": "${college.nirf_rank ?? 'Not ranked'}", "category": "${college.stream ?? 'Engineering'}" }
-  ]
-}
+${jsonTemplate}
 
 RULES:
-1. courses_fees: Include ALL courses listed (${courses.length > 0 ? courses.slice(0, 8).join(', ') : 'list all typical courses for this stream'}). Fees must be realistic for a ${college.type ?? 'Private'} college in Pune.
-2. admission_process: 5 steps, stream-specific, mentioning actual entrance exams (${exams.join(', ') || 'MHT-CET'}) and Maharashtra CAP counselling process.
-3. placements: Use the provided package data. sector_wise percentages must sum to 100.
-4. scholarships: Include 3-5 real Maharashtra government scholarships (EBC, OBC Non-Creamy Layer, SC/ST, Minority, CSSS) plus any college-merit scholarship.
-5. facilities: 6-8 facilities appropriate for a ${college.stream ?? 'Engineering'} college; include hostel only if hostel=true.
-6. faqs: 6 FAQs covering fees, entrance exam, admission process, hostel, placements, and NAAC grade.
-7. cutoffs: Include realistic 2024 and 2023 cutoffs for top 2-3 courses. For percentile-based (MHT-CET): General 92-99, OBC 88-97, SC 78-90. For rank-based (JEE): General top 50K, OBC top 70K.
-8. rankings: Include all relevant rankings (NIRF, Outlook, India Today, Times, QS if applicable for this tier of college).
-9. Return ONLY the raw JSON object. No explanations, no markdown, no code fences.`
+1. courses_fees: Include ALL courses (${courses.length > 0 ? courses.slice(0, 8).join(', ') : 'all typical courses for this stream'}). Use field "program" (not "course"). Fees realistic for ${college.type ?? 'Private'} college in Pune.
+2. admission_process: 5 steps, stream-specific, mentioning actual entrance exams (${exams.join(', ') || 'MHT-CET'}) and Maharashtra CAP counselling.
+3. placements: Keep year "2025". Include stats per program. sector_wise percentages MUST sum to exactly 100.
+4. scholarships: Include 3-5 real Maharashtra government scholarships (EBC, OBC Non-Creamy Layer, SC/ST, Minority, CSSS) plus 1 college-merit scholarship.
+5. facilities: 6-8 facilities appropriate for a ${college.stream ?? 'Engineering'} college. Include hostel facility ONLY if hostel=true.
+6. faqs: 6 FAQs covering fees, entrance exam, admission process, hostel, placements, NAAC grade.
+7. alumni: Generate 3-5 realistic notable alumni with real-sounding Indian names, relevant job titles, and companies fitting this college's stream. Use graduation years 2005-2022.
+8. cutoffs: Include realistic 2024 and 2023 cutoffs for top 2-3 courses. MHT-CET percentile: General 92-99, OBC 88-97, SC 78-90. JEE rank: General top 50K, OBC top 70K.
+9. rankings: "rank" MUST be an INTEGER (e.g. 49) or null — NEVER a string. Include NIRF, Outlook, India Today, Times rankings where applicable.
+10. campus_area, total_students, faculty_count, student_faculty_ratio: Fill with realistic estimates for this college.
+11. Return ONLY the raw JSON object. No explanations, no markdown, no code fences.`
 }
+
+const EMPTY_KEYS = [
+  'courses_fees', 'admission_process', 'placements', 'scholarships',
+  'facilities', 'faqs', 'alumni', 'hostel_info', 'cutoffs', 'rankings',
+]
 
 export async function POST(
   request: NextRequest,
@@ -188,11 +208,26 @@ export async function POST(
       )
     }
 
+    // Normalise rankings.rank: convert string integers → number, "null"/"Not ranked" → null
+    if (Array.isArray(details.rankings)) {
+      details.rankings = (details.rankings as Record<string, unknown>[]).map((r) => {
+        const rank = r.rank
+        if (rank === null || rank === undefined || rank === 'null' || rank === 'Not ranked' || rank === '' || rank === 0) {
+          return { ...r, rank: null }
+        }
+        if (typeof rank === 'string' && /^\d+$/.test(rank)) {
+          return { ...r, rank: parseInt(rank, 10) }
+        }
+        return r
+      })
+    }
+
     // Merge with any existing details (keep manual edits, fill missing)
     const existingDetails = (college.details ?? {}) as Record<string, unknown>
     const merged: Record<string, unknown> = { ...details, ...existingDetails }
-    // Always use AI-generated values for the core arrays if they were empty
-    for (const key of ['courses_fees', 'admission_process', 'placements', 'scholarships', 'facilities', 'faqs', 'hostel_info', 'cutoffs', 'rankings']) {
+
+    // Always use AI-generated values for core sections if they were empty
+    for (const key of EMPTY_KEYS) {
       const existing = existingDetails[key]
       const isEmpty =
         existing === undefined ||
@@ -200,6 +235,13 @@ export async function POST(
         (Array.isArray(existing) && (existing as unknown[]).length === 0) ||
         (typeof existing === 'object' && !Array.isArray(existing) && Object.keys(existing as Record<string, unknown>).length === 0)
       if (isEmpty) {
+        merged[key] = details[key]
+      }
+    }
+
+    // Also fill scalar fields if missing
+    for (const key of ['campus_area', 'total_students', 'faculty_count', 'student_faculty_ratio']) {
+      if (existingDetails[key] == null && details[key] != null) {
         merged[key] = details[key]
       }
     }

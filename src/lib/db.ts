@@ -1,8 +1,8 @@
 /**
- * db.ts — CollegePune data layer (no backend required)
+ * db.ts — CollegePune data layer
  *
- * Read operations → static data files in src/data/
- * Write operations (leads / enquiries / bookings) → email via nodemailer
+ * Read operations  → Supabase first, static fallback
+ * Write operations → Supabase (leads, enquiries, bookings) + email notification
  */
 
 import { colleges as staticColleges } from '@/data/colleges'
@@ -15,33 +15,170 @@ export type { Lead, Enquiry, CounsellingBooking, AdminStats } from '@/types'
 // ── LEAD TYPES ────────────────────────────────────────────────────────────────
 import type { Lead, Enquiry, CounsellingBooking, AdminStats } from '@/types'
 
-// ── SIMPLE ID COUNTER (in-memory; resets on each cold start, which is fine) ──
-let _idCounter = Date.now()
-function nextId() { return ++_idCounter }
-
 // ── LEAD FUNCTIONS ────────────────────────────────────────────────────────────
 
 export async function insertLead(
   data: Omit<Lead, 'id' | 'created_at' | 'updated_at'>
-): Promise<number> {
+): Promise<string> {
+  let leadId = crypto.randomUUID()
+
+  // 1. Write to Supabase
   try {
-    await sendLeadEmail({ ...data })
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data: row, error } = await admin
+      .from('leads')
+      .insert({
+        name:             data.name,
+        email:            data.email ?? null,
+        phone:            data.phone ?? null,
+        stream:           data.stream ?? null,
+        college_interest: data.college_interest ?? null,
+        course_interest:  data.course_interest ?? null,
+        budget:           data.budget ?? null,
+        exam_type:        data.exam_type ?? null,
+        exam_score:       data.exam_score ?? null,
+        career_goal:      data.career_goal ?? null,
+        notes:            data.notes ?? null,
+        source:           data.source ?? 'website',
+        page_url:         data.page_url ?? null,
+        status:           'new',
+      })
+      .select('id')
+      .single()
+    if (!error && row) leadId = row.id
+    else if (error) console.error('[insertLead] Supabase write failed:', error.message)
   } catch (err) {
-    console.error('[insertLead] email failed:', err)
+    console.error('[insertLead] Supabase error:', err)
   }
-  return nextId()
+
+  // 2. Fire email async (non-blocking — DB write already succeeded)
+  sendLeadEmail({ ...data }).catch((e) =>
+    console.error('[insertLead] email failed:', e)
+  )
+
+  return leadId
 }
 
-export async function getAllLeads(_filters?: {
+export async function getAllLeads(filters?: {
   status?: string; source?: string; stream?: string
   search?: string; page?: number; limit?: number
 }): Promise<{ leads: Lead[]; total: number; page: number; totalPages: number }> {
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const page  = filters?.page  ?? 1
+    const limit = filters?.limit ?? 100
+    const start = (page - 1) * limit
+
+    let query = admin
+      .from('leads')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(start, start + limit - 1)
+
+    if (filters?.status)  query = query.eq('status', filters.status)
+    if (filters?.source)  query = query.eq('source', filters.source)
+    if (filters?.stream)  query = query.eq('stream', filters.stream)
+    if (filters?.search) {
+      query = query.or(
+        `name.ilike.%${filters.search}%,email.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`
+      )
+    }
+
+    const { data, count, error } = await query
+    if (error) throw error
+    const total = count ?? 0
+    return {
+      leads:      (data ?? []) as Lead[],
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    }
+  } catch (err) {
+    console.error('[getAllLeads] Supabase error:', err)
+  }
   return { leads: [], total: 0, page: 1, totalPages: 0 }
 }
 
-export async function updateLeadStatus(_id?: number, _status?: string, _notes?: string): Promise<void> { /* no-op */ }
+export async function updateLeadStatus(
+  id?: string,
+  status?: string,
+  notes?: string
+): Promise<void> {
+  if (!id) return
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const update: Record<string, string> = {}
+    if (status) update.status = status
+    if (notes !== undefined) update.notes = notes
+    const { error } = await admin.from('leads').update(update).eq('id', id)
+    if (error) console.error('[updateLeadStatus] Supabase error:', error.message)
+  } catch (err) {
+    console.error('[updateLeadStatus] error:', err)
+  }
+}
 
 export async function getLeadsStats(): Promise<AdminStats> {
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+
+    const now   = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
+    const [
+      { count: total },
+      { count: leadsToday },
+      { count: leadsThisWeek },
+      { count: newLeads },
+      { count: contactedLeads },
+      { count: convertedLeads },
+      { data: bySource },
+      { data: byStream },
+    ] = await Promise.all([
+      admin.from('leads').select('*', { count: 'exact', head: true }),
+      admin.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', today),
+      admin.from('leads').select('*', { count: 'exact', head: true }).gte('created_at', weekAgo),
+      admin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new'),
+      admin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'contacted'),
+      admin.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'converted'),
+      admin.from('leads').select('source').not('source', 'is', null),
+      admin.from('leads').select('stream').not('stream', 'is', null),
+    ])
+
+    // Aggregate source counts
+    const sourceMap: Record<string, number> = {}
+    for (const r of (bySource ?? [])) {
+      const s = (r as { source: string }).source
+      sourceMap[s] = (sourceMap[s] ?? 0) + 1
+    }
+    const leadsBySource = Object.entries(sourceMap).map(([source, count]) => ({ source, count }))
+
+    // Aggregate stream counts
+    const streamMap: Record<string, number> = {}
+    for (const r of (byStream ?? [])) {
+      const s = (r as { stream: string }).stream
+      streamMap[s] = (streamMap[s] ?? 0) + 1
+    }
+    const leadsByStream = Object.entries(streamMap).map(([stream, count]) => ({ stream, count }))
+
+    return {
+      totalLeads:      total      ?? 0,
+      leadsToday:      leadsToday ?? 0,
+      leadsThisWeek:   leadsThisWeek ?? 0,
+      newLeads:        newLeads   ?? 0,
+      contactedLeads:  contactedLeads ?? 0,
+      convertedLeads:  convertedLeads ?? 0,
+      leadsBySource,
+      leadsByStream,
+      dailyTrend: [],
+    }
+  } catch (err) {
+    console.error('[getLeadsStats] error:', err)
+  }
   return {
     totalLeads: 0, leadsToday: 0, leadsThisWeek: 0,
     newLeads: 0, contactedLeads: 0, convertedLeads: 0,
@@ -50,39 +187,119 @@ export async function getLeadsStats(): Promise<AdminStats> {
 }
 
 export async function exportLeadsCSV(): Promise<string> {
-  return 'name,phone,email,source\n'
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data, error } = await admin
+      .from('leads')
+      .select('name,email,phone,stream,college_interest,source,status,notes,created_at')
+      .order('created_at', { ascending: false })
+      .limit(5000)
+    if (error) throw error
+
+    const header = 'name,email,phone,stream,college_interest,source,status,notes,created_at\n'
+    const rows = (data ?? []).map((r: Record<string, unknown>) =>
+      [
+        r.name, r.email, r.phone, r.stream, r.college_interest,
+        r.source, r.status, r.notes, r.created_at,
+      ]
+        .map((v) => (v == null ? '' : `"${String(v).replace(/"/g, '""')}"`))
+        .join(',')
+    )
+    return header + rows.join('\n')
+  } catch (err) {
+    console.error('[exportLeadsCSV] error:', err)
+  }
+  return 'name,email,phone,stream,college_interest,source,status,notes,created_at\n'
 }
 
 // ── ENQUIRY FUNCTIONS ─────────────────────────────────────────────────────────
 
 export async function insertEnquiry(
   data: Omit<Enquiry, 'id' | 'created_at'>
-): Promise<number> {
+): Promise<string> {
+  let id = crypto.randomUUID()
+
   try {
-    await sendLeadEmail({ type: 'Enquiry', ...data })
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data: row, error } = await admin
+      .from('leads')
+      .insert({
+        name:             data.name,
+        email:            data.email ?? null,
+        phone:            data.phone ?? null,
+        college_interest: data.college_name,
+        course_interest:  data.course ?? null,
+        notes:            data.message ?? null,
+        source:           'enquiry_form',
+        status:           'new',
+      })
+      .select('id')
+      .single()
+    if (!error && row) id = row.id
+    else if (error) console.error('[insertEnquiry] Supabase write failed:', error.message)
   } catch (err) {
-    console.error('[insertEnquiry] email failed:', err)
+    console.error('[insertEnquiry] error:', err)
   }
-  return nextId()
+
+  sendLeadEmail({ type: 'Enquiry', ...data }).catch((e) =>
+    console.error('[insertEnquiry] email failed:', e)
+  )
+  return id
 }
 
 export async function getAllEnquiries(): Promise<Enquiry[]> {
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data, error } = await admin
+      .from('leads')
+      .select('*')
+      .eq('source', 'enquiry_form')
+      .order('created_at', { ascending: false })
+      .limit(500)
+    if (error) throw error
+    return (data ?? []) as unknown as Enquiry[]
+  } catch (err) {
+    console.error('[getAllEnquiries] error:', err)
+  }
   return []
 }
 
-export async function updateEnquiryStatus(): Promise<void> { /* no-op */ }
+export async function updateEnquiryStatus(): Promise<void> { /* no-op — use updateLeadStatus */ }
 
 // ── COUNSELLING FUNCTIONS ─────────────────────────────────────────────────────
 
 export async function insertBooking(
   data: Omit<CounsellingBooking, 'id' | 'created_at'>
-): Promise<number> {
+): Promise<string> {
+  let id = crypto.randomUUID()
+
   try {
-    await sendLeadEmail({ type: 'Counselling Booking', ...data })
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data: row, error } = await admin
+      .from('leads')
+      .insert({
+        name:   data.name,
+        email:  data.email ?? null,
+        phone:  data.phone ?? null,
+        source: 'counselling_booking',
+        status: 'new',
+      })
+      .select('id')
+      .single()
+    if (!error && row) id = row.id
+    else if (error) console.error('[insertBooking] Supabase write failed:', error.message)
   } catch (err) {
-    console.error('[insertBooking] email failed:', err)
+    console.error('[insertBooking] error:', err)
   }
-  return nextId()
+
+  sendLeadEmail({ type: 'Counselling Booking', ...data }).catch((e) =>
+    console.error('[insertBooking] email failed:', e)
+  )
+  return id
 }
 
 // ── COLLEGE TYPES ─────────────────────────────────────────────────────────────
@@ -258,25 +475,28 @@ export async function getAllColleges(filters?: {
     const { createAdminClient } = await import('@/lib/supabase/admin')
     const admin = createAdminClient()
     const statusFilter = filters?.status ?? 'published'
+    const page  = filters?.page  ?? 1
+    const limit = filters?.limit ?? 500
+    const start = (page - 1) * limit
+
     let query = admin
       .from('colleges')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('status', statusFilter)
       .order('name')
-      .limit(filters?.limit ?? 500)
+      .range(start, start + limit - 1)
+
     if (filters?.stream) query = query.ilike('stream', filters.stream)
     if (filters?.city)   query = query.ilike('city', `%${filters.city}%`)
     if (filters?.search) query = query.or(
-      `name.ilike.%${filters.search}%,short_name.ilike.%${filters.search}%`
+      `name.ilike.%${filters.search}%,short_name.ilike.%${filters.search}%,stream.ilike.%${filters.search}%`
     )
-    const { data, error } = await query
+
+    const { data, count, error } = await query
     if (!error && data && data.length > 0) {
       const list = (data as Record<string, unknown>[]).map(supabaseRowToDBCollege)
-      const total = list.length
-      const page = filters?.page ?? 1
-      const limit = filters?.limit ?? 500
-      const start = (page - 1) * limit
-      return { colleges: list.slice(start, start + limit), total, page, totalPages: Math.ceil(total / limit) }
+      const total = count ?? list.length
+      return { colleges: list, total, page, totalPages: Math.ceil(total / limit) }
     }
   } catch { /* fall through to static */ }
 
@@ -348,6 +568,7 @@ export async function getCollegeById(id: number): Promise<DBCollege | null> {
     const { data } = await admin.from('colleges').select('*').eq('id', id).single()
     if (data) return supabaseRowToDBCollege(data as Record<string, unknown>)
   } catch { /* fall through */ }
+  // Fallback: linear search in static data
   const { colleges } = await getAllColleges()
   return colleges.find(x => x.id === id) ?? null
 }
@@ -370,20 +591,45 @@ export async function getCollegeBySlug(slug: string): Promise<DBCollege | null> 
   return colleges.find(c => c.slug === slug) ?? null
 }
 
-export async function insertCollege(): Promise<number> { return nextId() }
-export async function updateCollege(): Promise<void> { /* no-op */ }
-export async function deleteCollege(): Promise<void> { /* no-op */ }
+export async function insertCollege(): Promise<number> {
+  return Date.now()
+}
+export async function updateCollege(): Promise<void> { /* use queries-admin.ts:upsertCollege */ }
+export async function deleteCollege(): Promise<void> { /* use queries-admin.ts:deleteCollege */ }
 
 export async function getCollegesStats(): Promise<{
   total: number; published: number; draft: number; aiGenerated: number
 }> {
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const [
+      { count: total },
+      { count: published },
+      { count: draft },
+      { count: aiGenerated },
+    ] = await Promise.all([
+      admin.from('colleges').select('*', { count: 'exact', head: true }),
+      admin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'published'),
+      admin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'draft'),
+      admin.from('colleges').select('*', { count: 'exact', head: true }).eq('ai_generated', true),
+    ])
+    return {
+      total:       total       ?? 0,
+      published:   published   ?? 0,
+      draft:       draft       ?? 0,
+      aiGenerated: aiGenerated ?? 0,
+    }
+  } catch (err) {
+    console.error('[getCollegesStats] error:', err)
+  }
   return { total: staticColleges.length, published: staticColleges.length, draft: 0, aiGenerated: 0 }
 }
 
 // ── BLOG TYPES ────────────────────────────────────────────────────────────────
 
 export interface DBBlog {
-  id?: number
+  id?: number | string
   slug: string
   title: string
   excerpt?: string
@@ -404,6 +650,26 @@ export interface DBBlog {
 
 // ── BLOG FUNCTIONS ────────────────────────────────────────────────────────────
 
+/** Map a Supabase blogs row to DBBlog */
+function supabaseBlogToDBBlog(row: Record<string, unknown>): DBBlog {
+  return {
+    id:           row.id as string,
+    slug:         row.slug as string,
+    title:        row.title as string,
+    excerpt:      row.excerpt as string | undefined,
+    body:         (row.content ?? row.body) as string | undefined,
+    author:       row.author_id as string | undefined,  // UUID; name lookup is optional
+    category:     row.category as string | undefined,
+    tags:         row.tags as string[] | undefined,
+    read_time:    row.read_time != null ? String(row.read_time) + ' min' : undefined,
+    status:       row.status as string | undefined,
+    image_url:    (row.image_url ?? row.cover_url) as string | undefined,
+    published_at: (row.published_at ?? row.created_at) as string | undefined,
+    created_at:   row.created_at as string | undefined,
+    updated_at:   row.updated_at as string | undefined,
+  }
+}
+
 export async function getAllBlogs(filters?: {
   status?: string
   excludeArchived?: boolean
@@ -412,6 +678,36 @@ export async function getAllBlogs(filters?: {
   page?: number
   limit?: number
 }): Promise<{ blogs: DBBlog[]; total: number; page: number; totalPages: number }> {
+  // ── Try Supabase first ──────────────────────────────────────────────────────
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const page  = filters?.page  ?? 1
+    const limit = filters?.limit ?? 10
+    const start = (page - 1) * limit
+
+    let query = admin
+      .from('blogs')
+      .select('id, slug, title, excerpt, content, author_id, category, tags, image_url, cover_url, status, published_at, read_time, views, created_at, updated_at', { count: 'exact' })
+      .eq('status', filters?.status ?? 'published')
+      .order('published_at', { ascending: false })
+      .range(start, start + limit - 1)
+
+    if (filters?.category) query = query.ilike('category', filters.category)
+    if (filters?.search)   query = query.or(
+      `title.ilike.%${filters.search}%,excerpt.ilike.%${filters.search}%`
+    )
+
+    const { data, count, error } = await query
+
+    if (!error && data && data.length > 0) {
+      const blogs = (data as Record<string, unknown>[]).map(supabaseBlogToDBBlog)
+      const total = count ?? blogs.length
+      return { blogs, total, page, totalPages: Math.ceil(total / limit) }
+    }
+  } catch { /* fall through to static */ }
+
+  // ── Fallback: static data ───────────────────────────────────────────────────
   let list: DBBlog[] = staticBlogs.map(b => ({
     id:           b.id,
     slug:         b.slug,
@@ -444,24 +740,62 @@ export async function getAllBlogs(filters?: {
   const page = filters?.page ?? 1
   const limit = filters?.limit ?? 10
   const start = (page - 1) * limit
-  const paginated = list.slice(start, start + limit)
 
-  return { blogs: paginated, total, page, totalPages: Math.ceil(total / limit) }
+  return { blogs: list.slice(start, start + limit), total, page, totalPages: Math.ceil(total / limit) }
 }
 
-export async function getBlogById(id: number): Promise<DBBlog | null> {
-  const { blogs } = await getAllBlogs()
-  return blogs.find(b => b.id === id) ?? null
+export async function getBlogById(id: string | number): Promise<DBBlog | null> {
+  // Try Supabase direct lookup first
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data } = await admin
+      .from('blogs')
+      .select('*')
+      .eq('id', String(id))
+      .single()
+    if (data) return supabaseBlogToDBBlog(data as Record<string, unknown>)
+  } catch { /* fall through */ }
+  // Fallback: search static
+  const match = staticBlogs.find(b => b.id === id)
+  if (!match) return null
+  return {
+    id: match.id, slug: match.slug, title: match.title,
+    excerpt: match.excerpt, body: match.body, author: match.author,
+    category: match.category, tags: match.tags, read_time: match.readTime,
+    status: 'published', image_url: match.image,
+    published_at: match.publishedAt ?? match.date, created_at: match.date,
+  }
 }
 
 export async function getBlogBySlug(slug: string): Promise<DBBlog | null> {
-  const { blogs } = await getAllBlogs()
-  return blogs.find(b => b.slug === slug) ?? null
+  // Try Supabase direct slug lookup — no limit, no pagination
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data } = await admin
+      .from('blogs')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .single()
+    if (data) return supabaseBlogToDBBlog(data as Record<string, unknown>)
+  } catch { /* fall through */ }
+  // Fallback: search all static blogs (no limit)
+  const match = staticBlogs.find(b => b.slug === slug)
+  if (!match) return null
+  return {
+    id: match.id, slug: match.slug, title: match.title,
+    excerpt: match.excerpt, body: match.body, author: match.author,
+    category: match.category, tags: match.tags, read_time: match.readTime,
+    status: 'published', image_url: match.image,
+    published_at: match.publishedAt ?? match.date, created_at: match.date,
+  }
 }
 
-export async function insertBlog(): Promise<number> { return nextId() }
-export async function updateBlog(): Promise<void> { /* no-op */ }
-export async function deleteBlog(): Promise<void> { /* no-op */ }
+export async function insertBlog(): Promise<string> { return crypto.randomUUID() }
+export async function updateBlog(): Promise<void>   { /* use queries-admin.ts:upsertBlog */ }
+export async function deleteBlog(): Promise<void>   { /* use queries-admin.ts:deleteBlog */ }
 
 // ── CITY PAGE TYPES ───────────────────────────────────────────────────────────
 
