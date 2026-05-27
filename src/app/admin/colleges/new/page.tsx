@@ -187,6 +187,14 @@ export default function NewCollegePage() {
             hint="Comma-separated: used for search and filtering" />
         </section>
 
+        {/* ── Alumni ──────────────────────────────────────────── */}
+        <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
+          <h2 className="font-bold text-gray-800 text-sm uppercase tracking-wider border-b border-gray-100 pb-2">Notable Alumni</h2>
+          <TextareaField label="Notable Alumni" name="alumni" rows={6}
+            placeholder="Sundar Pichai | CEO, Google | Batch 1993&#10;Narayan Murthy | Founder, Infosys | Batch 1978&#10;Ratan Tata | Chairman Emeritus, Tata Group"
+            hint="Format: Name | Designation | Batch (one per line). Batch is optional." />
+        </section>
+
         {/* ── FAQs ────────────────────────────────────────────── */}
         <section className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
           <h2 className="font-bold text-gray-800 text-sm uppercase tracking-wider border-b border-gray-100 pb-2">FAQs</h2>

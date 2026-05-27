@@ -12,28 +12,41 @@ const COLLEGE_BANNER = "https://images.unsplash.com/photo-1562774053-70193937458
 
 const SHORTLIST_KEY = "shortlisted_colleges"
 
+function safeLS(key: string): string | null {
+  try { return localStorage.getItem(key) } catch { return null }
+}
+
 interface CollegeCardProps {
   college: College
   variant?: "default" | "compact" | "featured"
   priority?: boolean
 }
 
+function abbrev(shortName: string): string {
+  const first = shortName.split(/[\s\-]/)[0]
+  return first.slice(0, 5).toUpperCase()
+}
+
 export default function CollegeCard({ college, variant = "default" }: CollegeCardProps) {
   const [isShortlisted, setIsShortlisted] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem(SHORTLIST_KEY)
-    if (stored) setIsShortlisted(JSON.parse(stored).includes(college.slug))
+    try {
+      const stored = safeLS(SHORTLIST_KEY)
+      if (stored) setIsShortlisted(JSON.parse(stored).includes(college.slug))
+    } catch {}
   }, [college.slug])
 
   const toggleShortlist = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    const stored = localStorage.getItem(SHORTLIST_KEY)
-    let list: string[] = stored ? JSON.parse(stored) : []
-    list = isShortlisted ? list.filter(s => s !== college.slug) : [...list, college.slug]
-    localStorage.setItem(SHORTLIST_KEY, JSON.stringify(list))
-    setIsShortlisted(!isShortlisted)
+    try {
+      const stored = safeLS(SHORTLIST_KEY)
+      let list: string[] = stored ? JSON.parse(stored) : []
+      list = isShortlisted ? list.filter(s => s !== college.slug) : [...list, college.slug]
+      localStorage.setItem(SHORTLIST_KEY, JSON.stringify(list))
+      setIsShortlisted(!isShortlisted)
+    } catch {}
   }
 
   /* ── Compact variant ── */
@@ -52,7 +65,7 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
                 sizes="40px"
               />
             ) : (
-              <span className="text-[9px] font-bold text-white leading-tight text-center px-0.5">{college.shortName}</span>
+              <span className="text-[9px] font-black text-white leading-tight text-center tracking-tight">{abbrev(college.shortName)}</span>
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -88,7 +101,7 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
         {/* ── Header with campus image as background ── */}
         <div
           className="relative p-4 pb-3 overflow-hidden"
-          style={{ backgroundImage: `url(${COLLEGE_BANNER})`, backgroundSize: "cover", backgroundPosition: "center" }}
+          style={{ backgroundImage: `url(${college.image || COLLEGE_BANNER})`, backgroundSize: "cover", backgroundPosition: "center" }}
         >
           {/* semi-transparent overlay — image visible, text still readable */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628]/60 via-[#0A1628]/55 to-[#0A1628]/70" />
@@ -109,7 +122,7 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
 
           {/* Abbreviation badge + name row */}
           <div className="relative z-10 flex items-start gap-3 pr-10">
-            {/* Logo badge — shows college logo when available, falls back to shortName text */}
+            {/* Logo badge — logo_url first, then cover image, then abbreviation text */}
             <div className="shrink-0 w-14 h-14 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden">
               {college.logo ? (
                 <Image
@@ -121,8 +134,8 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
                   sizes="56px"
                 />
               ) : (
-                <span className="text-[#0A1628] font-extrabold text-[10px] leading-tight text-center px-1 break-all">
-                  {college.shortName}
+                <span className="text-[#0A1628] font-black text-[11px] leading-tight text-center tracking-tight px-1">
+                  {abbrev(college.shortName)}
                 </span>
               )}
             </div>

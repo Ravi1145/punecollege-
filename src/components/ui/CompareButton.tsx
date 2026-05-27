@@ -42,6 +42,7 @@ export default function CompareButton({ collegeSlug, collegeName }: CompareButto
     }
 
     localStorage.setItem(COMPARE_KEY, JSON.stringify(list))
+    window.dispatchEvent(new Event("compare-updated"))
     setCompareList(list)
     setIsSelected(!isSelected)
   }
@@ -75,28 +76,30 @@ export function CompareFloatingBar() {
   const router = useRouter()
 
   useEffect(() => {
-    const checkStorage = () => {
+    const syncList = () => {
       const stored = localStorage.getItem(COMPARE_KEY)
-      if (stored) setCompareList(JSON.parse(stored))
-      else setCompareList([])
+      setCompareList(stored ? JSON.parse(stored) : [])
     }
-    checkStorage()
-    window.addEventListener("storage", checkStorage)
-    const interval = setInterval(checkStorage, 500)
+    syncList()
+    // "storage" fires on cross-tab changes; "compare-updated" fires on same-tab changes
+    window.addEventListener("storage", syncList)
+    window.addEventListener("compare-updated", syncList)
     return () => {
-      window.removeEventListener("storage", checkStorage)
-      clearInterval(interval)
+      window.removeEventListener("storage", syncList)
+      window.removeEventListener("compare-updated", syncList)
     }
   }, [])
 
   const removeFromCompare = (slug: string) => {
     const newList = compareList.filter((c) => c.slug !== slug)
     localStorage.setItem(COMPARE_KEY, JSON.stringify(newList))
+    window.dispatchEvent(new Event("compare-updated"))
     setCompareList(newList)
   }
 
   const clearAll = () => {
     localStorage.removeItem(COMPARE_KEY)
+    window.dispatchEvent(new Event("compare-updated"))
     setCompareList([])
   }
 

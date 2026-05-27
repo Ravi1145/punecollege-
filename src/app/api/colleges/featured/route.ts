@@ -44,32 +44,58 @@ function mapRow(db: Record<string, unknown>): College {
 export async function GET() {
   try {
     const admin = createAdminClient()
+
+    // Fetch ALL published colleges — featured ones sort first so they get the badge
     const { data, error } = await admin
       .from('colleges')
       .select('*')
       .eq('status', 'published')
-      .eq('featured', true)
-      .order('featured_order', { ascending: true })
-      .limit(20)
+      .order('featured', { ascending: false })           // featured=true first
+      .order('featured_order', { ascending: true, nullsFirst: false })
+      .order('rating', { ascending: false })
+      .limit(60)
 
     if (error || !data || data.length === 0) {
-      // Fallback: top-rated static colleges
+      // Fallback: static colleges sorted by NIRF rank
       const fallback = [...staticColleges]
-        .sort((a, b) => (b.nirfRank ? 0 : 1) - (a.nirfRank ? 0 : 1))
-        .slice(0, 8)
+        .sort((a, b) => (a.nirfRank ?? 999) - (b.nirfRank ?? 999))
+        .slice(0, 12)
       return NextResponse.json(
-        { colleges: fallback, total: fallback.length, source: 'static' },
+        { colleges: fallback, featuredSlugs: [], total: fallback.length, source: 'static' },
         { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' } }
       )
     }
 
     const mapped = (data as Record<string, unknown>[]).map(mapRow)
+
+    // Track which slugs are featured so the UI can badge them
+    const featuredSlugs = (data as Record<string, unknown>[])
+      .filter(r => r.featured === true)
+      .map(r => r.slug as string)
+
+    // If DB has fewer than 12, pad with static colleges not already in the list
+    let colleges = mapped
+    if (mapped.length < 12) {
+      const dbSlugs = new Set(mapped.map(c => c.slug))
+      const fill = staticColleges
+        .filter(c => !dbSlugs.has(c.slug))
+        .slice(0, 12 - mapped.length)
+      colleges = [...mapped, ...fill]
+    }
+
     return NextResponse.json(
-      { colleges: mapped, total: mapped.length, source: 'db' },
+      { colleges, featuredSlugs, total: colleges.length, source: 'db' },
       { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' } }
     )
   } catch (err) {
     console.error('[GET /api/colleges/featured]', err)
-    return NextResponse.json({ colleges: [], total: 0 })
+    // Fallback on any error
+    const fallback = [...staticColleges]
+      .sort((a, b) => (a.nirfRank ?? 999) - (b.nirfRank ?? 999))
+      .slice(0, 12)
+    return NextResponse.json(
+      { colleges: fallback, featuredSlugs: [], total: fallback.length, source: 'static' },
+      { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120' } }
+    )
   }
 }

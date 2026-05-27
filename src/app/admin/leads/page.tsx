@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -158,8 +159,8 @@ export default async function AdminLeadsPage({
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {leads.map((lead: Lead, idx: number) => (
-                  <>
-                    <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                  <Fragment key={lead.id}>
+                    <tr className="hover:bg-gray-50 transition-colors">
                       {/* # */}
                       <td className="px-4 py-3 text-xs text-gray-400 font-mono w-10 whitespace-nowrap">
                         {leads.length - idx}
@@ -256,7 +257,7 @@ export default async function AdminLeadsPage({
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>

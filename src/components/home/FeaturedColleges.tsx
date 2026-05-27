@@ -32,14 +32,14 @@ function setCache(colleges: College[]) {
 
 export default function FeaturedColleges() {
   const [activeTab, setActiveTab] = useState("All")
-  const [featuredColleges, setFeaturedColleges] = useState<College[]>([])
+  const [allColleges, setAllColleges] = useState<College[]>([])
+  const [featuredSet, setFeaturedSet] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Use cached data instantly — no flash of static colleges
     const cached = getCached()
     if (cached) {
-      setFeaturedColleges(cached)
+      setAllColleges(cached)
       setLoading(false)
       return
     }
@@ -48,20 +48,17 @@ export default function FeaturedColleges() {
       .then((r) => r.json())
       .then((data) => {
         if (data.colleges?.length > 0) {
-          setFeaturedColleges(data.colleges)
+          setAllColleges(data.colleges)
+          setFeaturedSet(new Set(data.featuredSlugs ?? []))
           setCache(data.colleges)
+        } else {
+          // client-side static fallback
+          setAllColleges(staticColleges.slice(0, 12))
         }
       })
-      .catch(() => {})
+      .catch(() => setAllColleges(staticColleges.slice(0, 12)))
       .finally(() => setLoading(false))
   }, [])
-
-  // Featured DB colleges first, then static fill (deduped)
-  const allColleges: College[] = (() => {
-    const featuredSlugs = new Set(featuredColleges.map((c) => c.slug))
-    const staticFill = staticColleges.filter((c) => !featuredSlugs.has(c.slug))
-    return [...featuredColleges, ...staticFill]
-  })()
 
   const filtered = allColleges
     .filter((c) => {
@@ -72,8 +69,6 @@ export default function FeaturedColleges() {
     })
     .slice(0, 12)
 
-  const featuredSet = new Set(featuredColleges.map((c) => c.slug))
-
   return (
     <section className="py-16 bg-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,10 +78,10 @@ export default function FeaturedColleges() {
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Featured Colleges in Pune</h2>
             <p className="text-gray-500 mt-2 flex items-center gap-1.5">
-              {!loading && featuredColleges.length > 0 && (
+              {!loading && featuredSet.size > 0 && (
                 <>
                   <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  <span className="text-amber-600 font-medium">{featuredColleges.length} featured</span>
+                  <span className="text-amber-600 font-medium">{featuredSet.size} featured</span>
                   <span className="text-gray-300">·</span>
                 </>
               )}

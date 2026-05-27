@@ -3,8 +3,12 @@ import { ZodError } from 'zod'
 import { counsellingSchema } from '@/lib/validations'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendLeadEmail } from '@/lib/mailer'
+import { isAllowedOrigin } from '@/lib/csrf'
 
 export async function POST(req: NextRequest) {
+  if (!isAllowedOrigin(req)) {
+    return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 })
+  }
   try {
     const body = await req.json()
     const validated = counsellingSchema.parse(body)

@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { anthropic } from "@/lib/anthropic"
 import { colleges } from "@/data/colleges"
+import { rateLimit } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown"
+  const { allowed } = rateLimit(ip, 10, 60_000)
+  if (!allowed) {
+    return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 })
+  }
+
   try {
     const { stream, budget, careerGoal, examType, examScore, preferences } = await req.json()
 

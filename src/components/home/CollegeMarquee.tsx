@@ -1,11 +1,9 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Building2 } from "lucide-react"
+import { colleges as staticColleges } from "@/data/colleges"
 
-// Deterministic accent colour per college (based on first char of slug)
+// Deterministic accent colour per college (based on slug hash)
 const PALETTE = [
   { color: "#1E40AF", bg: "#EFF6FF" },
   { color: "#B91C1C", bg: "#FEF2F2" },
@@ -32,40 +30,40 @@ interface MarqueeCollege {
   logo?: string
 }
 
-// Fallback list shown before fetch completes
-const FALLBACK: MarqueeCollege[] = [
-  { slug: "coep-college-of-engineering-pune",                name: "College of Engineering Pune", shortName: "COEP" },
-  { slug: "mit-wpu-mit-world-peace-university",              name: "MIT World Peace University",        shortName: "MIT-WPU" },
-  { slug: "pict-pune-institute-of-computer-technology",      name: "Pune Institute of Computer Tech",   shortName: "PICT" },
-  { slug: "sibm-symbiosis-institute-business-management-pune", name: "Symbiosis Institute of Business", shortName: "SIBM" },
-  { slug: "vit-pune-vishwakarma-institute-of-technology",    name: "Vishwakarma Institute of Tech",     shortName: "VIT Pune" },
-  { slug: "dy-patil-college-engineering-akurdi-pune",        name: "DY Patil College of Engineering",   shortName: "DY Patil" },
-  { slug: "pccoer-pimpri-chinchwad-college-of-engineering",  name: "Pimpri Chinchwad College of Engg",  shortName: "PCCOE" },
-  { slug: "bj-medical-college-pune",                         name: "BJ Medical College",                shortName: "BJMC" },
-]
+async function getMarqueeColleges(): Promise<MarqueeCollege[]> {
+  try {
+    const { createAdminClient } = await import('@/lib/supabase/admin')
+    const admin = createAdminClient()
+    const { data } = await admin
+      .from('colleges')
+      .select('slug, name, short_name, logo_url, cover_url')
+      .eq('status', 'published')
+      .order('featured_order', { ascending: true })
+      .limit(20)
+    if (data && data.length > 0) {
+      return (data as { slug: string; name: string; short_name: string | null; logo_url: string | null; cover_url: string | null }[]).map(c => ({
+        slug:      c.slug,
+        name:      c.name,
+        shortName: c.short_name ?? c.name,
+        // logo_url first, then cover_url as fallback
+        logo:      c.logo_url ?? c.cover_url ?? undefined,
+      }))
+    }
+  } catch { /* fall through to static */ }
 
-export default function CollegeMarquee() {
-  const [colleges, setColleges] = useState<MarqueeCollege[]>(FALLBACK)
+  // Static fallback — use logo if available, otherwise image (cover) as icon
+  return staticColleges.slice(0, 20).map((c) => ({
+    slug:      c.slug,
+    name:      c.name,
+    shortName: c.shortName,
+    logo:      c.logo ?? c.image,
+  }))
+}
 
-  useEffect(() => {
-    fetch("/api/colleges?limit=20")
-      .then((r) => r.json())
-      .then((data) => {
-        const list: MarqueeCollege[] = (data.colleges ?? []).map(
-          (c: { slug: string; name: string; shortName?: string; logo?: string }) => ({
-            slug:      c.slug,
-            name:      c.name,
-            shortName: c.shortName ?? c.name.split(" ").map((w: string) => w[0]).join("").slice(0, 5),
-            logo:      c.logo,
-          })
-        )
-        if (list.length >= 4) setColleges(list)
-      })
-      .catch(() => {/* keep fallback */})
-  }, [])
-
+export default async function CollegeMarquee() {
+  const COLLEGES = await getMarqueeColleges()
   // Triple for seamless infinite loop
-  const ITEMS = [...colleges, ...colleges, ...colleges]
+  const ITEMS = [...COLLEGES, ...COLLEGES, ...COLLEGES]
 
   return (
     <section className="bg-white py-8 border-b border-gray-100">

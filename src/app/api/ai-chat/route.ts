@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { anthropic, COUNSELOR_SYSTEM_PROMPT } from "@/lib/anthropic"
+import { rateLimit } from "@/lib/ratelimit"
 
 export const runtime = "nodejs"
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 20 requests per minute per IP
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown"
+  const { allowed } = rateLimit(ip, 20, 60_000)
+  if (!allowed) {
+    return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 })
+  }
+
   try {
     const { messages, userMessage } = await req.json()
 
@@ -12,10 +20,12 @@ export async function POST(req: NextRequest) {
     }
 
     const apiMessages = [
-      ...(messages || []).map((m: { role: string; content: string }) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      })),
+      ...(messages || [])
+        .filter((m: { role: string; content: string }) => m.content?.trim())
+        .map((m: { role: string; content: string }) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        })),
       { role: "user" as const, content: userMessage },
     ]
 

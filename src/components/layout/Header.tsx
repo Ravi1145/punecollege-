@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
   Menu, X, GraduationCap, ChevronDown, Sparkles, PhoneCall,
@@ -240,14 +241,13 @@ export default function Header() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
             {/* Logo */}
             <Link href="/" className="flex items-center flex-shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/logo.png"
                 alt="CollegePune — Best Colleges in Pune"
                 height={56}
                 width={210}
-                className="h-16 sm:h-20 lg:h-20 w-auto"
-                fetchPriority="high"
+                className="h-14 sm:h-16 w-auto"
+                priority
               />
             </Link>
 
@@ -509,8 +509,7 @@ export default function Header() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 bg-[#0A1628]">
               <Link href="/" onClick={() => setMobileOpen(false)}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="CollegePune" height={40} width={150} className="h-16 sm:h-20 w-auto" />
+                <Image src="/logo.png" alt="CollegePune" height={40} width={150} className="h-10 w-auto" priority />
               </Link>
               <button onClick={() => setMobileOpen(false)} className="text-white/70 hover:text-white p-1">
                 <X className="w-5 h-5" />

@@ -38,6 +38,7 @@ function parseCollegeForm(formData: FormData) {
     rankings_extra:    str(formData, 'rankings_extra'),
     scholarships:      str(formData, 'scholarships'),
     facilities_detail: str(formData, 'facilities_detail'),
+    alumni:            str(formData, 'alumni'),
     faqs:              str(formData, 'faqs'),
   }
 

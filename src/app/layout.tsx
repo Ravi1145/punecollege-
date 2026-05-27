@@ -87,6 +87,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
+    url: process.env.NEXT_PUBLIC_BASE_URL || "https://collegepune.com",
     siteName: "CollegePune",
     images: [
       {
@@ -149,7 +150,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <body className="min-h-full flex flex-col font-dm-sans bg-white">
         {/* Google Tag Manager (noscript) */}
         <noscript>
-          <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8MN7G8X" height="0" width="0" style={{ display: "none", visibility: "hidden" }} />
+          <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P8MN7G8X" title="Google Tag Manager" height="0" width="0" style={{ display: "none", visibility: "hidden" }} />
         </noscript>
         <LeadBar />
         <Header />

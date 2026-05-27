@@ -365,7 +365,6 @@ export function generateLocalBusinessSchema() {
       closes: "18:00",
     },
     priceRange: "Free",
-    servesCuisine: undefined,
     areaServed: {
       "@type": "City",
       name: "Pune",
@@ -396,7 +395,7 @@ export function generateArticleSchema(article: {
 
   return {
     "@context": "https://schema.org",
-    "@type": ["Article", "BlogPosting"],
+    "@type": "BlogPosting",
     "@id": pageUrl,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
     headline: article.title.slice(0, 110),
