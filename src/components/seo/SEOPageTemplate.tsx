@@ -22,6 +22,62 @@ function formatPkg(n: number): string {
   return `₹${(n / 100000).toFixed(1)} LPA`
 }
 
+// ── Contextual related links per page category / stream ───────────────────
+const STREAM_LINKS: Record<string, { label: string; href: string }[]> = {
+  Engineering: [
+    { label: "Top 10 Engineering Colleges Pune", href: "/top-10-engineering-colleges-in-pune" },
+    { label: "B.Tech Colleges Pune", href: "/btech-colleges-pune" },
+    { label: "Low Fees Engineering Colleges", href: "/low-fees-engineering-colleges-pune" },
+    { label: "Engineering Placements Pune", href: "/engineering-colleges-pune-placement" },
+    { label: "JEE Colleges Pune", href: "/jee-colleges-pune" },
+    { label: "MHT-CET Colleges Pune", href: "/mht-cet-colleges-pune" },
+    { label: "Computer Engineering Pune", href: "/computer-engineering-colleges-pune" },
+    { label: "COEP vs PICT", href: "/coep-vs-pict-pune" },
+    { label: "NAAC A+ Colleges Pune", href: "/naac-a-plus-colleges-pune" },
+    { label: "Compare Colleges", href: "/compare" },
+  ],
+  MBA: [
+    { label: "Top 10 MBA Colleges Pune", href: "/top-10-mba-colleges-in-pune" },
+    { label: "PGDM Colleges Pune", href: "/pgdm-colleges-pune" },
+    { label: "MBA Without CAT Pune", href: "/mba-admission-pune-without-cat" },
+    { label: "MBA Placements Pune", href: "/mba-colleges-pune-placement" },
+    { label: "Low Fees MBA Colleges", href: "/low-fees-mba-colleges-pune" },
+    { label: "CAT Colleges Pune", href: "/cat-colleges-pune" },
+    { label: "SIBM vs SCMHRD", href: "/sibm-vs-scmhrd-pune" },
+    { label: "NAAC A+ Colleges Pune", href: "/naac-a-plus-colleges-pune" },
+    { label: "Compare Colleges", href: "/compare" },
+  ],
+  Medical: [
+    { label: "Top 10 Medical Colleges Pune", href: "/top-10-medical-colleges-in-pune" },
+    { label: "MBBS Colleges Pune", href: "/mbbs-colleges-pune" },
+    { label: "NEET Colleges Pune", href: "/neet-colleges-pune" },
+    { label: "NEET Cutoff Pune", href: "/neet-cutoff-pune-colleges" },
+    { label: "Government Colleges Pune", href: "/government-colleges-pune" },
+    { label: "Compare Colleges", href: "/compare" },
+  ],
+}
+
+const DEFAULT_LINKS: { label: string; href: string }[] = [
+  { label: "Engineering Colleges Pune", href: "/engineering-colleges-pune" },
+  { label: "MBA Colleges Pune", href: "/mba-colleges-pune" },
+  { label: "Medical Colleges Pune", href: "/medical-colleges-pune" },
+  { label: "Government Colleges Pune", href: "/government-colleges-pune" },
+  { label: "NAAC A+ Colleges Pune", href: "/naac-a-plus-colleges-pune" },
+  { label: "Best Placements Pune", href: "/top-placement-colleges-pune" },
+  { label: "Low Fee Colleges Pune", href: "/low-fees-engineering-colleges-pune" },
+  { label: "MHT-CET Colleges Pune", href: "/mht-cet-colleges-pune" },
+  { label: "Law Colleges Pune", href: "/law-colleges-pune" },
+  { label: "Design Colleges Pune", href: "/design-colleges-pune" },
+  { label: "BCA Colleges Pune", href: "/bca-colleges-pune" },
+  { label: "Compare Colleges", href: "/compare" },
+]
+
+function getRelatedLinks(page: SEOPage): { label: string; href: string }[] {
+  const stream = typeof page.filterValue === "string" ? page.filterValue : null
+  if (stream && STREAM_LINKS[stream]) return STREAM_LINKS[stream]
+  return DEFAULT_LINKS
+}
+
 export default function SEOPageTemplate({ page, colleges }: Props) {
   return (
     <div className="min-h-screen bg-surface">
@@ -91,21 +147,12 @@ export default function SEOPageTemplate({ page, colleges }: Props) {
         )}
       </div>
 
-      {/* Related pages */}
+      {/* Related pages — contextual based on page category/stream */}
       <section className="bg-white border-t mt-10 py-12 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-xl font-semibold text-gray-800 mb-6">Related Searches</h2>
           <div className="flex flex-wrap gap-3">
-            {[
-              { label: "Engineering Colleges Pune", href: "/colleges-in-pune/engineering-colleges-pune" },
-              { label: "MBA Colleges Pune", href: "/colleges-in-pune/mba-colleges-pune" },
-              { label: "Government Colleges Pune", href: "/colleges-in-pune/government-colleges-pune" },
-              { label: "NAAC A+ Colleges Pune", href: "/colleges-in-pune/naac-a-plus-colleges-pune" },
-              { label: "Best Placements Pune", href: "/colleges-in-pune/top-placement-colleges-pune" },
-              { label: "Low Fee Colleges Pune", href: "/colleges-in-pune/low-fee-colleges-pune" },
-              { label: "MHT-CET Colleges Pune", href: "/colleges-in-pune/mht-cet-colleges-pune" },
-              { label: "Medical Colleges Pune", href: "/colleges-in-pune/medical-colleges-pune" },
-            ].map((link) => (
+            {getRelatedLinks(page).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

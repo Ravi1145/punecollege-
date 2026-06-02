@@ -30,26 +30,31 @@ const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
 // ── Helper: execute SQL via Supabase pg API ────────────────────────────────
 async function sql(query, label = '') {
   try {
-    // Try via Management API first
-    const resp = await fetch(
-      `https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${SERVICE_KEY}`,
-        },
-        body: JSON.stringify({ query }),
+    // Try via Management API first (requires SUPABASE_ACCESS_TOKEN, not service key)
+    const accessToken = process.env.SUPABASE_ACCESS_TOKEN
+    if (accessToken) {
+      const resp = await fetch(
+        `https://api.supabase.com/v1/projects/${PROJECT_REF}/database/query`,
+        {
+          method: 'POST',
+          signal: AbortSignal.timeout(30_000),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ query }),
+        }
+      )
+      const text = await resp.text()
+      if (resp.ok) {
+        console.log(`  ✅ ${label || query.slice(0, 60)}`)
+        return { ok: true, data: text }
       }
-    )
-    const text = await resp.text()
-    if (resp.ok) {
-      console.log(`  ✅ ${label || query.slice(0, 60)}`)
-      return { ok: true, data: text }
+      console.warn(`  ⚠️  Management API: ${resp.status} — ${text.slice(0, 120)}`)
+    } else {
+      console.warn(`  ⚠️  SUPABASE_ACCESS_TOKEN not set — skipping Management API, falling back to RPC`)
     }
-    // If management API rejects the key, fall through to RPC method
-    console.warn(`  ⚠️  Management API: ${resp.status} — ${text.slice(0, 120)}`)
-    return { ok: false, error: text }
+    return { ok: false, error: 'management api unavailable' }
   } catch (err) {
     console.error(`  ❌ ${label}: ${err.message}`)
     return { ok: false, error: err.message }
@@ -117,10 +122,11 @@ async function section2_indexes() {
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_college_courses_college ON college_courses(college_id)`,
   ]
 
-  for (const idx of indexes) {
+  // Run all indexes in parallel — CONCURRENTLY means no table locks
+  await Promise.all(indexes.map(idx => {
     const name = idx.match(/IF NOT EXISTS (\w+)/)?.[1] ?? idx.slice(0, 40)
-    await sql(idx, name)
-  }
+    return sql(idx, name)
+  }))
 }
 
 // ── Section 3: updated_at trigger ─────────────────────────────────────────
@@ -138,14 +144,14 @@ async function section3_trigger() {
   await sql(fn, 'set_updated_at() function')
 
   const tables = ['colleges', 'blogs', 'leads', 'reviews', 'qa_questions', 'qa_answers', 'alumni', 'hero_banners', 'exams']
-  for (const tbl of tables) {
+  await Promise.all(tables.map(tbl => {
     const q = `
       DROP TRIGGER IF EXISTS trg_updated_at ON ${tbl};
       CREATE TRIGGER trg_updated_at
         BEFORE UPDATE ON ${tbl}
         FOR EACH ROW EXECUTE FUNCTION set_updated_at();`
-    await sql(q, `trigger on ${tbl}`)
-  }
+    return sql(q, `trigger on ${tbl}`)
+  }))
 }
 
 // ── Section 4: Normalise rankings rank ────────────────────────────────────
@@ -207,7 +213,7 @@ async function section5_backfillCourses() {
       c.details ? 'courses_fees'
       AND jsonb_typeof(c.details->'courses_fees') = 'array'
       AND jsonb_array_length(c.details->'courses_fees') > 0
-    ON CONFLICT DO NOTHING;`
+    ;`
   await sql(q, 'Backfill college_courses from details JSONB')
 }
 
@@ -286,10 +292,6 @@ async function section10_verify() {
     if (!error) console.log(`  ✅ ${label}: ${count} rows`)
     else console.warn(`  ⚠️  ${label}: ${error.message}`)
   }
-
-  // Count college_courses rows
-  const { count: ccCount } = await admin.from('college_courses').select('*', { count: 'exact', head: true })
-  console.log(`  ✅ college_courses backfilled: ${ccCount} rows`)
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────
@@ -308,15 +310,25 @@ async function main() {
   }
   console.log(`\n✅ Connected — colleges table has ${count} rows`)
 
-  await section1_storageBucket()
-  await section2_indexes()
-  await section3_trigger()
+  // Sections 1–3 can start immediately (schema + infra, no data deps)
+  await Promise.all([
+    section1_storageBucket(),
+    section2_indexes(),
+    section3_trigger(),
+  ])
+
+  // Section 4 normalises JSONB before section 5 reads it
   await section4_normaliseRankings()
   await section5_backfillCourses()
-  await section6_fts()
-  await section7_featuredUnique()
-  await section8_leadColumns()
-  await section9_aiGenerated()
+
+  // Remaining sections are independent of each other
+  await Promise.all([
+    section6_fts(),
+    section7_featuredUnique(),
+    section8_leadColumns(),
+    section9_aiGenerated(),
+  ])
+
   await section10_verify()
 
   console.log('\n╔══════════════════════════════════════════════════════════════╗')

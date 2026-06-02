@@ -366,15 +366,18 @@ export default async function CollegePage({ params }: Props) {
 
   // Stream hub URL mapping
   const streamHubMap: Record<string, string> = {
-    Engineering:  "/engineering-colleges-pune",
-    MBA:          "/mba-colleges-pune",
-    Medical:      "/medical-colleges-pune",
-    Law:          "/law-colleges-pune",
-    Design:       "/design-colleges-pune",
-    Arts:         "/arts-colleges-pune",
-    Science:      "/science-colleges-pune",
-    Commerce:     "/commerce-colleges-pune",
-    Pharmacy:     "/pharmacy-colleges-pune",
+    Engineering:   "/engineering-colleges-pune",
+    MBA:           "/mba-colleges-pune",
+    Medical:       "/medical-colleges-pune",
+    Law:           "/law-colleges-pune",
+    Design:        "/design-colleges-pune",
+    Arts:          "/arts-colleges-pune",
+    Science:       "/science-colleges-pune",
+    Commerce:      "/commerce-colleges-pune",
+    Pharmacy:      "/pharmacy-colleges-pune",
+    Architecture:  "/architecture-colleges-pune",
+    BBA:           "/bba-colleges-pune",
+    BCA:           "/bca-colleges-pune",
   }
   const streamHub = streamHubMap[college.stream] ?? "/colleges"
 
