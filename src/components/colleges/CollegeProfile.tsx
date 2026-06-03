@@ -1,7 +1,6 @@
 "use client"
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import dynamic from "next/dynamic"
 import {
   MapPin, Phone, Mail, Globe, Award, TrendingUp, Users, BookOpen,
@@ -267,6 +266,7 @@ function buildFaqFallback(college: College): { q: string; a: string }[] {
 export default function CollegeProfile({ college, details }: CollegeProfileProps) {
   const [activeTab, setActiveTab] = useState("overview")
   const [enquiryOpen, setEnquiryOpen] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   // FAQs: prefer details.faqs (DB), then college.faqs (static), then auto-generated
   const faqs: { q: string; a: string }[] =
@@ -294,8 +294,17 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
       )}
 
       {/* ── Hero Header ─────────────────────────────────────────── */}
-      <div className="bg-gradient-to-br from-[#0A1628] to-[#1E3A5F] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-0">
+      <div
+        className="text-white relative"
+        style={{
+          backgroundImage: `url('/college-default-banner.jpg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+        }}
+      >
+        {/* Dark overlay so text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1628]/90 to-[#1E3A5F]/85" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-0">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-blue-300 mb-5">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -306,25 +315,22 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
           </nav>
 
           <div className="flex items-start gap-5 mb-5">
-            {/* Logo — uses next/image for LCP optimisation */}
+            {/* Logo */}
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white/20 backdrop-blur flex-shrink-0 flex items-center justify-center shadow-lg overflow-hidden">
-              {college.logo ? (
-                <Image
+              {college.logo && !logoError ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={college.logo}
                   alt={`${college.shortName} logo`}
-                  fill
-                  sizes="80px"
-                  className="object-contain p-1"
-                  priority
+                  className="w-full h-full object-contain p-1"
+                  onError={() => setLogoError(true)}
                 />
               ) : college.image ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={college.image}
                   alt={`${college.shortName} campus`}
-                  fill
-                  sizes="80px"
-                  className="object-cover"
-                  priority
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <span className="text-white font-extrabold text-xs sm:text-sm leading-tight text-center px-1">
@@ -393,8 +399,8 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
             </div>
           </div>
 
-          {/* Quick Stats Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+          {/* Quick Stats Bar — data-speakable enables AI Overview to extract fee/placement facts */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5" data-speakable="true">
             {[
               { label: "Annual Fees", value: formatFeesRange(college.feesRange.min, college.feesRange.max), icon: IndianRupee },
               { label: "Avg Package", value: formatCurrency(college.avgPlacement), icon: TrendingUp },
@@ -437,9 +443,9 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
             {/* ── OVERVIEW TAB ── */}
             {activeTab === "overview" && (
               <>
-                {/* About */}
+                {/* About — data-speakable enables Google AI Overview extraction */}
                 <SectionCard title={`About ${college.name}`} icon={BookOpen}>
-                  <p className="text-gray-600 leading-relaxed text-sm mb-4">{college.description}</p>
+                  <p className="text-gray-600 leading-relaxed text-sm mb-4" data-speakable="true">{college.description}</p>
                   {college.highlights.length > 0 && (
                     <div className="bg-orange-50 rounded-xl p-4">
                       <h3 className="font-semibold text-gray-900 text-sm mb-3">Key Highlights</h3>
@@ -785,7 +791,24 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
             {/* ── CUTOFFS TAB ── */}
             {activeTab === "cutoffs" && (
               <>
-                {Array.isArray(details?.cutoffs) && details.cutoffs.length > 0 ? (
+                {(() => {
+                  // Normalise: accept both typed CollegeDetails.cutoffs and raw JSONB arrays
+                  const rawCutoffs = (details as Record<string, unknown> | undefined)?.cutoffs
+                  const cutoffRows: { program: string; exam: string; year?: string; general?: string; obc?: string; sc?: string; st?: string; ews?: string }[] =
+                    Array.isArray(rawCutoffs) && rawCutoffs.length > 0
+                      ? (rawCutoffs as Record<string, unknown>[]).map(r => ({
+                          program: String(r.program ?? r.branch ?? r.course ?? "—"),
+                          exam:    String(r.exam ?? r.entrance ?? "—"),
+                          year:    r.year ? String(r.year) : undefined,
+                          general: r.general != null ? String(r.general) : undefined,
+                          obc:     r.obc != null ? String(r.obc) : undefined,
+                          sc:      r.sc != null ? String(r.sc) : undefined,
+                          st:      r.st != null ? String(r.st) : undefined,
+                          ews:     r.ews != null ? String(r.ews) : undefined,
+                        }))
+                      : []
+
+                  if (cutoffRows.length > 0) return (
                   <SectionCard title="Cutoffs 2025" icon={Percent}>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
@@ -800,7 +823,7 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
                           </tr>
                         </thead>
                         <tbody>
-                          {details.cutoffs.map((c, i) => (
+                          {cutoffRows.map((c, i) => (
                             <tr key={i} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
                               <td className="py-3 px-3 font-semibold text-gray-900">{c.program}</td>
                               <td className="py-3 px-3 text-gray-600">{c.exam}</td>
@@ -814,14 +837,17 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
                       </table>
                     </div>
                   </SectionCard>
-                ) : (details as Record<string, unknown>)?.cutoffs ? (
-                  // Admin saved plain text — render as preformatted content
+                  )
+
+                  if (typeof rawCutoffs === 'string' && rawCutoffs.trim()) return (
                   <SectionCard title="Cutoffs" icon={Percent}>
                     <pre className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed font-sans">
-                      {String((details as Record<string, unknown>).cutoffs)}
+                      {rawCutoffs}
                     </pre>
                   </SectionCard>
-                ) : (
+                  )
+
+                  return (
                   <SectionCard title={`${college.shortName} Cutoffs ${new Date().getFullYear()}`} icon={Percent}>
                     <div className="space-y-4">
                       <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
@@ -847,7 +873,8 @@ export default function CollegeProfile({ college, details }: CollegeProfileProps
                       </p>
                     </div>
                   </SectionCard>
-                )}
+                  )
+                })()}
               </>
             )}
 

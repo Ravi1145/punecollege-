@@ -242,6 +242,10 @@ export function generateCollegeSchema(college: {
   naac?: string
   nirfRank?: number | null
   courses?: string[]
+  feesMin?: number
+  feesMax?: number
+  avgPlacement?: number
+  type?: string
   image?: string
   rating?: number
   reviewCount?: number
@@ -249,18 +253,18 @@ export function generateCollegeSchema(college: {
   reviews?: { studentName: string; course: string; year: number; rating: number; title: string; body: string }[]
 }) {
   const pageUrl = `${BASE_URL}/colleges/${college.slug ?? ''}`
+  const today = new Date().toISOString().split('T')[0]
 
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
-    // CollegeOrUniversity is more specific and better recognised by Google for education rich results
     "@type": "CollegeOrUniversity",
-    "@id": pageUrl,
+    "@id": `${pageUrl}#college`,
     name: college.name,
     description: college.description,
     image: college.image
-      ? { "@type": "ImageObject", url: college.image, name: college.name }
-      : undefined,
-    logo: `${BASE_URL}/logo.png`,
+      ? { "@type": "ImageObject", url: college.image, name: college.name, width: 1200, height: 630 }
+      : { "@type": "ImageObject", url: `${BASE_URL}/college-default-banner.jpg`, name: college.name },
+    logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png`, width: 200, height: 60 },
     address: {
       "@type": "PostalAddress",
       streetAddress: college.address,
@@ -272,25 +276,79 @@ export function generateCollegeSchema(college: {
     telephone: college.phone,
     email: college.email,
     url: college.website || pageUrl,
-    sameAs: [college.website].filter(Boolean),
+    sameAs: [college.website, `https://en.wikipedia.org/wiki/${encodeURIComponent(college.name)}`].filter(Boolean),
     foundingDate: college.established.toString(),
-    areaServed: {
-      "@type": "City",
-      name: "Pune",
-      sameAs: "https://en.wikipedia.org/wiki/Pune",
-    },
+    dateModified: `${today}`,
+    areaServed: { "@type": "City", name: "Pune", sameAs: "https://en.wikipedia.org/wiki/Pune" },
+    // Accreditation signals — key for Google AI Overview on education queries
+    ...(college.naac ? {
+      accreditedBy: {
+        "@type": "Organization",
+        name: "National Assessment and Accreditation Council (NAAC)",
+        url: "https://www.naac.gov.in",
+        sameAs: "https://en.wikipedia.org/wiki/National_Assessment_and_Accreditation_Council",
+      },
+    } : {}),
+    // Fees as PriceSpecification — helps AI extract "how much does X cost"
+    ...(college.feesMin && college.feesMax ? {
+      tuitionFeeSpecification: {
+        "@type": "MonetaryAmountDistribution",
+        currency: "INR",
+        minValue: college.feesMin,
+        maxValue: college.feesMax,
+        unitText: "per year",
+      },
+    } : {}),
+    // Courses as educational credentials
     hasOfferCatalog: college.courses?.length ? {
       "@type": "OfferCatalog",
-      name: "Academic Programs",
-      itemListElement: college.courses.slice(0, 8).map((c, i) => ({
+      name: `${college.name} Academic Programs`,
+      itemListElement: college.courses.slice(0, 10).map((c, i) => ({
         "@type": "Offer",
         position: i + 1,
-        itemOffered: { "@type": "Course", name: c },
+        itemOffered: {
+          "@type": "Course",
+          name: c,
+          provider: { "@type": "CollegeOrUniversity", name: college.name },
+          courseMode: "on-site",
+          inLanguage: "en-IN",
+          educationalCredentialAwarded: c,
+          locationCreated: { "@type": "City", name: "Pune" },
+        },
       })),
     } : undefined,
+    // Speakable — marks content sections for Google AI Overview & voice assistants
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", ".college-overview", ".key-facts", "[data-speakable]"],
+      xpath: [
+        "/html/body//h1",
+        "/html/body//*[contains(@class,'overview')]",
+        "/html/body//*[contains(@class,'key-facts')]",
+      ],
+    },
+    // mainEntityOfPage links the schema to the actual webpage
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": pageUrl,
+      name: college.name,
+      url: pageUrl,
+      inLanguage: "en-IN",
+      isPartOf: { "@id": `${BASE_URL}/#website` },
+      about: { "@id": `${pageUrl}#college` },
+      dateModified: `${today}`,
+      breadcrumb: {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+          { "@type": "ListItem", position: 2, name: "Colleges", item: `${BASE_URL}/colleges` },
+          { "@type": "ListItem", position: 3, name: college.name, item: pageUrl },
+        ],
+      },
+    },
   }
 
-  // AggregateRating — unlocks gold star rich snippets in Google SERPs
+  // AggregateRating — unlocks gold star rich snippets
   if (college.rating && college.rating > 0) {
     schema.aggregateRating = {
       "@type": "AggregateRating",
@@ -301,7 +359,7 @@ export function generateCollegeSchema(college: {
     }
   }
 
-  // Individual Review items — Google surfaces these in rich results below the star rating
+  // Individual Review items
   if (college.reviews && college.reviews.length > 0) {
     schema.review = college.reviews.slice(0, 5).map((r) => ({
       "@type": "Review",
@@ -319,6 +377,84 @@ export function generateCollegeSchema(college: {
   }
 
   return schema
+}
+
+// ── WebPage schema for college pages — enables AI Overview entity linking ─────
+export function generateCollegeWebPageSchema(college: {
+  name: string
+  shortName: string
+  slug: string
+  naac?: string
+  nirfRank?: number | null
+  type?: string
+  feesMin?: number
+  feesMax?: number
+  avgPlacement?: number
+  entranceExams?: string[]
+}) {
+  const pageUrl = `${BASE_URL}/colleges/${college.slug}`
+  const today = new Date().toISOString().split('T')[0]
+  const feesText = college.feesMin ? `₹${(college.feesMin / 100000).toFixed(1)}L–₹${(college.feesMax! / 100000).toFixed(1)}L/yr` : ''
+  const placText = college.avgPlacement ? `, avg placement ₹${(college.avgPlacement / 100000).toFixed(1)} LPA` : ''
+  const naacText = college.naac ? `NAAC ${college.naac}` : ''
+  const nirfText = college.nirfRank ? `, NIRF #${college.nirfRank}` : ''
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": pageUrl,
+    url: pageUrl,
+    name: `${college.name} 2026 — Admission, Fees, Cutoff & Placement`,
+    description: `${college.name} (${college.shortName}) is a ${college.type ?? ''} college in Pune. ${naacText}${nirfText}. Fees ${feesText}${placText}. Admission via ${college.entranceExams?.slice(0, 2).join(' / ') ?? 'entrance exam'}.`,
+    inLanguage: "en-IN",
+    isPartOf: { "@id": `${BASE_URL}/#website` },
+    about: { "@type": "CollegeOrUniversity", "@id": `${pageUrl}#college`, name: college.name },
+    dateModified: `${today}`,
+    // speakable tells Google AI which sections to use for AI Overview answers
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "h2", ".overview-intro", ".key-facts-table", ".faq-section"],
+    },
+    potentialAction: {
+      "@type": "ReadAction",
+      target: [pageUrl],
+    },
+  }
+}
+
+// ── ItemList schema for stream/listing pages — helps AI Overview list colleges ─
+export function generateCollegeListSchema(colleges: { name: string; slug: string; description?: string }[], heading: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: heading,
+    description: `Complete list of ${heading.toLowerCase()} in Pune 2026 with fees, NAAC grades, NIRF ranks, placements and admission details.`,
+    numberOfItems: colleges.length,
+    itemListElement: colleges.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.name,
+      url: `${BASE_URL}/colleges/${c.slug}`,
+      ...(c.description ? { description: c.description } : {}),
+    })),
+  }
+}
+
+// ── HowTo schema for admission process — surfaces in AI Overview step snippets ─
+export function generateHowToSchema(title: string, steps: { step: number; title: string; description: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: title,
+    description: `Step-by-step guide for ${title.toLowerCase()}`,
+    step: steps.map(s => ({
+      "@type": "HowToStep",
+      position: s.step,
+      name: s.title,
+      text: s.description,
+    })),
+    inLanguage: "en-IN",
+  }
 }
 
 export function generateItemListSchema(items: { name: string; url: string; description?: string }[]) {

@@ -109,7 +109,6 @@ async function section2_indexes() {
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_colleges_naac ON colleges(naac_grade)`,
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_colleges_nirf ON colleges(nirf_rank) WHERE nirf_rank IS NOT NULL`,
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_colleges_updated ON colleges(updated_at DESC)`,
-    `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_colleges_ai_generated ON colleges(ai_generated) WHERE ai_generated = true`,
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_blogs_status_published ON blogs(status, published_at DESC)`,
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_blogs_author ON blogs(author_id)`,
     `CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_blogs_category ON blogs(category) WHERE category IS NOT NULL`,
@@ -268,13 +267,7 @@ async function section8_leadColumns() {
   await sql(q, 'Add lead columns (course_interest, budget, exam_type, exam_score, career_goal)')
 }
 
-// ── Section 9: ai_generated columns ───────────────────────────────────────
-async function section9_aiGenerated() {
-  console.log('\n── SECTION 9: ai_generated columns ──────────────────────────')
-
-  await sql(`ALTER TABLE colleges ADD COLUMN IF NOT EXISTS ai_generated boolean DEFAULT false;`, 'colleges.ai_generated')
-  await sql(`ALTER TABLE blogs ADD COLUMN IF NOT EXISTS ai_generated boolean DEFAULT false;`, 'blogs.ai_generated')
-}
+// Section 9 removed (ai_generated columns dropped)
 
 // ── Section 10: Verify ────────────────────────────────────────────────────
 async function section10_verify() {
@@ -326,7 +319,6 @@ async function main() {
     section6_fts(),
     section7_featuredUnique(),
     section8_leadColumns(),
-    section9_aiGenerated(),
   ])
 
   await section10_verify()

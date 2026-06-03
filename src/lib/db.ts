@@ -407,7 +407,6 @@ export interface DBCollege {
   faqs?: { q: string; a: string }[]
   details?: CollegeDetails
   status?: string
-  ai_generated?: boolean
   meta_title?: string
   meta_desc?: string
   seo_keywords?: string[]
@@ -598,7 +597,7 @@ export async function updateCollege(): Promise<void> { /* use queries-admin.ts:u
 export async function deleteCollege(): Promise<void> { /* use queries-admin.ts:deleteCollege */ }
 
 export async function getCollegesStats(): Promise<{
-  total: number; published: number; draft: number; aiGenerated: number
+  total: number; published: number; draft: number
 }> {
   try {
     const { createAdminClient } = await import('@/lib/supabase/admin')
@@ -607,23 +606,20 @@ export async function getCollegesStats(): Promise<{
       { count: total },
       { count: published },
       { count: draft },
-      { count: aiGenerated },
     ] = await Promise.all([
       admin.from('colleges').select('*', { count: 'exact', head: true }),
       admin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'published'),
       admin.from('colleges').select('*', { count: 'exact', head: true }).eq('status', 'draft'),
-      admin.from('colleges').select('*', { count: 'exact', head: true }).eq('ai_generated', true),
     ])
     return {
-      total:       total       ?? 0,
-      published:   published   ?? 0,
-      draft:       draft       ?? 0,
-      aiGenerated: aiGenerated ?? 0,
+      total:     total     ?? 0,
+      published: published ?? 0,
+      draft:     draft     ?? 0,
     }
   } catch (err) {
     console.error('[getCollegesStats] error:', err)
   }
-  return { total: staticColleges.length, published: staticColleges.length, draft: 0, aiGenerated: 0 }
+  return { total: staticColleges.length, published: staticColleges.length, draft: 0 }
 }
 
 // ── BLOG TYPES ────────────────────────────────────────────────────────────────
@@ -639,7 +635,6 @@ export interface DBBlog {
   tags?: string[]
   read_time?: string
   status?: string
-  ai_generated?: boolean
   meta_title?: string
   meta_desc?: string
   image_url?: string

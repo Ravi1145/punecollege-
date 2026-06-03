@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
-import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema, generateCollegeListSchema } from "@/lib/seo"
 import { CheckCircle, TrendingUp, Award, BookOpen, Users, AlertCircle } from "lucide-react"
 import { getCutoff } from "@/data/cutoffs"
 import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
@@ -55,21 +55,32 @@ const breadcrumbs = [
   { name: "Medical Colleges in Pune", url: "/medical-colleges-pune" },
 ]
 
+const BASE_URL = "https://collegepune.com"
+const PAGE_URL = `${BASE_URL}/medical-colleges-pune`
+const TODAY = new Date().toISOString().split("T")[0]
+
 export default function MedicalCollegesPunePage() {
   const faqSchema = generateFAQSchema(faqs)
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs)
-  const itemListSchema = {
+  const itemListSchema = generateCollegeListSchema(
+    colleges.map(c => ({ name: c.name, slug: c.slug })),
+    "Best Medical Colleges in Pune 2026"
+  )
+  const webPageSchema = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Best Medical Colleges in Pune 2026",
-    description: "List of top medical colleges in Pune ranked by NIRF, NEET cutoff, fees, and facilities",
-    numberOfItems: colleges.length,
-    itemListElement: colleges.map((c, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: c.name,
-      url: `https://collegepune.com/colleges/${c.slug}`,
-    })),
+    "@type": "WebPage",
+    "@id": PAGE_URL,
+    url: PAGE_URL,
+    name: "Best Medical Colleges in Pune 2026 | MBBS Fees & NEET Cutoff",
+    description: "AFMC Pune (NIRF #4) is the best medical college in Pune with near-zero fees and 650+ NEET score requirement. BJ Medical College is the best government option (620+ NEET). Compare 8 medical colleges.",
+    inLanguage: "en-IN",
+    dateModified: TODAY,
+    isPartOf: { "@id": `${BASE_URL}/#website` },
+    about: { "@type": "Thing", name: "Medical Colleges in Pune" },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "h2", "[data-speakable]"],
+    },
   }
 
   return (
@@ -77,6 +88,7 @@ export default function MedicalCollegesPunePage() {
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      <Script id="webpage-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
 
       <main className="bg-white min-h-screen">
         {/* Breadcrumb */}
@@ -117,7 +129,7 @@ export default function MedicalCollegesPunePage() {
 
         {/* Quick Answer Box */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-green-50 border-l-4 border-green-500 rounded-xl p-5 sm:p-6">
+          <div className="bg-green-50 border-l-4 border-green-500 rounded-xl p-5 sm:p-6" data-speakable="true">
             <h2 className="text-lg font-bold text-green-800 mb-2">Quick Answer: Best Medical College in Pune 2026</h2>
             <p className="text-green-900 text-sm leading-relaxed">
               <strong>AFMC Pune</strong> (NIRF Rank 4, NAAC A++) is the best medical college in Pune — nearly free education (₹50,000 total) but requires 650+ NEET + separate test + SSB.{" "}

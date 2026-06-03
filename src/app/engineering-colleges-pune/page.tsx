@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
-import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema, generateCollegeListSchema } from "@/lib/seo"
 import { CheckCircle, TrendingUp, Award, MapPin, ExternalLink, BookOpen, Users } from "lucide-react"
 import { getCutoff } from "@/data/cutoffs"
 import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
@@ -59,21 +59,33 @@ const breadcrumbs = [
   { name: "Engineering Colleges in Pune", url: "/engineering-colleges-pune" },
 ]
 
+const BASE_URL = "https://collegepune.com"
+const PAGE_URL = `${BASE_URL}/engineering-colleges-pune`
+const TODAY = new Date().toISOString().split("T")[0]
+
 export default function EngineeringCollegesPunePage() {
   const faqSchema = generateFAQSchema(faqs)
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs)
-  const itemListSchema = {
+  const itemListSchema = generateCollegeListSchema(
+    colleges.map(c => ({ name: c.name, slug: c.slug })),
+    "Best Engineering Colleges in Pune 2026"
+  )
+  const webPageSchema = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Best Engineering Colleges in Pune 2026",
-    description: "List of top 12 engineering colleges in Pune ranked by NIRF, NAAC grade, fees, and placements",
-    numberOfItems: colleges.length,
-    itemListElement: colleges.map((c, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: c.name,
-      url: `https://collegepune.com/colleges/${c.slug}`,
-    })),
+    "@type": "WebPage",
+    "@id": PAGE_URL,
+    url: PAGE_URL,
+    name: "Best Engineering Colleges in Pune 2026 | Fees, NIRF & MHT-CET Cutoffs",
+    description: "COEP is the best engineering college in Pune with NIRF #49, fees ₹80K/yr and ₹12 LPA avg placement. Compare top 12 engineering colleges by fees, MHT-CET cutoff, NAAC grade and placements.",
+    inLanguage: "en-IN",
+    dateModified: TODAY,
+    isPartOf: { "@id": `${BASE_URL}/#website` },
+    about: { "@type": "Thing", name: "Engineering Colleges in Pune" },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "h2", ".answer-box", "[data-speakable]"],
+    },
+    potentialAction: { "@type": "ReadAction", target: [PAGE_URL] },
   }
 
   return (
@@ -81,6 +93,7 @@ export default function EngineeringCollegesPunePage() {
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      <Script id="webpage-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
 
       <div className="bg-surface min-h-screen">
         {/* Hero */}
@@ -100,8 +113,8 @@ export default function EngineeringCollegesPunePage() {
             <p className="text-blue-200 text-base max-w-3xl mb-6">
               Complete list of top 12 engineering colleges in Pune ranked by NIRF, NAAC grade, fees, and placements. Includes government, autonomous, and deemed university options for B.Tech, M.Tech admission.
             </p>
-            {/* Quick Answer Box — optimized for featured snippets & AI extraction */}
-            <div className="bg-white/10 border border-white/20 rounded-2xl p-5 max-w-3xl">
+            {/* Quick Answer Box — optimized for featured snippets & AI Overview extraction */}
+            <div className="bg-white/10 border border-white/20 rounded-2xl p-5 max-w-3xl" data-speakable="true">
               <p className="text-green-300 text-xs font-bold uppercase tracking-wider mb-2">⚡ Quick Answer</p>
               <p className="text-white text-sm leading-relaxed">
                 <strong>COEP (College of Engineering Pune)</strong> is the best engineering college in Pune with NIRF Rank 49, NAAC A+, fees ₹80K–₹1.8L/year, and ₹12 LPA average placement. Other top colleges: <strong>PICT</strong> (CS/IT), <strong>VIT Pune</strong> (NIRF 101), <strong>SIT Pune</strong> (best deemed, ₹9.8 LPA avg). Admission via <strong>MHT-CET</strong> (95+ percentile for COEP) or JEE Main.

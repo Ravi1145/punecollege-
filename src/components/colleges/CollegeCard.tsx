@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { MapPin, TrendingUp, Heart, IndianRupee, Star } from "lucide-react"
 import { College } from "@/types"
 import CompareButton from "@/components/ui/CompareButton"
 import { formatFeesRange, formatCurrency, getNaacColor, getTypeColor, cn } from "@/lib/utils"
 
-const COLLEGE_BANNER = "https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=75"
+const COLLEGE_BANNER = "/college-default-banner.jpg"
 
 const SHORTLIST_KEY = "shortlisted_colleges"
 
@@ -29,6 +28,7 @@ function abbrev(shortName: string): string {
 
 export default function CollegeCard({ college, variant = "default" }: CollegeCardProps) {
   const [isShortlisted, setIsShortlisted] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     try {
@@ -55,14 +55,15 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
       <Link href={`/colleges/${college.slug}`} className="block">
         <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex-shrink-0 flex items-center justify-center overflow-hidden">
-            {college.logo ? (
-              <Image
+            {college.logo && !logoError ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={college.logo}
                 alt={`${college.name} logo`}
                 width={40}
                 height={40}
                 className="object-contain p-0.5 bg-white rounded-lg"
-                sizes="40px"
+                onError={() => setLogoError(true)}
               />
             ) : (
               <span className="text-[9px] font-black text-white leading-tight text-center tracking-tight">{abbrev(college.shortName)}</span>
@@ -101,7 +102,9 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
         {/* ── Header with campus image as background ── */}
         <div
           className="relative p-4 pb-3 overflow-hidden"
-          style={{ backgroundImage: `url(${college.image || COLLEGE_BANNER})`, backgroundSize: "cover", backgroundPosition: "center" }}
+          style={{ backgroundImage: `url(${COLLEGE_BANNER})`, backgroundSize: "cover", backgroundPosition: "center" }}
+          role="img"
+          aria-label={`${college.name} campus`}
         >
           {/* semi-transparent overlay — image visible, text still readable */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628]/60 via-[#0A1628]/55 to-[#0A1628]/70" />
@@ -124,14 +127,15 @@ export default function CollegeCard({ college, variant = "default" }: CollegeCar
           <div className="relative z-10 flex items-start gap-3 pr-10">
             {/* Logo badge — logo_url first, then cover image, then abbreviation text */}
             <div className="shrink-0 w-14 h-14 rounded-xl bg-white shadow-md flex items-center justify-center overflow-hidden">
-              {college.logo ? (
-                <Image
+              {college.logo && !logoError ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={college.logo}
                   alt={`${college.name} logo`}
                   width={56}
                   height={56}
                   className="object-contain p-1"
-                  sizes="56px"
+                  onError={() => setLogoError(true)}
                 />
               ) : (
                 <span className="text-[#0A1628] font-black text-[11px] leading-tight text-center tracking-tight px-1">

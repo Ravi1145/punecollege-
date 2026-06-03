@@ -154,6 +154,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // New stream pages
     { url: `${BASE_URL}/bcom-colleges-pune`,                        lastModified: "2026-05-01", changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/sppu-affiliated-colleges-pune`,             lastModified: "2026-05-01", changeFrequency: "monthly", priority: 0.9 },
+    // New comparison pages
+    { url: `${BASE_URL}/vit-pune-vs-mit-wpu`,                       lastModified: "2026-06-03", changeFrequency: "monthly", priority: 0.9 },
+    // New category pages
+    { url: `${BASE_URL}/data-science-colleges-pune`,                lastModified: "2026-06-03", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/pune-colleges-fees-under-1-lakh`,           lastModified: "2026-06-03", changeFrequency: "monthly", priority: 0.85 },
+    // Counselling guide
+    { url: `${BASE_URL}/mht-cet-counselling-pune-2026`,             lastModified: "2026-06-03", changeFrequency: "weekly",  priority: 0.95 },
   ]
 
   // Cutoff pages â€" one per [exam, college] pair

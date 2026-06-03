@@ -1,6 +1,15 @@
 'use server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+
+async function requireAdmin() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return false
+  const { data: profile } = await supabase.from('profiles').select('is_active').eq('id', user.id).single()
+  return Boolean(profile?.is_active)
+}
 
 interface ImportResult {
   success: number
@@ -88,6 +97,9 @@ function coerceBlog(raw: Record<string, unknown>): Record<string, unknown> {
 export async function importJSONAction(
   formData: FormData
 ): Promise<{ colleges?: ImportResult; blogs?: ImportResult; error?: string }> {
+  const ok = await requireAdmin()
+  if (!ok) return { error: 'Unauthorized — please log in as admin' }
+
   const admin = createAdminClient()
   const type = formData.get('type') as 'colleges' | 'blogs'
   const json = formData.get('json') as string

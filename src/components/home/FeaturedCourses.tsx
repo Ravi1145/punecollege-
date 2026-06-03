@@ -9,7 +9,7 @@ import FilterTabs from "@/components/ui/FilterTabs"
 
 const COURSE_TABS = ["All", "Engineering", "Management", "Medical", "Law", "Architecture", "Commerce", "Arts", "Science"]
 
-const COURSE_BANNER = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=75"
+const COURSE_BANNER = "/college-default-banner.jpg"
 
 const levelColors: Record<string, string> = {
   UG:      "bg-blue-500 text-white",

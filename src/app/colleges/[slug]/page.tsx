@@ -7,7 +7,7 @@ import { colleges, getCollegeBySlug } from "@/data/colleges"
 export const revalidate = 300 // ISR — re-render every 5 min; on-demand revalidation via admin also busts this
 import { getCollegeBySlug as getDBCollege, DBCollege, CollegeDetails } from "@/lib/db"
 import CollegeProfile from "@/components/colleges/CollegeProfile"
-import { generateMetadata as genMeta, generateBreadcrumbSchema, generateCollegeSchema, generateFAQSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateBreadcrumbSchema, generateCollegeSchema, generateCollegeWebPageSchema, generateFAQSchema, generateHowToSchema } from "@/lib/seo"
 import type { College } from "@/types"
 
 // ─── details normalisation helpers ────────────────────────────────────────────
@@ -249,6 +249,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { college } = resolved
 
   const nirfText   = college.nirfRank ? `, NIRF #${college.nirfRank}` : ""
+  const naacText   = college.naac ? `NAAC ${college.naac}` : ""
   const feesMin    = college.feesRange.min > 0 ? `₹${(college.feesRange.min / 100000).toFixed(1)}L` : ""
   const feesMax    = college.feesRange.max > 0 ? `₹${(college.feesRange.max / 100000).toFixed(1)}L/yr` : ""
   const feesText   = feesMin && feesMax ? ` | Fees ${feesMin}–${feesMax}` : ""
@@ -262,32 +263,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                      college.stream === "Architecture" ? " Architecture" : ""
   const exam1      = college.entranceExams[0] ?? "MHT-CET"
   const exam2      = college.entranceExams[1] ? ` / ${college.entranceExams[1]}` : ""
+  // Title: College Name 2026 | NAAC + NIRF | Fees, Cutoff & Admission — max ~65 chars readable
+  const titleParts = [college.name, "2026", naacText ? `${naacText}${nirfText}` : nirfText.slice(2), "Fees, Cutoff & Admission"].filter(Boolean)
+  const title = titleParts.join(" | ")
 
   return genMeta({
-    title: `${college.name} 2026 | NAAC ${college.naac}${nirfText} | Fees, Cutoff & Admission`,
-    description: `${college.name} (${college.shortName}) — ${college.type}${streamText} College, Pune. NAAC ${college.naac}${nirfText}${feesText}${placText}. Admission via ${exam1}${exam2}. Complete info on cutoffs, placements, scholarships & reviews.`,
+    title,
+    description: `${college.name} (${college.shortName}) — ${college.type}${streamText} College, Pune. ${naacText}${nirfText}${feesText}${placText}. Admission 2026 via ${exam1}${exam2}. Cutoffs, placements, hostel, scholarships & student reviews.`,
     path: `/colleges/${slug}`,
     keywords: [
       college.name.toLowerCase(),
       `${college.name.toLowerCase()} pune`,
+      `${college.name.toLowerCase()} admission 2026`,
+      `${college.name.toLowerCase()} fees 2026`,
+      `${college.name.toLowerCase()} cutoff 2026`,
+      `${college.name.toLowerCase()} placements`,
+      `${college.name.toLowerCase()} ranking`,
       college.shortName.toLowerCase(),
       `${college.shortName.toLowerCase()} admission 2026`,
       `${college.shortName.toLowerCase()} fees 2026`,
       `${college.shortName.toLowerCase()} cutoff 2026`,
       `${college.shortName.toLowerCase()} placements`,
-      `${college.shortName.toLowerCase()} reviews`,
-      `${college.shortName.toLowerCase()} ranking`,
-      `${college.shortName.toLowerCase()} courses`,
       `${college.shortName.toLowerCase()} hostel`,
       `${college.shortName.toLowerCase()} scholarship`,
-      `${college.name.toLowerCase()} fees`,
-      `${college.name.toLowerCase()} cutoff`,
-      `${college.name.toLowerCase()} admission process`,
+      `${college.shortName.toLowerCase()} courses`,
+      `${college.shortName.toLowerCase()} reviews`,
       `best ${college.stream.toLowerCase()} colleges in pune`,
       `${college.type.toLowerCase()} ${college.stream.toLowerCase()} college pune`,
       "colleges in pune 2026",
       "pune college admission 2026",
       ...(college.entranceExams.map(e => `${e.toLowerCase()} colleges pune`)),
+      ...(college.nirfRank ? [`nirf rank ${college.nirfRank} pune`] : []),
     ],
   })
 }
@@ -315,12 +321,37 @@ export default async function CollegePage({ params }: Props) {
     naac: college.naac,
     nirfRank: college.nirfRank,
     courses: college.courses,
+    feesMin: college.feesRange.min || undefined,
+    feesMax: college.feesRange.max || undefined,
+    avgPlacement: college.avgPlacement || undefined,
+    type: college.type,
     image: college.image,
     rating: college.rating,
     reviewCount: college.reviewCount,
     slug,
     reviews: college.reviews ?? [],
   })
+
+  const webPageSchema = generateCollegeWebPageSchema({
+    name: college.name,
+    shortName: college.shortName,
+    slug,
+    naac: college.naac,
+    nirfRank: college.nirfRank,
+    type: college.type,
+    feesMin: college.feesRange.min || undefined,
+    feesMax: college.feesRange.max || undefined,
+    avgPlacement: college.avgPlacement || undefined,
+    entranceExams: college.entranceExams,
+  })
+
+  // HowTo schema from admission_process details — surfaces in AI step snippets
+  const admissionSteps = Array.isArray(details?.admission_process) && details!.admission_process.length > 0
+    ? details!.admission_process
+    : null
+  const howToSchema = admissionSteps
+    ? generateHowToSchema(`How to get admission in ${college.name} 2026`, admissionSteps)
+    : null
 
   // Build FAQ schema from details.faqs (DB) or college.faqs (static) or auto-generated fallback
   const rawFaqs: { q: string; a: string }[] =
@@ -365,6 +396,16 @@ export default async function CollegePage({ params }: Props) {
     .slice(0, 4)
 
   // Stream hub URL mapping
+  // Comparison page chips — extend as new vs-pages are created
+  const comparePages: Record<string, { label: string; href: string }[]> = {
+    "coep-college-of-engineering-pune":              [{ label: "COEP vs PICT", href: "/coep-vs-pict-pune" }],
+    "pict-pune-institute-of-computer-technology":    [{ label: "COEP vs PICT", href: "/coep-vs-pict-pune" }],
+    "sibm-symbiosis-institute-of-business-management-pune": [{ label: "SIBM vs SCMHRD", href: "/sibm-vs-scmhrd-pune" }],
+    "vit-pune-vishwakarma-institute-of-technology":  [{ label: "VIT Pune vs MIT-WPU", href: "/vit-pune-vs-mit-wpu" }],
+    "mit-wpu-mit-world-peace-university":            [{ label: "VIT Pune vs MIT-WPU", href: "/vit-pune-vs-mit-wpu" }],
+  }
+  const compareLinks = comparePages[slug] ?? []
+
   const streamHubMap: Record<string, string> = {
     Engineering:   "/engineering-colleges-pune",
     MBA:           "/mba-colleges-pune",
@@ -385,7 +426,11 @@ export default async function CollegePage({ params }: Props) {
     <>
       <Script id="breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <Script id="college-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collegeSchema) }} />
+      <Script id="webpage-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      {howToSchema && (
+        <Script id="howto-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
+      )}
       <div className="bg-surface min-h-screen">
         <CollegeProfile college={college} details={details} />
 
@@ -420,6 +465,28 @@ export default async function CollegePage({ params }: Props) {
                   </Link>
                 ))}
               </div>
+
+              {/* Also compare — high-value interlinking to head-to-head pages */}
+              {compareLinks.length > 0 && (
+                <div className="mt-6 flex flex-wrap gap-3 items-center">
+                  <span className="text-xs text-gray-400 font-medium">Also compare:</span>
+                  {compareLinks.map((cl) => (
+                    <Link
+                      key={cl.href}
+                      href={cl.href}
+                      className="text-xs font-semibold text-orange-600 border border-orange-200 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
+                    >
+                      {cl.label} →
+                    </Link>
+                  ))}
+                  <Link
+                    href="/compare"
+                    className="text-xs font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 px-3 py-1.5 rounded-full transition-colors"
+                  >
+                    Compare any two colleges →
+                  </Link>
+                </div>
+              )}
             </div>
           </section>
         )}

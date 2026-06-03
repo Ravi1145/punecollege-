@@ -130,11 +130,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const page = getSEOPageBySlug(slug)
   if (!page) return {}
+  // Canonical points to the standalone page (not /colleges-in-pune/) to prevent duplicate content
+  const canonical = `https://collegepune.com/${slug}`
   return {
     title: page.title,
     description: page.description,
     keywords: page.keywords,
-    alternates: { canonical: `https://collegepune.com/colleges-in-pune/${slug}` },
+    alternates: { canonical },
+    robots: { index: false, follow: true }, // noindex duplicate — canonical page gets all equity
   }
 }
 

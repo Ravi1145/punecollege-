@@ -51,9 +51,7 @@ const nextConfig: NextConfig = {
       { source: "/best-engineering-colleges-pune", destination: "/engineering-colleges-pune", permanent: true },
       { source: "/best-mba-colleges-pune", destination: "/mba-colleges-pune", permanent: true },
       { source: "/arts-and-science-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
-      { source: "/science-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
-      { source: "/commerce-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
-      { source: "/bcom-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
+      // NOTE: /science-colleges-pune, /commerce-colleges-pune, /bcom-colleges-pune have standalone pages — do NOT redirect
       { source: "/bsc-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
       { source: "/ba-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
       { source: "/bsc-computer-science-colleges-pune", destination: "/bsc-it-colleges-pune", permanent: true },
@@ -117,8 +115,6 @@ const nextConfig: NextConfig = {
       { source: "/colleges/scmhrd-pune", destination: "/colleges/scmhrd-symbiosis-centre-management-hrd", permanent: true },
       { source: "/colleges/symbiosis-centre-management-studies-pune", destination: "/colleges/scmhrd-symbiosis-centre-management-hrd", permanent: true },
       { source: "/colleges/symbiosis-centre-management-pune", destination: "/colleges/scmhrd-symbiosis-centre-management-hrd", permanent: true },
-      // Symbiosis International University
-      { source: "/colleges/symbiosis-international-university-pune", destination: "/colleges/symbiosis-international-university-pune", permanent: false },
       // DY Patil
       { source: "/colleges/dpu-dr-dy-patil-vidyapeeth", destination: "/colleges/dr-dy-patil-vidyapeeth-pune", permanent: true },
       { source: "/colleges/dy-patil-engineering-college-pune", destination: "/colleges/dy-patil-college-engineering-akurdi-pune", permanent: true },

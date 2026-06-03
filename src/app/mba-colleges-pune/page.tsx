@@ -1,7 +1,7 @@
 ﻿import { Metadata } from "next"
 import Script from "next/script"
 import Link from "next/link"
-import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
+import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema, generateCollegeListSchema } from "@/lib/seo"
 import { CheckCircle, TrendingUp, Award, BookOpen, Users, Star } from "lucide-react"
 import { getCutoff } from "@/data/cutoffs"
 import GatedCutoffChartClient from "@/components/ui/GatedCutoffChartClient"
@@ -57,21 +57,32 @@ const breadcrumbs = [
   { name: "MBA Colleges in Pune", url: "/mba-colleges-pune" },
 ]
 
+const BASE_URL = "https://collegepune.com"
+const PAGE_URL = `${BASE_URL}/mba-colleges-pune`
+const TODAY = new Date().toISOString().split("T")[0]
+
 export default function MBACollegesPunePage() {
   const faqSchema = generateFAQSchema(faqs)
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs)
-  const itemListSchema = {
+  const itemListSchema = generateCollegeListSchema(
+    colleges.map(c => ({ name: c.name, slug: c.slug })),
+    "Best MBA Colleges in Pune 2026"
+  )
+  const webPageSchema = {
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Best MBA Colleges in Pune 2026",
-    description: "List of top 10 MBA colleges in Pune ranked by NIRF, placements, fees, and SNAP/CAT cutoffs",
-    numberOfItems: colleges.length,
-    itemListElement: colleges.map((c, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: c.name,
-      url: `https://collegepune.com/colleges/${c.slug}`,
-    })),
+    "@type": "WebPage",
+    "@id": PAGE_URL,
+    url: PAGE_URL,
+    name: "Best MBA Colleges in Pune 2026 | Fees, SNAP Cutoff & Placements",
+    description: "SIBM Pune (NIRF #13) is the best MBA college in Pune with ₹28 LPA avg placement and McKinsey, BCG as recruiters. Compare top 10 MBA colleges by SNAP cutoff, fees ₹14–22L, and placements.",
+    inLanguage: "en-IN",
+    dateModified: TODAY,
+    isPartOf: { "@id": `${BASE_URL}/#website` },
+    about: { "@type": "Thing", name: "MBA Colleges in Pune" },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "h2", "[data-speakable]"],
+    },
   }
 
   return (
@@ -79,6 +90,7 @@ export default function MBACollegesPunePage() {
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Script id="itemlist-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      <Script id="webpage-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
 
       <main className="bg-white min-h-screen">
         {/* Breadcrumb */}
@@ -119,7 +131,7 @@ export default function MBACollegesPunePage() {
 
         {/* Quick Answer Box — GEO/AIO optimized */}
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-green-50 border-l-4 border-green-500 rounded-xl p-5 sm:p-6">
+          <div className="bg-green-50 border-l-4 border-green-500 rounded-xl p-5 sm:p-6" data-speakable="true">
             <h2 className="text-lg font-bold text-green-800 mb-2">Quick Answer: Best MBA College in Pune 2026</h2>
             <p className="text-green-900 text-sm leading-relaxed">
               <strong>SIBM Pune</strong> (NIRF Rank 13, NAAC A+) is the best MBA college in Pune in 2026 with ₹28 LPA average placement, recruiters McKinsey/BCG/P&amp;G, and 60+ SNAP percentile requirement. Total fees ₹16–22L.{" "}

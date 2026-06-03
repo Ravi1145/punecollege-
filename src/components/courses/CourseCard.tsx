@@ -3,7 +3,7 @@ import { TrendingUp, IndianRupee } from "lucide-react"
 import { Course } from "@/types"
 import { formatFeesRange, formatCurrency } from "@/lib/utils"
 
-const COURSE_BANNER = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&q=75"
+const COURSE_BANNER = "/college-default-banner.jpg"
 
 const levelColors: Record<string, string> = {
   UG:      "bg-blue-500 text-white",

@@ -4,7 +4,6 @@ import { getCollegeByIdAdmin } from '@/lib/supabase/queries-admin'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { InputField, SelectField, TextareaField } from '@/components/admin/FormField'
 import ImageUpload from '@/components/admin/ImageUpload'
-import GenerateDetailsButton from '@/components/admin/GenerateDetailsButton'
 import { updateCollegeAction, approveReviewAction, rejectReviewAction, deleteReviewAction } from '../actions'
 import type { Review } from '@/lib/supabase/types'
 
@@ -44,16 +43,6 @@ export default async function EditCollegePage({ params }: { params: Promise<{ id
 
   const updateAction = updateCollegeAction.bind(null, id)
 
-  // Check if details are already populated
-  const det = college.details as Record<string, unknown> | undefined
-  const hasDetails = Boolean(
-    det &&
-    Array.isArray(det.courses_fees) &&
-    (det.courses_fees as unknown[]).length > 0 &&
-    Array.isArray(det.faqs) &&
-    (det.faqs as unknown[]).length > 0
-  )
-
   return (
     <div className="max-w-3xl">
       {/* Page header */}
@@ -72,27 +61,6 @@ export default async function EditCollegePage({ params }: { params: Promise<{ id
           </div>
         </div>
       </div>
-
-      {/* ── AI Content Generation ─────────────────────────────── */}
-      <section className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 mb-6">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-10 h-10 bg-purple-600 text-white rounded-xl flex items-center justify-center text-lg">
-            ✨
-          </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="font-bold text-purple-900 text-sm mb-0.5">AI Content Generation</h2>
-            <p className="text-purple-700 text-xs mb-4">
-              Auto-fill all profile tabs — courses &amp; fees, admission steps, placements, scholarships,
-              facilities, FAQs, cutoffs, and rankings — using Claude AI based on this college&apos;s data.
-            </p>
-            <GenerateDetailsButton
-              collegeId={college.id}
-              collegeName={college.name}
-              hasDetails={hasDetails}
-            />
-          </div>
-        </div>
-      </section>
 
       <form action={updateAction} className="space-y-6">
 
