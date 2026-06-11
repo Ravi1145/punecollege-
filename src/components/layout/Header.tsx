@@ -261,8 +261,10 @@ export default function Header() {
               <button
                 className="md:hidden text-white/70 hover:text-white p-1"
                 onClick={() => setSearchOpen(!searchOpen)}
+                aria-label="Search colleges"
+                aria-expanded={searchOpen}
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-5 h-5" aria-hidden="true" />
               </button>
               <Link
                 href="/ai-finder"
@@ -293,8 +295,10 @@ export default function Header() {
           <div className="md:hidden bg-[#0A1628] border-t border-white/10 px-4 pb-3">
             <form action="/colleges" method="get">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <label htmlFor="mobile-search" className="sr-only">Search colleges and courses</label>
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
                 <input
+                  id="mobile-search"
                   name="search"
                   type="text"
                   autoFocus

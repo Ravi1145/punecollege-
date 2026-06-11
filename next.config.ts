@@ -47,7 +47,16 @@ const nextConfig: NextConfig = {
     return [
       // ─── SEO keyword slug aliases → canonical pages ───────────────────────
       { source: "/engineering-colleges-in-pune", destination: "/engineering-colleges-pune", permanent: true },
-      { source: "/mba-colleges-in-pune", destination: "/mba-colleges-pune", permanent: true },
+      // NOTE: /mba-colleges-in-pune now has its own page — removed redirect
+      // Old BTech slug → new canonical keyword slug
+      { source: "/btech-colleges-pune", destination: "/btech-colleges-in-pune", permanent: true },
+      { source: "/best-btech-colleges-pune", destination: "/best-btech-colleges-in-pune", permanent: true },
+      { source: "/top-btech-colleges-pune", destination: "/top-btech-colleges-in-pune", permanent: true },
+      { source: "/top-engineering-colleges-pune", destination: "/top-btech-colleges-in-pune", permanent: true },
+      { source: "/btech-admission-pune", destination: "/btech-admission-in-pune", permanent: true },
+      { source: "/engineering-admission-pune", destination: "/btech-admission-in-pune", permanent: true },
+      { source: "/btech-fees-pune", destination: "/btech-colleges-in-pune-with-fees", permanent: true },
+      { source: "/engineering-colleges-pune-fees", destination: "/btech-colleges-in-pune-with-fees", permanent: true },
       { source: "/best-engineering-colleges-pune", destination: "/engineering-colleges-pune", permanent: true },
       { source: "/best-mba-colleges-pune", destination: "/mba-colleges-pune", permanent: true },
       { source: "/arts-and-science-colleges-pune", destination: "/arts-colleges-pune", permanent: true },
@@ -140,6 +149,35 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Security headers — applied site-wide
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          {
+            // Content-Security-Policy — prevents XSS from user-submitted content
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https: http:",
+              "connect-src 'self' https://*.supabase.co https://api.anthropic.com wss://*.supabase.co https://va.vercel-scripts.com",
+              "frame-src 'self' https://vercel.live",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join("; "),
+          },
+        ],
+      },
       // Tell Google to index all public pages + add Last-Modified for crawl freshness
       {
         source: "/((?!admin|api).*)",

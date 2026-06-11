@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit } from '@/lib/ratelimit'
 
 // GET /api/reviews?college_slug=coep-pune
 export async function GET(req: NextRequest) {
@@ -26,6 +27,7 @@ export async function GET(req: NextRequest) {
       .eq('college_id', college.id)
       .eq('status', 'published')
       .order('created_at', { ascending: false })
+      .limit(50)
 
     if (error) {
       console.error('[reviews GET]', error.message)
@@ -60,6 +62,10 @@ export async function GET(req: NextRequest) {
 
 // POST /api/reviews
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown'
+  const { allowed } = rateLimit(`reviews:${ip}`, 3, 60_000) // 3 reviews/min per IP
+  if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+
   try {
     const body = await req.json()
     const { college_slug, student_name, rating, review_body, course, year, title, pros, cons } = body

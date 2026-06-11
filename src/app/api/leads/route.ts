@@ -4,6 +4,15 @@ import { leadSchema } from '@/lib/validations'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendLeadEmail } from '@/lib/mailer'
 import { isAllowedOrigin } from '@/lib/csrf'
+import { timingSafeEqual, createHash } from 'crypto'
+
+function safeEqual(a: string, b: string): boolean {
+  try {
+    const ha = createHash('sha256').update(a).digest()
+    const hb = createHash('sha256').update(b).digest()
+    return timingSafeEqual(ha, hb)
+  } catch { return false }
+}
 
 export async function POST(req: NextRequest) {
   if (!isAllowedOrigin(req)) {
@@ -54,16 +63,22 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const adminKey = req.headers.get('x-admin-key')
-  if (adminKey !== process.env.ADMIN_PASSWORD) {
+  // Timing-safe comparison prevents brute-force timing attacks
+  const adminKey = req.headers.get('x-admin-key') ?? ''
+  const envKey   = process.env.ADMIN_PASSWORD ?? ''
+  if (!adminKey || !envKey || !safeEqual(adminKey, envKey)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const { searchParams } = new URL(req.url)
+  const limit = Math.min(Number(searchParams.get('limit') ?? '200'), 500) // cap at 500
+
   const admin = createAdminClient()
   const { data, error } = await admin
     .from('leads')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(limit)
 
   if (error) return NextResponse.json({ leads: [], total: 0 })
   return NextResponse.json({ leads: data ?? [], total: data?.length ?? 0 })

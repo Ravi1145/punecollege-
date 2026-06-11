@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit } from '@/lib/ratelimit'
 
 // GET /api/qa?college_slug=coep-pune
 export async function GET(req: NextRequest) {
@@ -27,6 +28,10 @@ export async function GET(req: NextRequest) {
 
 // POST /api/qa
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown'
+  const { allowed } = rateLimit(`qa:${ip}`, 5, 60_000) // 5 questions/min per IP
+  if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+
   try {
     const body = await req.json()
     const { college_slug, author_name, author_email, question } = body

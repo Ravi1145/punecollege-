@@ -161,6 +161,70 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/pune-colleges-fees-under-1-lakh`,           lastModified: "2026-06-03", changeFrequency: "monthly", priority: 0.85 },
     // Counselling guide
     { url: `${BASE_URL}/mht-cet-counselling-pune-2026`,             lastModified: "2026-06-03", changeFrequency: "weekly",  priority: 0.95 },
+    // MBA cluster pages — full keyword coverage
+    { url: `${BASE_URL}/mba-colleges-in-pune`,                                lastModified: "2026-06-11", changeFrequency: "weekly",  priority: 1.0 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-under-5-lakh`,                   lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-under-10-lakh`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-under-15-lakh`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-under-20-lakh`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-low-fees`,                       lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-scholarship`,                    lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-accepting-cat`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-accepting-cmat`,                 lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-accepting-mh-cet`,               lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.95 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-accepting-mat`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-accepting-xat`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-accepting-gmat`,                 lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-without-entrance-exam`,          lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-direct-admission`,               lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-marketing`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-finance`,                    lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-hr`,                         lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-operations`,                 lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-business-analytics`,         lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-international-business`,     lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-supply-chain`,               lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-it`,                         lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-entrepreneurship`,           lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-data-science`,               lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-with-100-placement`,             lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-highest-package`,                lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-average-package`,                lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-placements-pune`,                                 lastModified: "2026-06-11", changeFrequency: "weekly",  priority: 0.9 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-with-hostel`,                    lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-for-girls`,                      lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-part-time`,                      lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-weekend`,                        lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-executive`,                      lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-online`,                         lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/mba-cutoff-pune`,                                     lastModified: "2026-06-11", changeFrequency: "weekly",  priority: 0.95 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-cutoff-50-percentile`,           lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-cutoff-70-percentile`,           lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-colleges-in-pune-cutoff-90-percentile`,           lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.88 },
+    { url: `${BASE_URL}/mba-admission-process-pune`,                          lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.92 },
+    // BTech keyword cluster — full coverage
+    { url: `${BASE_URL}/btech-colleges-in-pune`,                               lastModified: "2026-06-11", changeFrequency: "weekly",  priority: 1.0 },
+    { url: `${BASE_URL}/best-btech-colleges-in-pune`,                          lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.95 },
+    { url: `${BASE_URL}/top-btech-colleges-in-pune`,                           lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.95 },
+    { url: `${BASE_URL}/btech-admission-in-pune`,                              lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.92 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-with-fees`,                     lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.92 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-with-placement`,                lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.92 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-direct-admission`,              lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.90 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-without-jee`,                   lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.92 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-through-mht-cet`,               lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.92 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-under-5-lakh`,                  lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.90 },
+    { url: `${BASE_URL}/btech-colleges-in-pune-under-10-lakh`,                 lastModified: "2026-06-11", changeFrequency: "monthly", priority: 0.90 },
+    // NEW: missing course pillar pages
+    { url: `${BASE_URL}/mca-colleges-pune`,                         lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/mtech-colleges-pune`,                       lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/bsc-colleges-pune`,                         lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.9 },
+    // NEW: location pages
+    { url: `${BASE_URL}/colleges-hinjewadi-pune`,                   lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.85 },
+    { url: `${BASE_URL}/colleges-viman-nagar-pune`,                 lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/colleges-aundh-pune`,                      lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/colleges-baner-pune`,                      lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/colleges-kharadi-pune`,                    lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/colleges-nigdi-pune`,                      lastModified: "2026-06-10", changeFrequency: "monthly", priority: 0.8 },
   ]
 
   // Cutoff pages â€" one per [exam, college] pair
@@ -236,10 +300,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.75,
     }))
 
+  // College sub-pages: fees, placements, cutoff, admission, scholarship
+  const collegeSubPages: MetadataRoute.Sitemap = colleges.flatMap(c =>
+    ["fees", "placements", "cutoff", "admission", "scholarship"].map(sub => ({
+      url: `${BASE_URL}/colleges/${c.slug}/${sub}`,
+      lastModified: "2026-06-10",
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    }))
+  )
+
+  // Dynamic comparison pages
+  const { COMPARISON_PAIRS } = await import("@/app/compare/[slug]/page")
+  const comparisonPages: MetadataRoute.Sitemap = COMPARISON_PAIRS.map(([a, b]) => ({
+    url: `${BASE_URL}/compare/${a}-vs-${b}`,
+    lastModified: "2026-06-10",
+    changeFrequency: "monthly" as const,
+    priority: 0.85,
+  }))
+
   return [
     ...staticPages,
     ...seoPages,
     ...collegePages,
+    ...collegeSubPages,
+    ...comparisonPages,
     ...collegesInPunePages,
     ...blogPages,
     ...cutoffIndexPage,

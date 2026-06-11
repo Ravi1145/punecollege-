@@ -2,8 +2,10 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { toggleAgentActive } from '@/lib/supabase/queries-admin'
 import { revalidatePath } from 'next/cache'
+import { requireSuperAdmin } from '@/lib/server-auth'
 
 export async function inviteAgentAction(formData: FormData) {
+  await requireSuperAdmin()
   const admin = createAdminClient()
   const email     = formData.get('email') as string
   const full_name = formData.get('full_name') as string
@@ -35,6 +37,7 @@ export async function inviteAgentAction(formData: FormData) {
 }
 
 export async function toggleAgentActiveAction(id: string, is_active: boolean) {
+  await requireSuperAdmin()
   await toggleAgentActive(id, is_active)
   revalidatePath('/admin/agents')
 }

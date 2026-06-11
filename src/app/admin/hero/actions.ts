@@ -1,8 +1,10 @@
 'use server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import { requireAdmin } from '@/lib/server-auth'
 
 export async function upsertHeroAction(formData: FormData) {
+  await requireAdmin()
   const admin = createAdminClient()
   const id         = formData.get('id') as string | null
   const type       = formData.get('type') as string
@@ -29,6 +31,7 @@ export async function upsertHeroAction(formData: FormData) {
 }
 
 export async function deleteHeroAction(id: string) {
+  await requireAdmin()
   const admin = createAdminClient()
   const { error } = await admin.from('hero_banners').delete().eq('id', id)
   if (error) throw error
@@ -37,6 +40,7 @@ export async function deleteHeroAction(id: string) {
 }
 
 export async function toggleHeroBannerActive(id: string, is_active: boolean) {
+  await requireAdmin()
   const admin = createAdminClient()
   const { error } = await admin.from('hero_banners').update({ is_active }).eq('id', id)
   if (error) throw error

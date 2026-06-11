@@ -5,6 +5,7 @@ import { upsertCollege, deleteCollege } from '@/lib/supabase/queries-admin'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { colleges as staticColleges } from '@/data/colleges'
 import type { ContentStatus } from '@/lib/supabase/types'
+import { requireAdmin } from '@/lib/server-auth'
 
 /** Parse a textarea (one item per line or comma-separated) into a string array */
 function parseLines(raw: string | null): string[] | null {
@@ -84,6 +85,7 @@ function parseCollegeForm(formData: FormData) {
 }
 
 export async function createCollegeAction(formData: FormData) {
+  await requireAdmin()
   const data = parseCollegeForm(formData)
   if (!data.name || !data.slug) throw new Error('Name and slug are required')
   await upsertCollege(data)
@@ -92,6 +94,7 @@ export async function createCollegeAction(formData: FormData) {
 }
 
 export async function updateCollegeAction(id: string, formData: FormData) {
+  await requireAdmin()
   const data = parseCollegeForm(formData)
   await upsertCollege({ id, ...data })
   revalidatePath('/admin/colleges')
@@ -105,11 +108,13 @@ export async function updateCollegeAction(id: string, formData: FormData) {
 }
 
 export async function deleteCollegeAction(id: string) {
+  await requireAdmin()
   await deleteCollege(id)
   revalidatePath('/admin/colleges')
 }
 
 export async function approveReviewAction(reviewId: string, collegeId: string) {
+  await requireAdmin()
   const admin = createAdminClient()
   await admin.from('reviews').update({ status: 'published' }).eq('id', reviewId)
   revalidatePath(`/admin/colleges/${collegeId}`)
@@ -118,6 +123,7 @@ export async function approveReviewAction(reviewId: string, collegeId: string) {
 }
 
 export async function rejectReviewAction(reviewId: string, collegeId: string) {
+  await requireAdmin()
   const admin = createAdminClient()
   await admin.from('reviews').update({ status: 'rejected' }).eq('id', reviewId)
   revalidatePath(`/admin/colleges/${collegeId}`)
@@ -126,6 +132,7 @@ export async function rejectReviewAction(reviewId: string, collegeId: string) {
 }
 
 export async function deleteReviewAction(reviewId: string, collegeId: string) {
+  await requireAdmin()
   const admin = createAdminClient()
   await admin.from('reviews').delete().eq('id', reviewId)
   revalidatePath(`/admin/colleges/${collegeId}`)

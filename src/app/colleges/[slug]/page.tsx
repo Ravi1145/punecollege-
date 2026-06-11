@@ -434,6 +434,50 @@ export default async function CollegePage({ params }: Props) {
       <div className="bg-surface min-h-screen">
         <CollegeProfile college={college} details={details} />
 
+        {/* ── Server-rendered FAQ section — always visible to AI crawlers ──────
+            CollegeProfile renders FAQs behind a JS tab click (client component),
+            which AI crawlers cannot execute. This section duplicates the same FAQ
+            data as static HTML so Google AIO, ChatGPT and Perplexity can cite it.  */}
+        <section className="bg-white border-t py-10 px-4" id="faq-section">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
+              Frequently Asked Questions — {college.name}
+            </h2>
+            <div className="space-y-0 divide-y divide-gray-100">
+              {faqsForSchema.map((faq, i) => (
+                <details key={i} className="group py-4" open={i === 0}>
+                  <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
+                    <h3 className="text-sm font-semibold text-gray-800 leading-snug">{faq.q}</h3>
+                    <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-gray-100 group-open:bg-orange-100 flex items-center justify-center text-gray-500 group-open:text-orange-600 transition-colors text-xs font-bold select-none">
+                      ▾
+                    </span>
+                  </summary>
+                  <p className="mt-2 text-sm text-gray-600 leading-relaxed pr-8">{faq.a}</p>
+                </details>
+              ))}
+            </div>
+            {/* Sub-page links — drive crawlers to fee/placement/cutoff pages */}
+            <div className="mt-8 flex flex-wrap gap-2 text-sm">
+              <span className="text-xs text-gray-400 font-medium self-center">More about {college.shortName}:</span>
+              {[
+                { label: `${college.shortName} Fees`, href: `/colleges/${slug}/fees` },
+                { label: `${college.shortName} Placements`, href: `/colleges/${slug}/placements` },
+                { label: `${college.shortName} Cutoff`, href: `/colleges/${slug}/cutoff` },
+                { label: `${college.shortName} Admission`, href: `/colleges/${slug}/admission` },
+                { label: `${college.shortName} Scholarship`, href: `/colleges/${slug}/scholarship` },
+              ].map(l => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-gray-600 hover:border-orange-300 hover:text-orange-600 transition-colors text-xs font-medium"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Similar Colleges — server-rendered for SEO link equity */}
         {similarColleges.length > 0 && (
           <section className="bg-white border-t py-10 px-4">

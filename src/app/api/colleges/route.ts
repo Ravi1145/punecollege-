@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl
     const stream = searchParams.get('stream') ?? undefined
     const city   = searchParams.get('city') ?? undefined
-    const limit  = Number(searchParams.get('limit') ?? '200')
+    const limit  = Math.min(Number(searchParams.get('limit') ?? '200'), 500) // cap at 500
 
     const admin = createAdminClient()
     let query = admin
