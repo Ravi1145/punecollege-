@@ -41,8 +41,7 @@ export default function MBAAcceptingCAT() {
           { value: "₹7–24 LPA", label: "Placement Range" },
           { value: "₹1.25L–16L", label: "Annual Fees" },
         ]}
-        colleges={mbaColleges}
-        filterFn={c => c.entranceExams.includes("CAT")}
+        colleges={catColleges}
         introHeading="MBA Admission via CAT in Pune — Complete Guide"
         introParagraphs={[
           "While MAH-CET MBA is the primary entrance exam for most Pune MBA programs, CAT (Common Admission Test) by IIMs is accepted at many premium and mid-tier Pune MBA colleges. CAT scores are especially important for SIBM Pune, SCMHRD, PUMBA, and FLAME University.",

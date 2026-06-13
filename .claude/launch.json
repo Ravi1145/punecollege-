@@ -3,10 +3,9 @@
   "configurations": [
     {
       "name": "CollegePune — Next.js Dev Server",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "dev"],
-      "port": 3000,
-      "autoPort": true
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5000
     }
   ]
 }

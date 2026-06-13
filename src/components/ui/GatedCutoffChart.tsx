@@ -39,7 +39,8 @@ export default function GatedCutoffChart({ data, slug, height = 260 }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           phone,
-          source: `cutoff_gate_${slug}_${data.exam}`,
+          source: 'college_page',
+          message: `Cutoff gate: ${slug} / ${data.exam}`,
           utm_source: new URLSearchParams(window.location.search).get("utm_source") || "organic",
         }),
       })

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Script from "next/script"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
 import { mbaColleges } from "@/data/mbaColleges"
@@ -13,8 +13,8 @@ export const metadata: Metadata = genMeta({
 export const revalidate = 300
 
 const faqs = [
-  { question: "Which is the best MBA Operations college in Pune?", answer: "MIT-SOM and SIBM Pune are the best MBA Operations colleges. Pune's auto/manufacturing sector (Tata Motors, Bajaj, Mahindra, KPIT) is the top Operations MBA recruiter. Average package: ₹8–16 LPA." },
-  { question: "What are career options after MBA Operations from Pune?", answer: "Supply Chain Manager (₹10-18 LPA), Production Manager (₹9-16 LPA), Operations Analyst (₹8-14 LPA), Logistics Manager (₹9-15 LPA), Plant Manager (₹15-30 LPA). Pune's manufacturing base provides unmatched Operations MBA opportunities." },
+  { question: "Which is the best MBA Operations college in Pune?", answer: "MIT-SOM and SIBM Pune are the best MBA Operations colleges. Pune's auto/manufacturing sector (Tata Motors, Bajaj, Mahindra, KPIT) is the top Operations MBA recruiter. Average package: â‚¹8â€“16 LPA." },
+  { question: "What are career options after MBA Operations from Pune?", answer: "Supply Chain Manager (â‚¹10-18 LPA), Production Manager (â‚¹9-16 LPA), Operations Analyst (â‚¹8-14 LPA), Logistics Manager (â‚¹9-15 LPA), Plant Manager (â‚¹15-30 LPA). Pune's manufacturing base provides unmatched Operations MBA opportunities." },
 ]
 
 export default function MBAOperations() {
@@ -28,17 +28,16 @@ export default function MBAOperations() {
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <MBAClusterPage
-        h1="MBA in Operations Management — Colleges in Pune 2026"
+        h1="MBA in Operations Management â€” Colleges in Pune 2026"
         subtitle="Top MBA Operations Management colleges in Pune with manufacturing, supply chain and logistics placements."
-        quickAnswer="MIT-SOM and SIBM Pune lead for MBA Operations. Pune's auto/manufacturing sector (Tata Motors, Bajaj, Mahindra) is the top recruiter. Avg package: ₹8–16 LPA. Admission via MAH-CET MBA or SNAP."
-        stats={[{ value: "8+", label: "MBA Ops Colleges" }, { value: "₹8–16 LPA", label: "Avg Placement" }, { value: "Manufacturing", label: "Top Sector" }, { value: "MAH-CET", label: "Exam" }]}
-        colleges={mbaColleges}
-        filterFn={c => c.specializations.includes("Operations")}
-        introHeading="MBA Operations in Pune — Why Pune's Manufacturing Hub Matters"
+        quickAnswer="MIT-SOM and SIBM Pune lead for MBA Operations. Pune's auto/manufacturing sector (Tata Motors, Bajaj, Mahindra) is the top recruiter. Avg package: â‚¹8â€“16 LPA. Admission via MAH-CET MBA or SNAP."
+        stats={[{ value: "8+", label: "MBA Ops Colleges" }, { value: "â‚¹8â€“16 LPA", label: "Avg Placement" }, { value: "Manufacturing", label: "Top Sector" }, { value: "MAH-CET", label: "Exam" }]}
+                colleges={mbaColleges.filter(c => c.specializations.includes("Operations"))}
+        introHeading="MBA Operations in Pune â€” Why Pune's Manufacturing Hub Matters"
         introParagraphs={[
           "Pune is India's manufacturing capital with Tata Motors, Bajaj Auto, Mahindra, KPIT, Bosch, and 500+ auto sector companies. MBA Operations graduates from Pune have unmatched access to supply chain, production management, quality control, and operations analytics roles.",
-          "Operations Management MBA curriculum covers supply chain management, lean manufacturing, Six Sigma, ERP, logistics, procurement, and operations analytics — all directly applicable to Pune's industrial base.",
-          "Top operations roles post-MBA from Pune: Supply Chain Manager (₹10-18 LPA), Production Manager (₹9-16 LPA), Operations Analyst (₹8-14 LPA), Logistics Manager (₹9-15 LPA).",
+          "Operations Management MBA curriculum covers supply chain management, lean manufacturing, Six Sigma, ERP, logistics, procurement, and operations analytics â€” all directly applicable to Pune's industrial base.",
+          "Top operations roles post-MBA from Pune: Supply Chain Manager (â‚¹10-18 LPA), Production Manager (â‚¹9-16 LPA), Operations Analyst (â‚¹8-14 LPA), Logistics Manager (â‚¹9-15 LPA).",
         ]}
         faqs={faqs}
         internalLinks={[

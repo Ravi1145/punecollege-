@@ -39,8 +39,7 @@ export default function MBABusinessAnalytics() {
           { value: "IT/Consulting", label: "Top Recruiters" },
           { value: "+30%", label: "Salary Premium" },
         ]}
-        colleges={mbaColleges}
-        filterFn={c => c.specializations.includes("Business Analytics") || c.specializations.includes("Data Analytics")}
+        colleges={mbaColleges.filter(c => c.specializations.includes("Business Analytics") || c.specializations.includes("Data Analytics"))}
         introHeading="MBA Business Analytics in Pune — The Fastest Growing MBA Specialization"
         introParagraphs={[
           "MBA Business Analytics is the fastest growing MBA specialization in Pune, driven by explosive demand from Pune's IT sector (500+ companies in Hinjewadi, Kharadi), manufacturing companies digitizing operations, and BFSI firms implementing data-driven decision making.",

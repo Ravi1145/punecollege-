@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     const admin = createAdminClient()
     const { error } = await admin.from('leads').insert({
-      name:            validated.name,
+      name:            validated.name ?? null,
       phone:           validated.phone,
       email:           validated.email || null,
       stream:          validated.stream ?? null,

@@ -11,17 +11,22 @@ export function isAllowedOrigin(req: NextRequest): boolean {
   const origin = req.headers.get("origin")
 
   // No Origin header — direct server-to-server call (cURL, Postman, server action).
-  // Allow it so internal tooling and server-side integrations still work.
   if (!origin) return true
 
   const base = (process.env.NEXT_PUBLIC_BASE_URL ?? "https://collegepune.com").replace(/\/$/, "")
 
-  // Allow the production domain and localhost variants for dev
-  const allowed = [
-    base,
-    "http://localhost:3000",
-    "http://localhost:4321",
-  ]
+  // Derive www / non-www sibling automatically
+  let sibling = ""
+  if (base.includes("://www.")) {
+    sibling = base.replace("://www.", "://")
+  } else {
+    sibling = base.replace("://", "://www.")
+  }
+
+  // Allow any localhost port for local development
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true
+
+  const allowed = [base, sibling]
 
   return allowed.some((a) => origin === a || origin.startsWith(a))
 }

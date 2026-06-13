@@ -11,7 +11,6 @@ interface MBAClusterPageProps {
   quickAnswer: string
   stats: { value: string; label: string }[]
   colleges: MBACollege[]
-  filterFn?: (c: MBACollege) => boolean
   introHeading: string
   introParagraphs: string[]
   faqs: ClusterFAQ[]
@@ -21,10 +20,10 @@ interface MBAClusterPageProps {
 }
 
 export default function MBAClusterPage({
-  h1, subtitle, quickAnswer, stats, colleges, filterFn,
+  h1, subtitle, quickAnswer, stats, colleges,
   introHeading, introParagraphs, faqs, internalLinks, ctaHeading, ctaSubtext,
 }: MBAClusterPageProps) {
-  const filtered = filterFn ? colleges.filter(filterFn) : colleges
+  const filtered = colleges
 
   return (
     <div className="bg-gray-50 min-h-screen">

@@ -75,7 +75,7 @@ export default async function AdminLeadsPage({
   if (q) {
     const query = q.toLowerCase()
     leads = leads.filter((l) =>
-      l.name.toLowerCase().includes(query) ||
+      (l.name ?? '').toLowerCase().includes(query) ||
       (l.phone ?? '').includes(query) ||
       (l.email ?? '').toLowerCase().includes(query) ||
       (l.stream ?? '').toLowerCase().includes(query) ||

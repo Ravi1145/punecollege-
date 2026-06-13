@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Script from "next/script"
 import { generateMetadata as genMeta, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo"
 import { mbaColleges } from "@/data/mbaColleges"
@@ -28,15 +28,14 @@ export default function MBAEntrepreneurship() {
       <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Script id="breadcrumb-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <MBAClusterPage
-        h1="MBA Entrepreneurship — Colleges in Pune 2026"
-        subtitle="Best MBA Entrepreneurship programs in Pune — startup incubation, VC access, and entrepreneurship specialization at top Pune business schools."
+        h1="MBA Entrepreneurship â€” Colleges in Pune 2026"
+        subtitle="Best MBA Entrepreneurship programs in Pune â€” startup incubation, VC access, and entrepreneurship specialization at top Pune business schools."
         quickAnswer="FLAME University (dedicated Entrepreneurship MBA) and MIT-WPU (incubation center + startup support) are the best MBA entrepreneurship colleges in Pune. Pune's growing startup ecosystem with 500+ startups makes it an ideal city for entrepreneur MBAs."
         stats={[{ value: "5+", label: "Startup MBA Colleges" }, { value: "500+", label: "Pune Startups" }, { value: "10+ Incubators", label: "Ecosystem" }, { value: "VC Access", label: "Funding Support" }]}
-        colleges={mbaColleges}
-        filterFn={c => c.specializations.includes("Entrepreneurship")}
+                colleges={mbaColleges.filter(c => c.specializations.includes("Entrepreneurship"))}
         introHeading="Why Pune is Great for MBA Entrepreneurship"
         introParagraphs={[
-          "Pune's startup ecosystem is growing rapidly — with 500+ funded startups, 10+ incubators, and strong mentorship networks from successful Pune entrepreneurs. An MBA in Entrepreneurship from Pune gives you classroom learning plus real startup exposure.",
+          "Pune's startup ecosystem is growing rapidly â€” with 500+ funded startups, 10+ incubators, and strong mentorship networks from successful Pune entrepreneurs. An MBA in Entrepreneurship from Pune gives you classroom learning plus real startup exposure.",
           "FLAME University's MBA has a strong Entrepreneurship track with live business plan competitions, venture mentoring, and angel investor networks. MIT-WPU's Innovation Foundation has incubated 50+ student startups with seed funding support.",
           "Pune's proximity to Mumbai's VC hub (Mumbai-Pune Expressway, 3 hours) means MBA Entrepreneurship students have access to Sequoia India, Blume Ventures, and Kalaari Capital networking events.",
         ]}

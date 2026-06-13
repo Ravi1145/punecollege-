@@ -73,7 +73,7 @@ export interface Blog {
 
 export interface Lead {
   id: string
-  name: string
+  name: string | null
   email: string | null
   phone: string | null
   stream: string | null

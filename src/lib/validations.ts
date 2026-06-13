@@ -3,7 +3,7 @@ import { z } from 'zod'
 const phoneRegex = /^[6-9]\d{9}$/
 
 export const leadSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters').max(50),
+  name: z.string().min(2, 'Name must be at least 2 characters').max(50).optional(),
   phone: z.string().regex(phoneRegex, 'Enter a valid 10-digit Indian mobile number'),
   email: z.string().email('Invalid email').optional().or(z.literal('')),
   stream: z.enum(['BTech', 'MBA', 'MBBS', 'BBA', 'BArch', 'BSc', 'BCom', 'Law', 'Other']).optional(),
@@ -16,7 +16,8 @@ export const leadSchema = z.object({
   source: z.enum([
     'enquiry_form', 'college_page', 'exit_popup', 'ai_gate',
     'predictor', 'shortlist', 'counselling', 'lead_magnet', 'inline_form',
-    'news_alert', 'lead_bar',
+    'news_alert', 'lead_bar', 'scholarship_subscribe', 'qa_question',
+    'ai_counselor', 'ai_finder',
   ]),
   message: z.string().max(500).optional(),
   page_url: z.string().optional(),
